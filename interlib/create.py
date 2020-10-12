@@ -1,3 +1,4 @@
+# Used for printing out the line that is associated with the error message
 def print_line(line_numb, line_list):
   line = ""
   for word in line_list:
