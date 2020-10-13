@@ -1,9 +1,10 @@
 # Used for printing out the line that is associated with the error message
-def print_line(line_numb, line_list):
+# For line_numb, pass in the 
+def print_line(lines_to_write, line_list):
   line = ""
   for word in line_list:
     line += word + " "
-  print("Line " + str(line_numb) + ': ' + line)
+  print("Line " + str(len(lines_to_write)) + ': ' + line)
   
 '''
     Main arithmetic functions
@@ -18,14 +19,14 @@ Requires:
  Returns:
  . A boolean value. This is used in the interpreter.py file to make sure that the parsing of the code executes correctly. Otherwise the parsing stops and ends it prematurely.
 '''
-def add(line_numb, line_list, all_variables, indent, py_file):
+def add(lines_to_write, line_list, all_variables, indent, py_file):
   pass
   
-def subtract(line_numb, line_list, all_variables, indent, py_file):
+def subtract(lines_to_write, line_list, all_variables, indent, py_file):
   pass
   
-def multiply(line_numb, line_list, all_variables, indent, py_file):
+def multiply(lines_to_write, line_list, all_variables, indent, py_file):
   pass
 
-def divide(line_numb, line_list, all_variables, indent, py_file):
+def divide(lines_to_write, line_list, all_variables, indent, py_file):
   pass

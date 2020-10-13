@@ -1,10 +1,11 @@
 # Used for printing out the line that is associated with the error message
-def print_line(line_numb, line_list):
+# For line_numb, pass in the 
+def print_line(lines_to_write, line_list):
   line = ""
   for word in line_list:
     line += word + " "
-  print("Line " + str(line_numb) + ': ' + line)
-
+  print("Line " + str(len(lines_to_write)) + ': ' + line)
+  
 '''
   The handler to display things on the console
 
@@ -18,5 +19,5 @@ Requires:
  Returns:
  . A boolean value. This is used in the interpreter.py file to make sure that the parsing of the code executes correctly. Otherwise the parsing stops and ends it prematurely.
 '''
-def handler(line_numb, line_list, all_variables, indent, py_file):
+def handler(lines_to_write, line_list, all_variables, indent, py_file):
   pass
