@@ -18,7 +18,7 @@ def print_line(line_numb, line_list):
  . A boolean value. This is used in the interpreter.py file to make sure that the parsing of the code executes correctly. Otherwise the parsing stops and ends it prematurely.
  
 '''
-def handler(line_numb, line_list, all_variables, indent, py_file):
+def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
   
   # The position of the line_list
   word_pos = 1
@@ -202,11 +202,14 @@ def handler(line_numb, line_list, all_variables, indent, py_file):
   # At the end of determining the data value, we need to check it against the data type
   if data_type == "variable":
     if is_number:
-      py_file.write(indent_space + varaible_name + " = " + str(value) + "\n")
+      py_line = indent_space + varaible_name + " = " + str(value) + "\n"
+      py_lines.append(py_line)
     elif is_string:
-      py_file.write(indent_space + varaible_name + ' = "' + str(value + '"' + "\n"))
+      py_line = indent_space + varaible_name + ' = "' + str(value + '"' + "\n")
+      py_lines.append(py_line)
     elif is_variable:
-      py_file.write(indent_space + varaible_name + ' = ' + str(value) + "\n")
+      py_line = indent_space + varaible_name + ' = ' + str(value) + "\n"
+      py_lines.append(py_line)
       value = all_variables[value]["value"]
     else:
       print("Error: data type declared is 'variable' but the expected data is not a 'variable' data type")

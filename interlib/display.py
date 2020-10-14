@@ -19,5 +19,5 @@ Requires:
  Returns:
  . A boolean value. This is used in the interpreter.py file to make sure that the parsing of the code executes correctly. Otherwise the parsing stops and ends it prematurely.
 '''
-def handler(lines_to_write, line_list, all_variables, indent, py_file):
+def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
   pass

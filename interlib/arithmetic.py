@@ -19,14 +19,14 @@ Requires:
  Returns:
  . A boolean value. This is used in the interpreter.py file to make sure that the parsing of the code executes correctly. Otherwise the parsing stops and ends it prematurely.
 '''
-def add(lines_to_write, line_list, all_variables, indent, py_file):
+def add(line_numb, line_list, py_lines, all_variables, indent, py_file):
   pass
   
-def subtract(lines_to_write, line_list, all_variables, indent, py_file):
+def subtract(line_numb, line_list, py_lines, all_variables, indent, py_file):
   pass
   
-def multiply(lines_to_write, line_list, all_variables, indent, py_file):
+def multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
   pass
 
-def divide(lines_to_write, line_list, all_variables, indent, py_file):
+def divide(line_numb, line_list, py_lines, all_variables, indent, py_file):
   pass

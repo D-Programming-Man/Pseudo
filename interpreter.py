@@ -18,9 +18,12 @@ if __name__ == "__main__":
   
   # Line number where the parser is at, used for showing error exceptions.
   line_numb = 1
+
+  # List of all python lines to be written to the outfile
+  py_lines = []
   
   # Some initialization to write to the py_file
-  py_file.write('if __name__ == "__main__":\n')
+  py_lines.append('if __name__ == "__main__":\n')
   indent = 2
   parse_success = True
   
@@ -31,22 +34,22 @@ if __name__ == "__main__":
     # Checking each starting word to run their own handlers.
     # There should be something more optimal than doing elif statements.
     if line_list[0].lower() == "create":
-      parse_success = create.handler(line_numb, line_list, all_variables, indent, py_file)
+      parse_success = create.handler(line_numb, line_list, py_lines, all_variables, indent, py_file)
     
     elif line_list[0].lower() == "add":
-      parse_success = arithmetic.add(line_numb, line_list, all_variables, indent, py_file)
+      parse_success = arithmetic.add(line_numb, line_list, py_lines, all_variables, indent, py_file)
     
     elif line_list[0].lower() == "subtract":
-      parse_success = arithmetic.subtract(line_numb, line_list, all_variables, indent, py_file)
+      parse_success = arithmetic.subtract(line_numb, line_list, py_lines, all_variables, indent, py_file)
     
     elif line_list[0].lower() == "multiply":
-      parse_success = arithmetic.multiply(line_numb, line_list, all_variables, indent, py_file)
+      parse_success = arithmetic.multiply(line_numb, line_list, py_lines, all_variables, indent, py_file)
     
     elif line_list[0].lower() == "divide":
-      parse_success = arithmetic.divide(line_numb, line_list, all_variables, indent, py_file)
+      parse_success = arithmetic.divide(line_numb, line_list, py_lines, all_variables, indent, py_file)
     
     elif line_list[0].lower() == "display":
-      parse_success = display.handler(line_numb, line_list, all_variables, indent, py_file)
+      parse_success = display.handler(line_numb, line_list, py_lines, all_variables, indent, py_file)
       
     # At the end of parsing the line, increment the line counter
     line_numb += 1
@@ -54,6 +57,10 @@ if __name__ == "__main__":
     # Terminate loop when error occurs
     if not parse_success:
       break
+
+   # write every line into py_file
+  for line in py_lines:
+    py_file.write(line)
       
   # Debugging stuff
   for var in all_variables:

@@ -4,7 +4,7 @@ if __name__ == "__main__":
   x = 1.431
   x = "Hello_World"
   x = "Hello World"
-  x = "FJEOIEE OFNE OIFN OEINFOSE FOE SF"
+  z = "FJEOIEE OFNE OIFN OEINFOSE FOE SF"
   x = 2
   y = x
-  y = y
+  y = 17000
