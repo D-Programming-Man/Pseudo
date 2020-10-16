@@ -21,5 +21,7 @@ Completed:
 
 TODO:
 
+* Creation of list and dictionaries
+
 * Arithmetic functions (Add/Subtract/Multiply/Divide)
 
