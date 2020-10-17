@@ -1,10 +1,10 @@
 # Used for printing out the line that is associated with the error message
 # For line_numb, pass in the 
-def print_line(lines_to_write, line_list):
+def print_line(line_numb, line_list):
   line = ""
   for word in line_list:
     line += word + " "
-  print("Line " + str(len(lines_to_write)) + ': ' + line)
+  print("Line " + str(line_numb) + ': ' + line)
   
 '''
     Main arithmetic functions
