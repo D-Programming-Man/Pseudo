@@ -11,7 +11,7 @@ if __name__ == "__main__":
   
   # All varaibles, list, and dictionaries are put into here from the "Create" keyword
   # Key = variable name, Values = {data type, data for that variable name}
-  # For example, an entry in the dictionary could be {"x": {"data_type": "variable", "value": 1}}
+  # For example, an entry in the dictionary could be {"x": {"data_type": "number", "value": 1}}
   # This means that x is a variable with the value 1
   # {}
   all_variables = {}
