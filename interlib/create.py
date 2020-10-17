@@ -252,12 +252,15 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
     if is_number:
       py_line = indent_space + varaible_name + " = " + str(value) + "\n"
       py_lines.append(py_line)
+      data_type = "number"
     elif is_string:
       py_line = indent_space + varaible_name + ' = "' + str(value + '"\n')
       py_lines.append(py_line)
+      data_type = "string"
     elif is_variable:
       py_line = indent_space + varaible_name + ' = ' + str(value) + "\n"
       py_lines.append(py_line)
+      data_type = all_variables[value]["data_type"]
       value = all_variables[value]["value"]
     else:
       print("Error: data type declared is 'variable' but the expected data is not a 'variable' data type")
