@@ -16,7 +16,7 @@ Completed:
 
 * Creation of variables (integers, floats, and strings)
 
-* Displaying of variables (Has some bugs though)
+* Displaying of variables
 
 
 TODO:
@@ -25,3 +25,4 @@ TODO:
 
 * Arithmetic functions (Add/Subtract/Multiply/Divide)
 
+* Optimizations
