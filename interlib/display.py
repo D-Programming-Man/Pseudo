@@ -1,5 +1,6 @@
+from . import utility
+
 # Used for printing out the line that is associated with the error message
-# For line_numb, pass in the 
 def print_line(line_numb, line_list):
   line = ""
   for word in line_list:
@@ -44,13 +45,16 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
   
   # We are going to build each variable or string by a character. 
   value = ""
-  
   quotation_mark = ""
+  previous_char = ""
   
   # Flags
   is_in_string = False
   is_string = False
   is_variable_name = True   # Assume we're always build variable names
+                            # Sort of misleading because we are including
+                            # integers and floats into this catagory.
+                            # Essentially, it's a 'not_string' boolean
   can_add_to_list = False
   
   # Go through each character and determine if it is a string or a variable
@@ -62,10 +66,10 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
         is_variable_name = False
         quotation_mark = char
       else:
-        if char == quotation_mark:
+        if char == quotation_mark and previous_char != "\\":
           is_in_string = False
     
-    # If the current character is not part of a list, then skip or add the value to the list
+    # If the current character is not part of a string, then skip or add the value to the list
     if not is_in_string:
       if char == " ":
         continue
@@ -74,6 +78,12 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
     
     if can_add_to_list:
       if is_string:
+        # Checks if the value is a valid string type
+        if utility.inter_data_type(value) != "string":
+          print("Error: Mismatched quotation mark")
+          print_line(line_numb, line_list)
+          return False
+        
         first_quotation_mark = -1
         second_quotation_mark = -1
         
@@ -92,17 +102,18 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
         # They should be...
         if value[first_quotation_mark] == value[second_quotation_mark]:
           value_list.append({"data_type": "string", "value": value[first_quotation_mark:second_quotation_mark + 1]})
-        else:
-          print("Error: Mismatched quotation mark")
-          print_line(line_numb, line_list)
           
       if is_variable_name:
-        try:
-          if all_variables[value] is not None:
-            value_list.append({"data_type": "variable", "value": value})
-        except:
-          print("Error: Variable " + value + " has not been created.")
-          print_line(line_numb, line_list)
+        if utility.inter_data_type(value) == "number":
+          value_list.append({"data_type": "number", "value": value})
+        else:
+          try:
+            if all_variables[value] is not None:
+              value_list.append({"data_type": "variable", "value": value})
+          except:
+            print("Error: Variable " + value + " has not been created.")
+            print_line(line_numb, line_list)
+            return False
           
       # Reset the value and make adding to the list false
       value = ""
@@ -114,13 +125,14 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
     
     # Build the value for each character
     value += char
+    previous_char = char
   
   # Build the python line
   print_param = ""
   for data in value_list:
     if data["data_type"] == "string":
       print_param += data["value"] + " + "
-    elif data["data_type"] == "variable":
+    elif data["data_type"] == "variable" or data["data_type"] == "number":
       print_param += "str(" + data["value"] + ") + "
   print_param = print_param[0:-3]
   
