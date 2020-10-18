@@ -1,18 +1,21 @@
 Create a variable named x with a value 2
 Create variable named x with values 4879438728978942759842
-Create variable named x with a values 1.431
+Create variable named q with a values 1.431
 Create a variable named x with values "Hello_World"
-Create variable named x with values "Hello World"
-Create variable named x with values "FJEOIEE OFNE OIFN OEINFOSE FOE SF"
-Create a variable named x with a value 2
+Create variable named d with values "Hello World"
+Create variable named a with values "FJEOIEE OFNE OIFN OEINFOSE FOE SF"
+Create a variable named t with a value 2
 Create a variable named y with a value x
-Create a variable named y with a value y
+Create a variable named z with a value y
 Display "Hello"
 Display "Hello World"
 Display "Hello", x
 Display "Hello World, and hello to this world too ", x
 Display x, y
-Display x, "' and '" ,         y
+Display x, "' and "'" ,         y
 Display             "Long",             "Boy"
-Display "This", "Is", "A", "String"x" Yeet!"
-Display "The above line is a bug, going to fix this later though."
+Display "This", "Is", "A", "String\"x\" Yeet!"
+Display "Display now supports escape characters for quotes: \""
+Display 1
+Display 1.12323
+Display 1, 123.2323
