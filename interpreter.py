@@ -69,3 +69,16 @@ if __name__ == "__main__":
   # Close the files 
   in_file.close()
   py_file.close()
+  
+  # Runs the output file, stores output into output.txt file
+  default_stdout = sys.stdout
+  sys.stdout = open('output.txt', 'w')
+  exec(open('outfile.py').read())
+  sys.stdout = default_stdout
+  
+  # Print the output to the console
+  out_file = open("output.txt", 'r')
+  for line in out_file:
+    print(line[0:-1])
+  
+  out_file.close()
