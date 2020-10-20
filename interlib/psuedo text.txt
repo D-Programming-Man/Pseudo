@@ -1,0 +1,2 @@
+Multiply x and 1, store it into z. Multiply x, 3, 7, and 1, store the result into z.
+Multiply 6 and 3, store into z.
