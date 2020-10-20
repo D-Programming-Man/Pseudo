@@ -68,10 +68,30 @@ def str_parse(multi_string, value_list, quotation_mark):
       return False
 
 
-# TODO: Implement list and dictionary parsing
 
+# function to parse lists
 def lst_parse(value_list):
-  return True
+
+  # Case where the newline character is end of value_list
+  if value_list[-1][-1] == "\n":
+    value_list[-1] = value_list[-1][0:-1]
+
+  # Check if ']' is at the end
+  if value_list[-1][-1] == "]":
+    # This is a valid list, return the value
+    value = value_list[0][1:] + " "
+
+    for i in range(1, len(value_list) - 1):
+      value += value_list[i] + " "
+    value += value_list[-1][0:-1]
+
+    return value
+
+  else:
+    # Invalid list return False
+    return False
+
+# TODO: Implement dictionary parsing
 
 def dct_parse(value_list):
   return True
@@ -121,13 +141,13 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
   # Checks if the next word is "named", if not then display error
   if line_list[word_pos].lower() == "named":
     word_pos += 1
-    # Initialize the variable to nothing yet, check to make sure that there is a vaild value at the end of the sentence.
-    varaible_name = line_list[word_pos]
+    # Initialize the variable to nothing yet, check to make sure that there is a valid value at the end of the sentence.
+    variable_name = line_list[word_pos]
     try:
-      if all_variables[varaible_name] is not None:
+      if all_variables[variable_name] is not None:
         pass
     except:
-      all_variables[varaible_name] = None
+      all_variables[variable_name] = None
     word_pos += 1
   else:
     print("Error on line " + str(line_numb) + ". The word 'named' is not after the data type.")
@@ -226,8 +246,8 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
     # Checking if the value contains a quotation, if so then it's a string
     if value_list[0][0] == '"' or value_list[0][0] == "'":
       quotation_mark = value_list[0][0]
-      is_number = False
-      is_variable = False
+      is_list = False
+      is_dict = False
       is_string = True
       multi_string = True
 
@@ -238,6 +258,17 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
         return False
 
     # TODO: Make it successfully parse list and dictionaries
+    elif value_list[0][0] == "[":
+      is_string = False
+      is_dict = False
+      is_list = True
+
+      value = lst_parse(value_list)
+
+      if value == False:
+        print("Error on line " + str(line_numb) + ". error somewhere")
+        print_line(line_numb, line_list)
+        return False
 
 
 
@@ -250,15 +281,15 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
   # At the end of determining the data value, we need to check it against the data type
   if data_type == "variable":
     if is_number:
-      py_line = indent_space + varaible_name + " = " + str(value) + "\n"
+      py_line = indent_space + variable_name + " = " + str(value) + "\n"
       py_lines.append(py_line)
       data_type = "number"
     elif is_string:
-      py_line = indent_space + varaible_name + ' = "' + str(value + '"\n')
+      py_line = indent_space + variable_name + ' = "' + str(value + '"\n')
       py_lines.append(py_line)
       data_type = "string"
     elif is_variable:
-      py_line = indent_space + varaible_name + ' = ' + str(value) + "\n"
+      py_line = indent_space + variable_name + ' = ' + str(value) + "\n"
       py_lines.append(py_line)
       data_type = all_variables[value]["data_type"]
       value = all_variables[value]["value"]
@@ -267,7 +298,13 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
       print_line(line_numb, line_list)
       return False
 
-    # Write the variable into the dictionary just in case if the user wants to use it later
-    all_variables[varaible_name] = {"data_type": data_type, "value": value}
+
+
+  elif data_type == "list":
+    py_line = indent_space + variable_name + " = [" + str(value) + "]\n"
+    py_lines.append(py_line)
+
+   # Write the variable into the dictionary just in case if the user wants to use it later
+  all_variables[variable_name] = {"data_type": data_type, "value": value}
 
   return True
