@@ -1,97 +1,60 @@
+'''
+Code to help with testing
+
 #Clear output file on startup
 outputFile = open("psuedo output.py", "w")
 outputFile.close()
-inputFile = open("psuedo text.txt", "r")
+
 outputFile = open("psuedo output.py", "a")
 
 #mimicking all_variables
 allVariables =	{
-  "x": 1,
-  "y": 2,
-  "z": 0,
-  "i": 12,
-  "foo": 7,
-  "neg": -10,
-  "day": "Monday",
-  "missing": None
+  "x": {"data_type": "number", "value": 1},
+  "y": {"data_type": "number", "value": 2},
+  "z": {"data_type": "number", "value": 0}
 }
+'''
+
+def print_line(line_numb, line_list):
+  line = ""
+  for word in line_list:
+    line += word + " "
+  print("Line " + str(line_numb) + ': ' + line)
 
 
-def add(numList):
-	result = 0
-	for x in numList:
-		if type(x) == int or type(x) == float:
-			result = result + x
+#Checks if var is a number or a variable in all_varaibles
+#called for places where var is allowed to be a variable or number
+def variableCheck(var, all_variables): 
+	if var.replace('.', '', 1).isdigit():
+		if var.isdigit:
+			return [int(var), True]
 		else:
-			raise Exception("Error, Add function was passed an invalid value")
-
-	return result
-
-
-def multiply(numList):
-	result = 1
-	for x in numList:
-		if type(x) == int or type(x) == float:
-			result = result * x
-		else:
-			raise Exception("Error, Multiply function was passed an invalid value: " + x)
-			
-	return result
-
-
-#basic math function dictionary. add was included to veryify if this could work with other functions
-basicMath =	{
-  "multiply": multiply,
-  "add": add
-}
-
-
-def writeLine(var, function, symbolList):
-
-	if function == "multiply":
-		body = " * ".join(symbolList)
-		outputFile.write(var + " = " + body + "\n")
-	
-	elif function == "add":
-		body = " + ".join(symbolList)
-		outputFile.write(var + " = " + body + "\n")
-
+			return [float(var), True]
 	else:
-		raise Exception("Error, Invalid function")
-
-
-def variableCheck(var1):
-	if var1.replace('.', '', 1).isdigit():
-		if var1.isdigit:
-			return int(var1)
-		else:
-			return float(var1)
-	else:
-		temp = allVariables.get(var1)
+		temp = all_variables.get(var)
 		if temp != None:
-			return temp
+			if temp["data_type"] == "number":
+				return [temp["value"], True]
+			else:
+				return [None, False]
 		else:
-			raise Exception("Error, Variable not found")
+			return [None, False]
 
-
-#(Add/Subtract/Multiply/Divide) <variable name> and <variable name>, store [it/the result] into <variablename>
-def processMath(line):
-	lineParts = line.split()
-	function = "NULL"
+  
+def multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
 	var = "NULL"
 	counter = 0
 	symbolList = []
 	numList = []
 	reachedStore = False
 
-	for part in lineParts:
-		part = part.replace(",", "")      #Remove commas seperating numbers or variables
+	for part in line_list:
+		part = part.replace(",", "")    
 
 		if counter == 0:
-			function = part.lower()       #First part is function name
-
-		elif counter == len(lineParts)-1:
-			var = part                    #variable check here if Math function can not create variables
+			pass 
+		elif counter == len(line_list)-1:
+			var = part      
 
 		else:                            
 			if part == "store":
@@ -100,37 +63,63 @@ def processMath(line):
 			if not reachedStore:
 				if part != "and":
 					symbolList.append(part)
-					numList.append(variableCheck(part))
+
+					varNum = variableCheck(part, all_variables)
+
+					if varNum[1] == False:
+						print_line(line_numb, line_list) #"Error, Variable not found"
+						return False
+
+					numList.append(varNum[0])
 
 		counter+=1
 
 	if reachedStore == False:
-		raise Exception("Error, Math function missing Store key word.")
+		print_line(line_numb, line_list) #"Error, Math function missing Store key word."
+		return False
 
-	allVariables[var] = basicMath[function](numList)
-	writeLine(var, function, symbolList)
+	result = 1
+	for x in numList:
+		if type(x) == int or type(x) == float:
+			result = result * x
+		else:
+			print_line(line_numb, line_list) #"Error, Multiply function was passed an invalid value: " + x
+			return False
+			
+	all_variables[var] = {"data_type": "number", "value": result}
+
+	body = " * ".join(symbolList)
+	indent_space = indent * " "
+	py_line = indent_space + var + " = " + body + "\n"
+	py_lines.append(py_line)
+	
 
 
-def verifyRequest(line):
-	keyWord = line.split()[0]
+'''
+Code to help with testing
 
-	if keyWord.lower() in basicMath.keys():
-		processMath(line)
-
-
-def parsePsuedo():
-    inputText = inputFile.read().replace('\n', ' ')
-    inputText = " ".join(inputText.split())   #removes multiple spaces
-    inputText = inputText[:-1]                #removes last period for parsing reasons
-    inputParts = inputText.split(". ")
-    return inputParts;
-
+def listToString(s): #Geeks for Geeks
+    # initialize an empty string 
+    str1 = ""  
+    # traverse in the string   
+    for ele in s:  
+        str1 += ele   
+    # return string   
+    return str1
 
 def main():
-	psuedoLines = parsePsuedo();
-	
-	for line in psuedoLines:
-		verifyRequest(line)
+	py_lines = ["someNum = 12\n", "otherNum = 9\n"]
+	line_numb = 2
+	indent = 4
+	line_list1 = ["Multiply", "x", "and", "1,", "store", "it", "into", "z"]
+	line_list2 = ["Multiply", "6", "and", "1,", "store", "it", "into", "z"]
+	#multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
+	multiply(line_numb, line_list1, py_lines, allVariables, indent, None)
+	line_numb+=1
+	multiply(line_numb, line_list2, py_lines, allVariables, indent, None)
+
+	outputFile.write(listToString(py_lines))
 
 if __name__ == "__main__":
 	main()
+'''
