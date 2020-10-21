@@ -22,7 +22,83 @@ Requires:
  . A boolean value. This is used in the interpreter.py file to make sure that the parsing of the code executes correctly. Otherwise the parsing stops and ends it prematurely.
 '''
 def add(line_numb, line_list, py_lines, all_variables, indent, py_file):
+  def add(line_numb, line_list, py_lines, all_variables, indent, py_file):
+
+  # Currently variable names are in index 1 and 3. 
+  # Check that they exist and are valid data types, or are numbers. i.e "1","1.1"
+  # Last element in the list is the variable name we want to add to. 
+  # Update the last variable in line_list to all_variables with the sum of the first two
+  expected_keywords = ["and", "store", "into"]
+  found_all_keywords = 0
+  for index, elem in enumerate(line_list):
+    # removing any "," and "\n"
+    line_list[index] = elem.strip(',\n')
+    if elem in expected_keywords:
+      found_all_keywords+=1
+  if found_all_keywords != len(expected_keywords):
+    # expected keywords did not all show up
+    print_line(line_numb, line_list) #"Error, expected keywords missing" will find a better system for this
+    return False
+
+  
+  var1_name = line_list[1]
+  var2_name = line_list[3]
+  var1_number = is_valid_number(var1_name)
+  var2_number = is_valid_number(var2_name)
+  temp_sum_val = 0
+  var3_name = line_list[-1]
+
+
+  # check that variables are valid in all_variables dict
+  # if not check if they are valid numbers
+  # if both are not true, return error
+  if data_type_check(var1_name, all_variables) == "number":
+    if data_type_check(var2_name, all_variables) == "number":
+      temp_sum_val = all_variables[var1_name]["value"] + all_variables[var2_name]["value"]
+    elif var2_number is None:
+      # second variable is not in all_variables dict
+      # and is not a number
+      print_line(line_numb, line_list)  # "Error, variable not found"
+      return False
+    else:
+      # second variable is a number
+      temp_sum_val = all_variables[var1_name]["value"] + var2_number
+  elif var1_number is None:
+    # variable 1 is not in all_variables dict
+    # and is not a number
+    print_line(line_numb, line_list)  # "Error, variable not found"
+    return False
+  else:
+    # variable 1 is a number
+    if data_type_check(var2_name, all_variables) == "number":
+      temp_sum_val = var1_number + all_variables[var2_name]["value"]
+
+    elif var2_number is None:
+      # variable 2 is not in all_variables dict
+      # and not a number
+      print_line(line_numb, line_list)  # "Error, variable not found"
+      return False
+    else:
+      temp_sum_val = var1_number + var2_number
+
+  # update or create new entry in dictionary. {"x":{"data_type":"number", "value":#}}
+  all_variables[var3_name] = {"data_type": "number", "value": temp_sum_val}
+
+  py_equivalent = " "*indent + var3_name + " = " + var1_name + " + " + var2_name + "\n"
+  py_lines.append(py_equivalent)
+
+  return True
+  
+def subtract(line_numb, line_list, py_lines, all_variables, indent, py_file):
   pass
+  
+def multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
+  pass
+
+def divide(line_numb, line_list, py_lines, all_variables, indent, py_file):
+  pass
+
+
   
 def subtract(line_numb, line_list, py_lines, all_variables, indent, py_file):
   pass
@@ -114,3 +190,26 @@ def divide(line_numb, line_list, py_lines, all_variables, indent, py_file):
   py_line = indent*" " + var3 + " = " + var1 + "/" + var2 +"\n"
   py_lines.append(py_line)
   return True
+
+
+
+
+# Helper functions I(Dvir) use, final version might not need these
+def is_valid_number(element):
+  # Will either return the string as an integer or float, both valid, or return None
+  if element.isnumeric():
+    return int(element)
+  try:
+    float(element)
+    return float(element)
+  except:
+   pass
+
+
+def data_type_check(name, all_variables):
+  # if it exists, returns data type
+  # else None
+  if name in all_variables:
+    return all_variables[name]["data_type"]
+  else:
+    pass
