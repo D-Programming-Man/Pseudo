@@ -22,8 +22,6 @@ Requires:
  . A boolean value. This is used in the interpreter.py file to make sure that the parsing of the code executes correctly. Otherwise the parsing stops and ends it prematurely.
 '''
 def add(line_numb, line_list, py_lines, all_variables, indent, py_file):
-  def add(line_numb, line_list, py_lines, all_variables, indent, py_file):
-
   # Currently variable names are in index 1 and 3. 
   # Check that they exist and are valid data types, or are numbers. i.e "1","1.1"
   # Last element in the list is the variable name we want to add to. 
