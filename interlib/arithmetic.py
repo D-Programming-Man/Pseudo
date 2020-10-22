@@ -227,22 +227,22 @@ def multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
   py_lines.append(py_line)
 
 def divide(line_numb, line_list, py_lines, all_variables, indent, py_file):
+  #length check: prevents access errors
+  if(len(line_list)<7):
+    print("Error on line " + str(line_numb) + ". Missing arguments, refer to divide usage.")
+    print_line(line_numb, line_list)
+    return False 
+
   var1 = line_list[1]
   var2 = line_list[3]
-  offset = 0
-  
+  offset = 0 
   #comma check: Spec requires comma
   if(var2[-1] !=','):
     print("Error on line " + str(line_numb) + ". Missing comma, refer to divide usage.")
     print_line(line_numb, line_list)
     return False
   var2 = var2[:-1]
-  
-  #length check: prevents access errors
-  if(len(line_list)<7):
-    print("Error on line " + str(line_numb) + ". Missing arguments, refer to divide usage.")
-    print_line(line_numb, line_list)
-    return False  
+
   #error check: makes sure var1 exists or is a number
   if(inter_data_type(var1)!="number" and all_variables.get(var1)==None):
     print("Error on line " + str(line_numb) + ". Create "+var1+" before using divide")
