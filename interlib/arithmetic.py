@@ -170,7 +170,61 @@ def subtract(line_numb, line_list, py_lines, all_variables, indent, py_file):
   return True
   
 def multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
-  pass
+  var = "NULL"         #Variable to store in
+  symbolList = []      #Used to create string to send to py_lines
+  numList = []         #Used to calculate values
+  reachedStore = False
+  counter = 0
+
+  for part in line_list:
+    part = part.replace(",", "")    
+
+    #Since the first part is Multiply we can ignore it
+    if counter == 0:
+      pass
+
+    #Last part is the varaible we want to store in  
+    elif counter == len(line_list)-1:
+      var = part      
+
+    else:
+      if part == "store":
+        reachedStore = True
+
+      # If we have not seen "store" yet then we are adding the variables or numbers we see to lists
+      if not reachedStore:
+        if part != "and":
+          symbolList.append(part)
+          
+          varNum = variableCheck(part, all_variables)
+          if varNum == None:
+            print_line(line_numb, line_list) #"Error, Variable not found"
+            return False
+
+          numList.append(varNum)
+
+    counter+=1
+
+  #If there was no "store" keyword then this is not a proper format for multiply
+  if reachedStore == False:
+    print_line(line_numb, line_list) #"Error, Math function missing Store key word."
+    return False
+
+  #Here we take the list of numbers to multiply and mutlipy them
+  result = 1
+  for x in numList:
+    if type(x) == int or type(x) == float:
+      result = result * x
+    else:
+      print_line(line_numb, line_list) #"Error, Multiply function was passed an invalid value: " + x
+      return False
+      
+  all_variables[var] = {"data_type": "number", "value": result}
+
+  body = " * ".join(symbolList)
+  indent_space = indent * " "
+  py_line = indent_space + var + " = " + body + "\n"
+  py_lines.append(py_line)
 
 def divide(line_numb, line_list, py_lines, all_variables, indent, py_file):
   var1 = line_list[1]
@@ -279,3 +333,22 @@ def data_type_check(name, all_variables):
     return all_variables[name]["data_type"]
   else:
     pass
+
+#Helper function for Multiply
+#Checks if var is a number or a variable in all_varaibles
+#This is called for places where var is allowed to be a variable or a number
+def variableCheck(var, all_variables): 
+  if var.replace('.', '', 1).isdigit():
+    if var.isdigit:
+      return int(var)
+    else:
+      return float(var)
+  else:
+    temp = all_variables.get(var)
+    if temp != None:
+      if temp["data_type"] == "number":
+        return temp["value"]
+      else:
+        return None
+    else:
+      return None
