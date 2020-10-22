@@ -88,18 +88,77 @@ def add(line_numb, line_list, py_lines, all_variables, indent, py_file):
   return True
   
 def subtract(line_numb, line_list, py_lines, all_variables, indent, py_file):
-  pass
   
-def multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
-  pass
+  # Currently variable names are in index 1 and 3.
+  # Check that they exist and are valid data types, or are numbers. i.e "1","1.1"
+  # Last element in the list is the variable name we want to subtract to.
+  # Update the last variable in line_list to all_variables with the difference of the first two
+  expected_keywords = ["and", "store", "into"]
+  found_all_keywords = 0
+  for index, elem in enumerate(line_list):
+    # removing any "," and "\n"
+    line_list[index] = elem.strip(',\n')
+    if elem in expected_keywords:
+      found_all_keywords += 1
+  if found_all_keywords != len(expected_keywords):
+    # expected keywords did not all show up
+    # "Error, expected keywords missing" will find a better system for this
+    print_line(line_numb, line_list)
+    return False
 
-def divide(line_numb, line_list, py_lines, all_variables, indent, py_file):
-  pass
-
-
+  var1_name = line_list[1]
+  var2_name = line_list[3]
+  var1_number = is_valid_number(var1_name)
+  var2_number = is_valid_number(var2_name)
   
-def subtract(line_numb, line_list, py_lines, all_variables, indent, py_file):
-  pass
+  temp_difference_val = 0
+  var3_name = line_list[-1]
+
+  # check that variables are valid in all_variables dict
+  # if not check if they are valid numbers
+  # if both are not true, return error
+  if data_type_check(var1_name, all_variables) == "number":
+    if data_type_check(var2_name, all_variables) == "number":
+      temp_difference_val = all_variables[var1_name]["value"] - \
+          all_variables[var2_name]["value"]
+    elif var2_number is None:
+      # second variable is not in all_variables dict and is not a number
+      print_line(line_numb, line_list)  # "Error, variable not found"
+      return False
+    else:
+      # second variable is a number
+      temp_difference_val = all_variables[var1_name]["value"] - var2_number
+  elif var1_number is None:
+    # variable 1 is not in all_variables dict and is not a number
+    print_line(line_numb, line_list)  # "Error, variable not found"
+    return False
+  else:
+    # variable 1 is a number
+    if data_type_check(var2_name, all_variables) == "number":
+      temp_difference_val = var1_number - all_variables[var2_name]["value"]
+    elif var2_number is None:
+      # variable 2 is not in all_variables dict and not a number
+      print_line(line_numb, line_list)  # "Error, variable not found"
+      return False
+    else:
+      temp_difference_val = var1_number - var2_number
+
+  # rounding depending on the variables' farthest right decimal place
+  var1_decimals = var1_name[::-1].find('.')
+  var2_decimals = var2_name[::-1].find('.')
+  if(var1_decimals >= var2_decimals and var1_decimals >= 0):
+    temp_difference_val = round(temp_difference_val, var1_decimals)
+  elif var2_decimals >= 0:
+    temp_difference_val = round(temp_difference_val, var2_decimals)
+  
+  # update or create new entry in dictionary. {"x":{"data_type":"number", "value":#}}
+  all_variables[var3_name] = {"data_type": "number", "value": temp_difference_val}
+
+  py_equivalent = indent*" " + var3_name + \
+      " = " + var1_name + " - " + var2_name + "\n"
+  py_lines.append(py_equivalent)
+
+  return True
   
 def multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
   pass
