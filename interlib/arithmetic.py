@@ -231,6 +231,13 @@ def divide(line_numb, line_list, py_lines, all_variables, indent, py_file):
   var2 = line_list[3]
   offset = 0
   
+  #comma check: Spec requires comma
+  if(var2[-1] !=','):
+    print("Error on line " + str(line_numb) + ". Missing comma, refer to divide usage.")
+    print_line(line_numb, line_list)
+    return False
+  var2 = var2[:-1]
+  
   #length check: prevents access errors
   if(len(line_list)<7):
     print("Error on line " + str(line_numb) + ". Missing arguments, refer to divide usage.")
@@ -270,7 +277,6 @@ def divide(line_numb, line_list, py_lines, all_variables, indent, py_file):
       var2_value = float(var2)
   else:
     var2_value = all_variables[var2]["value"]
-
 
   #format check: maintains Pseudo format
   if(line_list[4]!="store"):
