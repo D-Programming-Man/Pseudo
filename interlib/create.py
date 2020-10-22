@@ -12,18 +12,18 @@ def num_parse(value_list):
   for digit in value_list[0]:
     # If we encounter a character that isn't a digit or we have two periods, then it must be a variable name that isn't in the all_variables dictionary. Error out
     if digit.isalpha():
-      return False
+      return None
 
     # Checking for periods
     if period_counter < 2:
       if digit == ".":
         period_counter += 1
     else:
-      return False
+      return None
 
     # Rare instance where the period is at the end of the number, for example: 1.3478392784832.
     if period_counter > 1:
-      return False
+      return None
 
   # It must be a valid number
 
@@ -229,10 +229,10 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
 
         # calls num_parse to get number value
         value = num_parse(value_list)
-
+        
         # throws error on invalid input
-        if value == False:
-          print("Error on line " + str(line_numb) + ". The variable name has not been created yet.")
+        if value == None:
+          print("Error on line " + str(line_numb) + ". The variable name \"" + str(value_list[0]) + "\" has not been created yet.")
           print_line(line_numb, line_list)
           return False
 
