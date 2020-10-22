@@ -185,7 +185,7 @@ def multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
 
     #Last part is the varaible we want to store in  
     elif counter == len(line_list)-1:
-      var = part      
+      var = part.replace("\n", "")
 
     else:
       if part == "store":
