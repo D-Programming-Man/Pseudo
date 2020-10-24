@@ -173,11 +173,15 @@ def multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
   var = "NULL"         #Variable to store in
   symbolList = []      #Used to create string to send to py_lines
   numList = []         #Used to calculate values
+  reachedAnd = False
   reachedStore = False
+  reachedInto = False
+  found1Var = False
+  found2Var = False
   counter = 0
 
   for part in line_list:
-    part = part.replace(",", "")    
+    part = part.replace("\n", "") #Newlines are not valid characters for variables
 
     #Since the first part is Multiply we can ignore it
     if counter == 0:
@@ -185,38 +189,75 @@ def multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
 
     #Last part is the varaible we want to store in  
     elif counter == len(line_list)-1:
-      var = part.replace("\n", "")
+      var = part
 
     else:
-      if part == "store":
+      if part == "and":
+        reachedAnd = True
+      elif part == "store":
         reachedStore = True
+      elif part == "into":
+        reachedInto = True
 
       # If we have not seen "store" yet then we are adding the variables or numbers we see to lists
-      if not reachedStore:
-        if part != "and":
-          symbolList.append(part)
+      elif not reachedStore:
+
+        if reachedAnd and found2Var: #More than 2 inputs found so far. Third was just found
+          print("Error, Bad syntax")
+          print_line(line_numb, line_list)
+          return False
+
+        # The second variable is reached right after "and" and has a comma after it
+        if reachedAnd:
+          lastChar = part[-1]
+          if lastChar != ",":
+            print("Error, missing comma")
+            print_line(line_numb, line_list)
+            return False
+          else:
+            part = part[:-1]
           
+          found2Var = True
+        
+        #We are checking if this is the first variable or second
+        if found1Var == False or reachedAnd == True:
+          symbolList.append(part)
           varNum = variableCheck(part, all_variables)
           if varNum == None:
-            print_line(line_numb, line_list) #"Error, Variable not found"
+            print("Error, Variable not found")
+            print_line(line_numb, line_list) 
             return False
-
           numList.append(varNum)
+          found1Var = True
+        else:
+          print("Error, Bad syntax")
+          print_line(line_numb, line_list)
+          return False
+
+      #Any input outside of the structure will throw an error
+      #This is only reached after we have read past "store"
+      else:
+        if part != "it" and part != "the" and part != "result":
+          print("Error, Bad syntax")
+          print_line(line_numb, line_list)
+          return False
 
     counter+=1
 
-  #If there was no "store" keyword then this is not a proper format for multiply
-  if reachedStore == False:
-    print_line(line_numb, line_list) #"Error, Math function missing Store key word."
+  #Check if there are missing keywords
+  if reachedAnd == False or reachedStore == False or reachedInto == False or found2Var == False:
+    print("Error, Bad syntax")
+    print_line(line_numb, line_list)
     return False
 
-  #Here we take the list of numbers to multiply and mutlipy them
+  #Here we take the list of numbers to multiply and mutlipy them (at the moment it's always 2)
   result = 1
   for x in numList:
     if type(x) == int or type(x) == float:
       result = result * x
     else:
-      print_line(line_numb, line_list) #"Error, Multiply function was passed an invalid value: " + x
+      print("Error, Multiply function was passed an invalid value")
+      print_line(line_numb, line_list)
       return False
       
   all_variables[var] = {"data_type": "number", "value": result}
