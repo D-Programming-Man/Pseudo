@@ -1,3 +1,4 @@
+from interlib.utility import key_var_check
 # Used for printing out the line that is associated with the error message
 def print_line(line_numb, line_list):
   line = ""
@@ -70,7 +71,7 @@ def str_parse(multi_string, value_list, quotation_mark):
 
 
 # function to parse lists
-def lst_parse(value_list):
+def lst_parse(var_dict, value_list):
 
   # Case where the newline character is end of value_list
   if value_list[-1][-1] == "\n":
@@ -79,17 +80,27 @@ def lst_parse(value_list):
   # Check if ']' is at the end
   if value_list[-1][-1] == "]":
     # This is a valid list, return the value
-    value = value_list[0][1:] + " "
 
+
+    value_list[0] = value_list[0][1:-1]
     for i in range(1, len(value_list) - 1):
-      value += value_list[i] + " "
-    value += value_list[-1][0:-1]
+      value_list[i] = value_list[i][:-1]
+    value_list[-1] = value_list[-1][0:-1]
+
+    # Check if each value is valid
+    if key_var_check(var_dict, value_list) == None:
+      return None
+
+    value = ""
+    for val in value_list:
+      value += val + ", "
+
 
     return value
 
   else:
     # Invalid list return False
-    return False
+    return None
 
 # TODO: Implement dictionary parsing
 
@@ -158,7 +169,7 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
   if line_list[word_pos] == "with":
     word_pos += 1
   else:
-    print("Error on line " + str(line_numb) + ". The word 'with' is not after a signle word variable name.")
+    print("Error on line " + str(line_numb) + ". The word 'with' is not after a single word variable name.")
     print_line(line_numb, line_list)
     return False
 
@@ -263,10 +274,10 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
       is_dict = False
       is_list = True
 
-      value = lst_parse(value_list)
+      value = lst_parse(all_variables, value_list)
 
-      if value == False:
-        print("Error on line " + str(line_numb) + ". error somewhere")
+      if value == None:
+        print("Error on line " + str(line_numb) + ". Invalid list")
         print_line(line_numb, line_list)
         return False
 

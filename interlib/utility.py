@@ -73,3 +73,16 @@ def inter_data_type(data):
   
   # If it passes the number check, then it must be a number  
   return "number"
+
+import keyword
+
+def key_var_check(var_dict, value_list):
+  for value in value_list:
+    val_type = inter_data_type(value)
+    if val_type == "null":
+      if keyword.iskeyword(value):
+        return None
+      if value not in var_dict:
+        return None
+
+  return True
