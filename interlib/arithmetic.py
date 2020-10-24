@@ -347,7 +347,6 @@ def divide(line_numb, line_list, py_lines, all_variables, indent, py_file):
     return False
 
   var3 = line_list[6+offset]
-  var3 = var3[:-1]
   if(inter_data_type(var3)!="number"):
     all_variables[var3] = {"data_type":"number","value":var1_value/var2_value}
   else:
