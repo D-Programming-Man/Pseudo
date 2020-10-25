@@ -266,6 +266,7 @@ def multiply(line_numb, line_list, py_lines, all_variables, indent, py_file):
   indent_space = indent * " "
   py_line = indent_space + var + " = " + body + "\n"
   py_lines.append(py_line)
+  return True
 
 def divide(line_numb, line_list, py_lines, all_variables, indent, py_file):
   #length check: prevents access errors
@@ -346,7 +347,6 @@ def divide(line_numb, line_list, py_lines, all_variables, indent, py_file):
     return False
 
   var3 = line_list[6+offset]
-  var3 = var3[:-1]
   if(inter_data_type(var3)!="number"):
     all_variables[var3] = {"data_type":"number","value":var1_value/var2_value}
   else:
@@ -386,7 +386,7 @@ def data_type_check(name, all_variables):
 #This is called for places where var is allowed to be a variable or a number
 def variableCheck(var, all_variables): 
   if var.replace('.', '', 1).isdigit():
-    if var.isdigit:
+    if var.isdigit():
       return int(var)
     else:
       return float(var)

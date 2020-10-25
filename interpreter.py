@@ -29,7 +29,34 @@ if __name__ == "__main__":
   
   # main loop to parse all words in the file
   for line in in_file:
+  
+    # If a line contains only whitespace, then we just add a newline
+    # to keep the lines consistant with both the Pseudo code and the 
+    # Python code
+    if line.isspace():
+      py_lines.append("\n")
+      continue
+      
     line_list = line.split(" ")
+    
+    # Filters out each line
+    # Removes any newline characters if they are in the list
+    try:
+      while "\n" in line_list:
+        line_list.remove("\n")
+    except:
+      pass
+    
+    # Removes any empty strings if they are in the list
+    try:
+      while '' in line_list:
+        line_list.remove("")
+    except:
+      pass
+        
+    # Removes the newline character from teh last word 
+    if line_list[-1][-1] == "\n":
+      line_list[-1] = line_list[-1][:-1]
     
     # Checking each starting word to run their own handlers.
     # There should be something more optimal than doing elif statements.
@@ -63,8 +90,8 @@ if __name__ == "__main__":
     py_file.write(line)
       
   # Debugging stuff
-  for var in all_variables:
-    print(var + ": " + str(all_variables[var]))
+  #for var in all_variables:
+  #  print(var + ": " + str(all_variables[var]))
   
   # Close the files 
   in_file.close()
@@ -72,8 +99,10 @@ if __name__ == "__main__":
   
   # Runs the output file, stores output into output.txt file
   default_stdout = sys.stdout
-  sys.stdout = open('output.txt', 'w')
+  output_file = open('output.txt', 'w')
+  sys.stdout = output_file
   exec(open('outfile.py').read())
+  output_file.close()
   sys.stdout = default_stdout
   
   # Print the output to the console

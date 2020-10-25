@@ -14,15 +14,14 @@ User Stories for Sprint 1:
 
 Completed:
 
-* Creation of variables (integers, floats, and strings)
+* Creation of variables (integers, floats, and strings) and list
 
 * Displaying of variables
 
+* Arithmetic functions (Add/Subtract/Multiply/Divide)
 
 TODO:
 
-* Creation of list and dictionaries
-
-* Arithmetic functions (Add/Subtract/Multiply/Divide)
+* Creation of dictionaries
 
 * Optimizations
