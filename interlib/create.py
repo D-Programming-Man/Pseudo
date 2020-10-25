@@ -1,10 +1,5 @@
 from interlib.utility import key_var_check
-# Used for printing out the line that is associated with the error message
-def print_line(line_numb, line_list):
-  line = ""
-  for word in line_list:
-    line += word + " "
-  print("Line " + str(line_numb) + ': ' + line)
+from interlib.utility import print_line
 
 # function to parse number values
 def num_parse(value_list):
@@ -38,9 +33,6 @@ def num_parse(value_list):
 def str_parse(multi_string, value_list, quotation_mark):
 
   if multi_string:
-    # Case where the newline character is part of the string
-    if value_list[-1][-1] == "\n":
-      value_list[-1] = value_list[-1][0:-1]
 
     # Check if the same quotation mark is at the end
     if value_list[-1][-1] == quotation_mark:
@@ -58,9 +50,6 @@ def str_parse(multi_string, value_list, quotation_mark):
       return False
 
   else:
-    # Case where the newline character is part of the string
-    if value_list[0][-1] == "\n":
-      value_list[0] = value_list[0][0:-1]
 
     # Check if the same quotation mark is at the end
     if value_list[0][-1] == quotation_mark:
@@ -72,12 +61,6 @@ def str_parse(multi_string, value_list, quotation_mark):
 
 # function to parse lists
 def lst_parse(var_dict, value_list):
-
-
-
-  # Case where the newline character is end of value_list
-  if value_list[-1][-1] == "\n":
-    value_list[-1] = value_list[-1][0:-1]
 
   # Check if ']' is at the end
   if value_list[-1][-1] == "]":
@@ -108,10 +91,6 @@ def lst_parse(var_dict, value_list):
 
 
 def dct_parse(var_dict, value_list):
-
-  # Case where the newline character is end of dict
-  if value_list[-1][-1] == "\n":
-    value_list[-1] = value_list[-1][0:-1]
 
   # Check if '}' is at the end
   if value_list[-1][-1] == "}":

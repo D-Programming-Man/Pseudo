@@ -1,13 +1,6 @@
 from interlib.utility import inter_data_type
+from interlib.utility import print_line
 
-# Used for printing out the line that is associated with the error message
-# For line_numb, pass in the 
-def print_line(line_numb, line_list):
-  line = ""
-  for word in line_list:
-    line += word + " "
-  print("Line " + str(line_numb) + ': ' + line)
-  
 '''
     Main arithmetic functions
     

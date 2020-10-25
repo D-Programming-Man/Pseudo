@@ -1,3 +1,9 @@
+# Returns the string "null" to indicate an unknown data type
+def null_data_type(data):
+  # Debug stuff
+  #print("Unknown data type passed")
+  #print("Function: inter_data_type(" + data + ")")
+  return "null"
 
 '''
     Figures out the data type of what it is given.
@@ -15,14 +21,6 @@ Returns:
    - "object"   NOT YET IMPLEMENTED
    - "null"  (Not a valid data type)
 '''
-
-# Returns the string "null" to indicate an unknown data type
-def null_data_type(data):
-  # Debug stuff
-  #print("Unknown data type passed")
-  #print("Function: inter_data_type(" + data + ")")
-  return "null"
-
 def inter_data_type(data):
   char_pos = 0
   return_data_type = ""
@@ -86,3 +84,10 @@ def key_var_check(var_dict, value_list):
         return None
 
   return True
+  
+# Used for printing out the line that is associated with the error message
+def print_line(line_numb, line_list):
+  line = ""
+  for word in line_list:
+    line += word + " "
+  print("Line " + str(line_numb) + ': ' + line)

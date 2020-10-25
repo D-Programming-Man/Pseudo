@@ -1,11 +1,5 @@
-from . import utility
-
-# Used for printing out the line that is associated with the error message
-def print_line(line_numb, line_list):
-  line = ""
-  for word in line_list:
-    line += word + " "
-  print("Line " + str(line_numb) + ': ' + line)
+from interlib.utility import inter_data_type
+from interlib.utility import print_line
   
 '''
   The handler to display things on the console
@@ -25,9 +19,6 @@ Requires:
 def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
   word_pos = 1
   indent_space = indent * " "
-  
-  if line_list[-1][-1] == '\n':
-    line_list[-1] = line_list[-1][0:-1]
     
   # Combine all of the words in the list to 1 long string
   print_values  = ""
@@ -79,7 +70,7 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
     if can_add_to_list:
       if is_string:
         # Checks if the value is a valid string type
-        if utility.inter_data_type(value) != "string":
+        if inter_data_type(value) != "string":
           print("Error: Mismatched quotation mark")
           print_line(line_numb, line_list)
           return False
@@ -104,7 +95,7 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
           value_list.append({"data_type": "string", "value": value[first_quotation_mark:second_quotation_mark + 1]})
           
       if is_variable_name:
-        if utility.inter_data_type(value) == "number":
+        if inter_data_type(value) == "number":
           value_list.append({"data_type": "number", "value": value})
         else:
           try:
