@@ -73,6 +73,8 @@ def str_parse(multi_string, value_list, quotation_mark):
 # function to parse lists
 def lst_parse(var_dict, value_list):
 
+
+
   # Case where the newline character is end of value_list
   if value_list[-1][-1] == "\n":
     value_list[-1] = value_list[-1][0:-1]
@@ -81,20 +83,21 @@ def lst_parse(var_dict, value_list):
   if value_list[-1][-1] == "]":
     # This is a valid list, return the value
 
-
     value_list[0] = value_list[0][1:-1]
-    for i in range(1, len(value_list) - 1):
-      value_list[i] = value_list[i][:-1]
-    value_list[-1] = value_list[-1][0:-1]
+
+    if len(value_list) > 1:
+      for i in range(1, len(value_list) - 1):
+        value_list[i] = value_list[i][:-1]
+      value_list[-1] = value_list[-1][0:-1]
 
     # Check if each value is valid
     if key_var_check(var_dict, value_list) == None:
       return None
 
-    value = ""
-    for val in value_list:
-      value += val + ", "
-
+    value = "[" + value_list[0]
+    for val in value_list[1:]:
+      value += ", " + val
+    value += "]"
 
     return value
 
@@ -202,13 +205,13 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
 
   # If the rest of the list has a length less than 1, then we be sure that it is a number, string, or a variable name
   if len(value_list) < 2:
-    is_list = False
     is_dict = False
     multi_string = False
 
     # Checking if the value contains a quotation, if so then it's a string
     if value_list[0][0] == '"' or value_list[0][0] == "'":
       quotation_mark = value_list[0][0]
+      is_list = False
       is_number = False
       is_variable = False
       is_string = True
@@ -222,6 +225,19 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
         print_line(line_numb, line_list)
         return False
 
+    # Checking for single entry list
+    elif value_list[0][0] == "[":
+      is_number = False
+      is_variable = False
+      is_string = False
+      value = lst_parse(all_variables, value_list)
+
+      if value == None:
+        print("Error on line " + str(line_numb) + ". Invalid list")
+        print_line(line_numb, line_list)
+        return False
+
+
     # If it doesn't have it, then check if the value is a variable name
     else:
       value_list[0] = value_list[0].split()[0]
@@ -229,6 +245,7 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
       # If the value is in the dictionary of all_variables, then it must be a variable.
       try:
         if all_variables[value_list[0]] is not None:
+          is_list = False
           is_number = False
           is_variable = True
           value = value_list[0]
@@ -236,6 +253,7 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
       # If the variable name isn't in the dictionary, then it must be a number
       except:
         is_variable = False
+        is_list = False
         is_number = True
 
         # calls num_parse to get number value
@@ -312,7 +330,7 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
 
 
   elif data_type == "list":
-    py_line = indent_space + variable_name + " = [" + str(value) + "]\n"
+    py_line = indent_space + variable_name + " = " + str(value) + "\n"
     py_lines.append(py_line)
 
    # Write the variable into the dictionary just in case if the user wants to use it later
