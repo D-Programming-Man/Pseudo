@@ -81,19 +81,20 @@ def lst_parse(var_dict, value_list):
 
   # Check if ']' is at the end
   if value_list[-1][-1] == "]":
-    # This is a valid list, return the value
+    # This is a valid list, check the values
 
     value_list[0] = value_list[0][1:-1]
 
     if len(value_list) > 1:
-      for i in range(1, len(value_list) - 1):
+      for i in range(1, len(value_list)):
         value_list[i] = value_list[i][:-1]
-      value_list[-1] = value_list[-1][0:-1]
+
 
     # Check if each value is valid
     if key_var_check(var_dict, value_list) == None:
       return None
 
+    # reformat the list
     value = "[" + value_list[0]
     for val in value_list[1:]:
       value += ", " + val
@@ -105,10 +106,41 @@ def lst_parse(var_dict, value_list):
     # Invalid list return False
     return None
 
-# TODO: Implement dictionary parsing
 
-def dct_parse(value_list):
-  return True
+def dct_parse(var_dict, value_list):
+
+  # Case where the newline character is end of dict
+  if value_list[-1][-1] == "\n":
+    value_list[-1] = value_list[-1][0:-1]
+
+  # Check if '}' is at the end
+  if value_list[-1][-1] == "}":
+  # This is a valid dict, check the values
+
+
+    # Clean value list of dict syntax
+    value_list[0] = value_list[0][1:-1]
+    for i in range(1, len(value_list)):
+      value_list[i] = value_list[i][:-1]
+
+    # Check if each value is valid
+    if key_var_check(var_dict, value_list) == None:
+      return None
+
+  #reformat the dict
+    value = "{"
+    for i in range(0, len(value_list), 2):
+      value += value_list[i] + ": " + value_list[i+1]
+      if i + 2 < len(value_list):
+        value += ", "
+
+    value += "}"
+
+    return value
+
+  # Improper dict
+  else:
+    return None
 
 
 '''
@@ -286,7 +318,7 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
         print_line(line_numb, line_list)
         return False
 
-    # TODO: Make it successfully parse list and dictionaries
+
     elif value_list[0][0] == "[":
       is_string = False
       is_dict = False
@@ -299,7 +331,22 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
         print_line(line_numb, line_list)
         return False
 
+    elif value_list[0][0] == "{":
+      is_string = False
+      is_list = False
+      is_dict = True
 
+      value = dct_parse(all_variables, value_list)
+
+      if value == None:
+        print("Error on line " + str(line_numb) + ". Invalid table")
+        print_line(line_numb, line_list)
+        return False
+
+    else:
+      print("Error on line " + str(line_numb) + ". Improper spaces in line")
+      print_line(line_numb, line_list)
+      return False
 
 
 
@@ -330,6 +377,10 @@ def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
 
 
   elif data_type == "list":
+    py_line = indent_space + variable_name + " = " + str(value) + "\n"
+    py_lines.append(py_line)
+
+  elif data_type == "table":
     py_line = indent_space + variable_name + " = " + str(value) + "\n"
     py_lines.append(py_line)
 
