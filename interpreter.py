@@ -41,18 +41,12 @@ if __name__ == "__main__":
     
     # Filters out each line
     # Removes any newline characters if they are in the list
-    try:
-      while "\n" in line_list:
-        line_list.remove("\n")
-    except:
-      pass
+    while "\n" in line_list:
+      line_list.remove("\n")
     
     # Removes any empty strings if they are in the list
-    try:
-      while '' in line_list:
-        line_list.remove("")
-    except:
-      pass
+    while '' in line_list:
+      line_list.remove("")
         
     # Removes the newline character from teh last word 
     if line_list[-1][-1] == "\n":

@@ -9,17 +9,110 @@ if __name__ == "__main__":
   y = x
   z = y
   p = [x, 12, t, 'hello']
-  print("Hello")
-  print("Hello World")
-  print("Hello" + str(x))
-  print("Hello World, and hello to this world too " + str(x))
-  print(str(x) + str(y))
-  print(str(x))
-  print("Long" + "Boy")
-  print("This" + "Is" + "A" + "String\"x\" Yeet!")
-  print("Display now supports escape characters for quotes: \"")
-  print(str(1))
-  print(str(1.12323))
-  print(str(1) + str(123.2323))
-  print("The next line is a printed out list containing variables, numbers, and a string")
-  print(str(p))
+  print("List: " + str(p))
+
+  t1 = {"23": 1, "E": 2}
+  t2 = {"List": p, "Table": t1}
+  print("Table: " + str(t2))
+  print("The table above contains a list and a table. Sort of a hacky way of doing it, but it'll work.\n")
+
+  var1 = 20
+  print("var1 = " + str(var1))
+  var2 = 10
+  print("var2 = " + str(var2))
+  result = 0
+  print("result = " + str(result) + "\n")
+
+  print("Testing of Addtions")
+  result = 1 + 1
+  print(str(result))
+
+  result = var1 + 1
+  print(str(result))
+
+  result = 1 + var2
+  print(str(result))
+
+  result = 1.1 + 1.1
+  print(str(result))
+
+  result = var1 + 1.1
+  print(str(result))
+
+  result = 1.1 + var2
+  print(str(result))
+
+  result = var1 + var2
+  print(str(result) + "\n")
+
+
+  print("Testing of Subtractions")
+  result = 1 - 1
+  print(str(result))
+
+  result = 1 - var1
+  print(str(result))
+
+  result = var2 - 1
+  print(str(result))
+
+  result = 1.1 - 1.1
+  print(str(result))
+
+  result = 1.1 - var1
+  print(str(result))
+
+  result = var2 - 1.1
+  print(str(result))
+
+  result = var2 - var1
+  print(str(result) + "\n")
+
+
+
+  print("Testing of Multiply")
+  result = 1 * 1
+  print(str(result))
+
+  result = var1 * 1
+  print(str(result))
+
+  result = 1 * var2
+  print(str(result))
+
+  result = 1.1 * 1.1
+  print(str(result))
+
+  result = var1 * 1.1
+  print(str(result))
+
+  result = 1.1 * var2
+  print(str(result))
+
+  result = var1 * var2
+  print(str(result) + "\n")
+
+
+
+  print("Testing of Divide")
+  result = 1/1
+  print(str(result))
+
+  result = var1/1
+  print(str(result))
+
+  result = 1/var2
+  print(str(result))
+
+  result = 1.1/1.1
+  print(str(result))
+
+  result = var1/1.1
+  print(str(result))
+
+  result = 1.1/var2
+  print(str(result))
+
+  result = var1/var2
+  print(str(result))
+
