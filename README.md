@@ -1,25 +1,21 @@
 # Pseudo
 An interpreter that translate English to python code
 
-User Stories for Sprint 1:
+User Stories for Sprint 2:
 
-* As a user, I want to create a variable, list, and table in Pseudo
+* As a user, I want to save and load my Pseudo code in the GUI
 
-* As a user, I want to modify my variables
+* As a user, I want a button to translate and execute my Pseudo code into Python code
 
-* As a user, I want to see my variable’s data when printing to the console
+* As a user, I want to see my Python code along side my Pseudo file
 
-* As a user, I want to see my python code equivalent when running the interpreter
+* As a user, I want to see my outputs from my Psuedo file with the "Display" keyword 
 
 
 Completed:
 
-* Creation of variables (integers, floats, and strings), list, and dictionaries
-
-* Displaying of variables
-
-* Arithmetic functions (Add/Subtract/Multiply/Divide)
+* None
 
 TODO:
 
-* Optimizations
+* Scrum Board: https://docs.google.com/spreadsheets/d/1I5IZHyz0hwRgLnb-TbaJe2-aHZ0Y5hHAARfLbz-LquQ/edit?usp=sharing
