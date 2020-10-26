@@ -1,0 +1,117 @@
+Create a variable named x with a value 2
+Create variable named x with values 4879438728978942759842
+Create variable named q with a values 1.431
+Create a variable named x with values "Hello_World"
+Create variable named d with values "Hello World"
+Create variable named a with values "FJEOIEE OFNE OIFN OEINFOSE FOE SF"
+Create a variable named t with a value 2
+Create a variable named y with a value x        
+Create a variable named z with a value y 
+Create a list named p with a value [x, 12, t, 'hello']      
+Display "List: ", p
+
+Create a table named t1 with value {"23": 1, "E": 2}
+Create a table named t2 with value {"List": p, "Table": t1}   
+Display "Table: ", t2
+Display "The table above contains a list and a table. Sort of a hacky way of doing it, but it'll work.\n"
+	 
+Create a variable named var1 with a value 20    
+Display "var1 = ", var1               
+Create a variable named var2 with a value 10
+Display "var2 = ", var2
+Create a variable named result with a value 0
+Display "result = ", result, "\n"
+       
+Display "Testing of Addtions"
+Add 1 and 1, store into result
+Display result
+
+Add var1 and 1, store into result
+Display result
+
+Add 1 and var2, store into result
+Display result
+
+Add 1.1 and 1.1, store into result
+Display result
+
+Add var1 and 1.1, store into result
+Display result
+
+Add 1.1 and var2, store into result
+Display result
+
+Add var1 and var2, store into result
+Display result, "\n"
+
+
+Display "Testing of Subtractions"
+Subtract 1 from 1, store into result
+Display result
+
+Subtract var1 from 1, store into result
+Display result
+
+Subtract 1 from var2, store into result
+Display result
+
+Subtract 1.1 from 1.1, store into result
+Display result
+
+Subtract var1 from 1.1, store into result
+Display result
+
+Subtract 1.1 from var2, store into result
+Display result
+
+Subtract var1 from var2, store into result
+Display result, "\n"
+
+
+
+Display "Testing of Multiply"
+Multiply 1 and 1, store into result
+Display result
+
+Multiply var1 and 1, store into result
+Display result
+
+Multiply 1 and var2, store into result
+Display result
+
+Multiply 1.1 and 1.1, store into result
+Display result
+
+Multiply var1 and 1.1, store into result
+Display result
+
+Multiply 1.1 and var2, store into result
+Display result
+
+Multiply var1 and var2, store into result
+Display result, "\n"
+
+
+
+Display "Testing of Divide"
+Divide 1 by 1, store into result
+Display result
+
+Divide var1 by 1, store into result
+Display result
+
+Divide 1 by var2, store into result
+Display result
+
+Divide 1.1 by 1.1, store into result
+Display result
+
+Divide var1 by 1.1, store into result
+Display result
+
+Divide 1.1 by var2, store into result
+Display result
+
+Divide var1 by var2, store into result
+Display result
+
