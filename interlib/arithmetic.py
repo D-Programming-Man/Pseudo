@@ -28,7 +28,8 @@ def add(line_numb, line_list, py_lines, all_variables, indent, py_file):
       found_all_keywords+=1
   if found_all_keywords != len(expected_keywords):
     # expected keywords did not all show up
-    print_line(line_numb, line_list) #"Error, expected keywords missing" will find a better system for this
+    print("Error on line " + str(line_numb) + ". Incorrect syntax")
+    print_line(line_numb, line_list)
     return False
 
   
@@ -49,7 +50,8 @@ def add(line_numb, line_list, py_lines, all_variables, indent, py_file):
     elif var2_number is None:
       # second variable is not in all_variables dict
       # and is not a number
-      print_line(line_numb, line_list)  # "Error, variable not found"
+      print("Error on line " + str(line_numb) + ". Variable not found")
+      print_line(line_numb, line_list)
       return False
     else:
       # second variable is a number
@@ -57,7 +59,8 @@ def add(line_numb, line_list, py_lines, all_variables, indent, py_file):
   elif var1_number is None:
     # variable 1 is not in all_variables dict
     # and is not a number
-    print_line(line_numb, line_list)  # "Error, variable not found"
+    print("Error on line " + str(line_numb) + ". Variable not found")
+    print_line(line_numb, line_list)
     return False
   else:
     # variable 1 is a number
@@ -67,7 +70,8 @@ def add(line_numb, line_list, py_lines, all_variables, indent, py_file):
     elif var2_number is None:
       # variable 2 is not in all_variables dict
       # and not a number
-      print_line(line_numb, line_list)  # "Error, variable not found"
+      print("Error on line " + str(line_numb) + ". Variable not found")
+      print_line(line_numb, line_list)
       return False
     else:
       temp_sum_val = var1_number + var2_number
@@ -96,7 +100,8 @@ def subtract(line_numb, line_list, py_lines, all_variables, indent, py_file):
   if found_all_keywords != len(expected_keywords):
     # expected keywords did not all show up
     # "Error, expected keywords missing" will find a better system for this
-    #print_line(line_numb, line_list)
+    print("Error on line " + str(line_numb) + ". Incorrect syntax")
+    print_line(line_numb, line_list)
     return False
 
   var1_name = line_list[1]
@@ -119,7 +124,8 @@ def subtract(line_numb, line_list, py_lines, all_variables, indent, py_file):
     elif var2_number is None:
       # second variable is not in all_variables dict
       # and is not a number
-      #print_line(line_numb, line_list)  # "Error, variable not found"
+      print("Error on line " + str(line_numb) + ". Variable not found")
+      print_line(line_numb, line_list)
       return False
     else:
       # second variable is a number
@@ -127,7 +133,8 @@ def subtract(line_numb, line_list, py_lines, all_variables, indent, py_file):
   elif var1_number is None:
     # variable 1 is not in all_variables dict
     # and is not a number
-    #print_line(line_numb, line_list)  # "Error, variable not found"
+    print("Error on line " + str(line_numb) + ". Variable not found")
+    print_line(line_numb, line_list)
     return False
   else:
     # variable 1 is a number
@@ -138,12 +145,13 @@ def subtract(line_numb, line_list, py_lines, all_variables, indent, py_file):
     elif var2_number is None:
       # variable 2 is not in all_variables dict
       # and not a number
-      #print_line(line_numb, line_list)  # "Error, variable not found"
+      print("Error on line " + str(line_numb) + ". Variable not found")
+      print_line(line_numb, line_list)
       return False
     else:
       temp_difference_val = var2_number - var1_number
 
-  # rounding depending on a floats decimal place length
+  # rounding depending on a floats decimal place length if either variable passed in is a float
   var1_decimals = var1_name[::-1].find('.')
   var2_decimals = var2_name[::-1].find('.')
   if(var1_decimals >= var2_decimals and var1_decimals >= 0):
@@ -155,8 +163,7 @@ def subtract(line_numb, line_list, py_lines, all_variables, indent, py_file):
   
   # update or create new entry in dictionary. {"x":{"data_type":"number", "value":#}}
   all_variables[var3_name] = {"data_type": "number", "value": temp_difference_val}
-  py_equivalent = indent*" " + var3_name + \
-      " = " + var2_name + " - " + var1_name + "\n"
+  py_equivalent = indent*" " + var3_name + " = " + var2_name + " - " + var1_name + "\n"
       
   py_lines.append(py_equivalent)
 
