@@ -77,6 +77,14 @@ class Application(tk.Frame):
       pass
    def save_load_func(self):
       pass
+   
+   # Reads the output.txt file and puts it into the console of the GUI
+   def read_to_console(self):
+      console_output = open("output.txt", "r")
+      self.console.config(state = "normal")
+      self.console.delete("1.0", tk.END)
+      self.console.insert(tk.INSERT, console_output.read())
+      self.console.config(state = "disable")
 
 
 if __name__ == "__main__":
