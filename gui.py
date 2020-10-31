@@ -65,7 +65,7 @@ class Application(tk.Frame):
 
    # Creates button widget which runs save_func
    def create_save(self):
-      self.save = tk.Button(self.topframe, command = lambda:self.save_file()) 
+      self.save = tk.Button(self.topframe) 
       self.save["text"] = "Save"
       self.save["fg"] = "white"
       self.save["bg"] = "#89CFF0"
@@ -77,19 +77,19 @@ class Application(tk.Frame):
       self.save.pack(padx = 5, pady = 2, side = "left")
 
    def create_saveAs(self):
-      self.saveAs = tk.Button(self.topframe, command = lambda:self.saveAs_file()) 
+      self.saveAs = tk.Button(self.topframe) 
       self.saveAs["text"] = "SaveAs"
       self.saveAs["fg"] = "white"
       self.saveAs["bg"] = "#89CFF0"
       self.saveAs["activeforeground"] = "blue"
       self.saveAs["relief"] = "groove"
       self.saveAs["height"] = 1
-      self.saveAs["width"] = 4
+      self.saveAs["width"] = 6
       self.saveAs["command"] = lambda :self.saveAs_file()
       self.saveAs.pack(padx = 5, pady = 2, side = "left")
     
    def create_open(self):
-      self.open = tk.Button(self.topframe, command = lambda:self.take_input_file()) 
+      self.open = tk.Button(self.topframe) 
       self.open["text"] = "Open"
       self.open["fg"] = "white"
       self.open["bg"] = "#89CFF0"
@@ -101,7 +101,7 @@ class Application(tk.Frame):
       self.open.pack(padx = 5, pady = 2, side = "left")
 
    def create_new(self):
-      self.new = tk.Button(self.topframe, command = lambda:self.new_file()) 
+      self.new = tk.Button(self.topframe) 
       self.new["text"] = "New"
       self.new["fg"] = "white"
       self.new["bg"] = "#89CFF0"
