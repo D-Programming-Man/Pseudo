@@ -2,6 +2,9 @@ import tkinter as tk
 from tkinter import scrolledtext
 from tkinter import ttk
 from interpreter import interpret
+import os
+from datetime import datetime
+from tkinter import filedialog as fd
 
 #hardcode file_names
 INPUT = "test.pseudo"
@@ -26,8 +29,15 @@ class Application(tk.Frame):
       self.create_input_window()
       self.create_output_window()
       self.create_console_window()
-      self.create_execute()
+      
+      self.create_new()
+      self.create_open()
       self.create_save()
+      self.create_saveAs()
+      self.create_execute()
+
+      self.filePointer = False
+      self.filePointerName = ""
 
    # Creates frames: top, left, right, bottom. Each holds widgets
    def create_frames(self):
@@ -55,7 +65,7 @@ class Application(tk.Frame):
 
    # Creates button widget which runs save_func
    def create_save(self):
-      self.save = tk.Button(self.topframe) 
+      self.save = tk.Button(self.topframe, command = lambda:self.save_file()) 
       self.save["text"] = "Save"
       self.save["fg"] = "white"
       self.save["bg"] = "#89CFF0"
@@ -63,8 +73,46 @@ class Application(tk.Frame):
       self.save["relief"] = "groove"
       self.save["height"] = 1
       self.save["width"] = 4
-      self.save["command"] = lambda :self.test_print()
-      self.save.pack(pady = 2, side = "left")
+      self.save["command"] = lambda :self.save_file()
+      self.save.pack(padx = 5, pady = 2, side = "left")
+
+   def create_saveAs(self):
+      self.saveAs = tk.Button(self.topframe, command = lambda:self.saveAs_file()) 
+      self.saveAs["text"] = "SaveAs"
+      self.saveAs["fg"] = "white"
+      self.saveAs["bg"] = "#89CFF0"
+      self.saveAs["activeforeground"] = "blue"
+      self.saveAs["relief"] = "groove"
+      self.saveAs["height"] = 1
+      self.saveAs["width"] = 4
+      self.saveAs["command"] = lambda :self.saveAs_file()
+      self.saveAs.pack(padx = 5, pady = 2, side = "left")
+    
+   def create_open(self):
+      self.open = tk.Button(self.topframe, command = lambda:self.take_input_file()) 
+      self.open["text"] = "Open"
+      self.open["fg"] = "white"
+      self.open["bg"] = "#89CFF0"
+      self.open["activeforeground"] = "blue"
+      self.open["relief"] = "groove"
+      self.open["height"] = 1
+      self.open["width"] = 4
+      self.open["command"] = lambda :self.take_input_file()
+      self.open.pack(padx = 5, pady = 2, side = "left")
+
+   def create_new(self):
+      self.new = tk.Button(self.topframe, command = lambda:self.new_file()) 
+      self.new["text"] = "New"
+      self.new["fg"] = "white"
+      self.new["bg"] = "#89CFF0"
+      self.new["activeforeground"] = "blue"
+      self.new["relief"] = "groove"
+      self.new["height"] = 1
+      self.new["width"] = 4
+      self.new["command"] = lambda :self.new_file()
+      self.new.pack(padx = 5, pady = 2, side = "left")
+
+
 
    # Creates textbox to receive user input
    def create_input_window(self):
@@ -103,7 +151,76 @@ class Application(tk.Frame):
       self.output.insert(tk.INSERT, output.read())
       self.output.config(state = "disable")
 
-   #
+   
+   def take_input_file(self):
+      file = fd.askopenfile(mode ='r', filetypes =[('Pseudo Files', '*.pseudo')])
+      time = datetime.now()
+      time = time.strftime('%H:%M %m/%d/%Y')
+
+      if file is not None:
+        content = file.read()
+        self.input.delete('1.0', fd.END)
+        self.input.insert(tk.INSERT, content)
+        self.master.title("Pseudo " + file.name)
+        self.filePointer = True
+        self.filePointerName = file.name
+
+        self.console.config(state = "normal")
+        self.console.insert(tk.INSERT, "Opened " + os.path.basename(file.name) + " " + time + "\n")
+        self.console.config(state = "disabled")
+        file.close()
+
+   #Saves file that is open
+   #if no file is open then it will prompt for a save location and name for new file
+   def save_file(self):
+      file = None
+      time = datetime.now()
+      time = time.strftime('%H:%M %m/%d/%Y')
+
+      if self.filePointer == True:
+        file = open(self.filePointerName, "w")
+        file.write(self.input.get("1.0","end-1c"))
+
+      else:
+        file = fd.asksaveasfile(filetypes = [('Pseudo Files', '*.pseudo')],
+                                defaultextension = [('Pseudo Files', '*.pseudo')])
+        if file is not None:
+          file.write(self.input.get("1.0","end-1c"))
+          self.master.title("Pseudo " + file.name)
+          self.filePointer = True
+          self.filePointerName = file.name
+
+      if file is not None:
+        self.console.config(state = "normal")
+        self.console.insert(tk.INSERT, "Saved " + os.path.basename(file.name) + " " + time + "\n")
+        self.console.config(state = "disabled")
+        file.close()
+
+   def saveAs_file(self):
+    file = fd.asksaveasfile(filetypes = [('Pseudo Files', '*.pseudo')],
+                            defaultextension = [('Pseudo Files', '*.pseudo')])
+    time = datetime.now()
+    time = time.strftime('%H:%M %m/%d/%Y')
+
+    if file is not None:
+      file.write(self.input.get("1.0","end-1c"))
+      self.master.title("Pseudo " + file.name)
+      self.filePointer = True
+      self.filePointerName = file.name
+
+      self.console.config(state = "normal")
+      self.console.insert(tk.INSERT, "Saved " + os.path.basename(file.name) + "  " + time + "\n")
+      self.console.config(state = "disabled")
+      file.close()
+
+   
+   def new_file(self):
+      self.master.title("Pseudo")
+      self.filePointer = False
+      self.filePointerName = ""
+      self.input.delete('1.0', fd.END)
+      self.output.delete('1.0', fd.END)
+
    def save_load_func(self):
       pass
    
