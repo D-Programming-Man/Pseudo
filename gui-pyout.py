@@ -119,8 +119,6 @@ class Application(tk.Frame):
       self.console.delete("1.0", tk.END)
       self.console.insert(tk.INSERT, console_output.read())
       self.console.config(state = "disable")
-      self.create_python_output()
-      self.pyCreated = 0
 
    def read_to_py_window(self):
       console_output = open("outfile.py", "r")
