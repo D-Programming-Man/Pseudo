@@ -34,10 +34,12 @@ class Application(tk.Frame):
       self.create_open()
       self.create_save()
       self.create_saveAs()
+      self.create_settings()
       self.create_execute()
 
       self.filePointer = False
       self.filePointerName = ""
+      self.settingsOpen = False
 
    # Creates frames: top, left, right, bottom. Each holds widgets
    def create_frames(self):
@@ -78,7 +80,7 @@ class Application(tk.Frame):
 
    def create_saveAs(self):
       self.saveAs = tk.Button(self.topframe) 
-      self.saveAs["text"] = "SaveAs"
+      self.saveAs["text"] = "Save As"
       self.saveAs["fg"] = "white"
       self.saveAs["bg"] = "#89CFF0"
       self.saveAs["activeforeground"] = "blue"
@@ -112,6 +114,45 @@ class Application(tk.Frame):
       self.new["command"] = lambda :self.new_file()
       self.new.pack(padx = 5, pady = 2, side = "left")
 
+   def create_settings(self):
+      self.settings = tk.Button(self.topframe) 
+      self.settings["text"] = "Settings"
+      self.settings["fg"] = "white"
+      self.settings["bg"] = "#89CFF0"
+      self.settings["activeforeground"] = "blue"
+      self.settings["relief"] = "groove"
+      self.settings["height"] = 1
+      self.settings["width"] = 6
+      self.settings["command"] = lambda :self.show_settings()
+      self.settings.pack(padx = 5, pady = 2, side = "left")
+
+   def show_settings(self):
+      if not self.settingsOpen:
+        self.settingsOpen = True
+        tabWidth = 400
+        tabHeight = 300
+
+        parentStats = self.master.geometry().split('+')
+        parentWidth = int(parentStats[0].split('x')[0])
+        parentHeight = int(parentStats[0].split('x')[1])
+
+        if root.state() == "zoomed":
+          parentStats[1] = "0"
+          parentStats[2] = "0"
+
+        propperX = int(parentStats[1]) + int(parentWidth/2) - int(tabWidth/2);
+        propperY = int(parentStats[2]) + int(parentHeight/2) - int(tabHeight/2);
+
+        settingsTab = tk.Tk()
+        settingsTab.geometry(str(tabWidth) + "x" + str(tabHeight)  + "+" + str(propperX) + "+" + str(propperY))
+        settingsTab.title("Settings")
+        settingsTab.wm_attributes("-topmost", 1)
+        settingsTab.focus_force()
+
+        def closeWindow():
+          self.settingsOpen = False
+          settingsTab.destroy()
+        settingsTab.protocol("WM_DELETE_WINDOW", closeWindow)
 
 
    # Creates textbox to receive user input
