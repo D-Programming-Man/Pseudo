@@ -4,11 +4,8 @@ from interlib import create
 from interlib import display
 from interlib import arithmetic
 
-if __name__ == "__main__":
-#def interpret(pseudo_file, python_file):
+def interpret(pseudo_file, python_file):
   # This file will later become a function to call, but for now let's just assume that this is the main function that takes in these files in the same directory
-  pseudo_file = "test.pseudo"
-  python_file = "outfile.py"
   in_file = open(pseudo_file, "r")
   py_file = open(python_file, "w")
   default_stdout = sys.stdout

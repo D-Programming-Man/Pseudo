@@ -6,10 +6,6 @@ import os
 from datetime import datetime
 from tkinter import filedialog as fd
 
-#hardcode file_names
-INPUT = "test.pseudo"
-PY_FILE = "outfile.py"
-OUTPUT = "output.txt"
 
 class Application(tk.Frame):
    def __init__(self, master=None):
@@ -19,11 +15,6 @@ class Application(tk.Frame):
       master.geometry("720x480")
       self.pack()
       
-      # Save file names into object 
-      self.input_file = INPUT
-      self.py_file = PY_FILE
-      self.output_file = OUTPUT
-
       # Create all aspects of the window
       self.create_frames()
       self.create_input_window()
@@ -39,6 +30,7 @@ class Application(tk.Frame):
 
       self.filePointer = False
       self.filePointerName = ""
+      self.python_file_name = ""
       self.settingsOpen = False
 
    # Creates frames: top, left, right, bottom. Each holds widgets
@@ -170,23 +162,16 @@ class Application(tk.Frame):
       self.console = tk.scrolledtext.ScrolledText(self.bottomframe, state = "disabled", cursor = "arrow", height = 6)
       self.console.pack(padx = 5, pady = 10, expand = True, fill = "x")
 
-   #test to demonstrate how to print(can be deleted)
-   def test_print(self):
-      if(self.input.get("1.0","end-1c" ) == "hi"):
-         self.output.config(state = "normal")
-         self.output.insert(tk.INSERT, "hello ")
-         self.output.config(state = "disabled")
-
    # saves into pseudo file. Calls a print to console and python output
    def interpreter_func(self):
-      self.save_load_func();
-      interpret(self.input_file, self.py_file)
+      self.save_file();
+      interpret(self.filePointerName, self.python_file_name)
       self.print_to_output()
       self.read_to_console();
 
    # prints py file to right window
    def print_to_output(self):
-      output = open(self.py_file, "r")
+      output = open(self.python_file_name, "r")
       self.output.config(state = "normal")
       self.output.delete("1.0", tk.END)
       self.output.insert(tk.INSERT, output.read())
@@ -205,6 +190,7 @@ class Application(tk.Frame):
         self.master.title("Pseudo " + file.name)
         self.filePointer = True
         self.filePointerName = file.name
+        self.python_file_name = file.name[0:-6]+"py"
 
         self.console.config(state = "normal")
         self.console.insert(tk.INSERT, "Opened " + os.path.basename(file.name) + " " + time + "\n")
@@ -230,6 +216,7 @@ class Application(tk.Frame):
           self.master.title("Pseudo " + file.name)
           self.filePointer = True
           self.filePointerName = file.name
+          self.python_file_name = file.name[0:-6]+"py"
 
       if file is not None:
         self.console.config(state = "normal")
@@ -248,6 +235,7 @@ class Application(tk.Frame):
       self.master.title("Pseudo " + file.name)
       self.filePointer = True
       self.filePointerName = file.name
+      self.python_file_name = file.name[0:-6]+"py"
 
       self.console.config(state = "normal")
       self.console.insert(tk.INSERT, "Saved " + os.path.basename(file.name) + "  " + time + "\n")
@@ -259,17 +247,15 @@ class Application(tk.Frame):
       self.master.title("Pseudo")
       self.filePointer = False
       self.filePointerName = ""
+      self.python_file_name = ""
       self.input.delete('1.0', fd.END)
       self.output.delete('1.0', fd.END)
 
-   def save_load_func(self):
-      pass
    
    # Reads the output.txt file and puts it into the console of the GUI
    def read_to_console(self):
-      console_output = open( self.output_file , "r")
+      console_output = open( "output.txt" , "r")
       self.console.config(state = "normal")
-      self.console.delete("1.0", tk.END)
       self.console.insert(tk.INSERT, console_output.read())
       self.console.config(state = "disable")
 
