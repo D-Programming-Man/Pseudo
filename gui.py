@@ -6,6 +6,72 @@ import os
 from datetime import datetime
 from tkinter import filedialog as fd
 
+class TextLineNumbers(tk.Canvas):
+    def __init__(self, *args, **kwargs):
+        tk.Canvas.__init__(self, *args, **kwargs)
+        self.textwidget = None
+
+    def attach(self, text_widget):
+        self.textwidget = text_widget
+
+    def redraw(self, *args):
+        '''redraw line numbers'''
+        self.delete("all")
+
+        i = self.textwidget.index("@0,0")
+        while True :
+            dline= self.textwidget.dlineinfo(i)
+            if dline is None: break
+            y = dline[1]
+            linenum = str(i).split(".")[0]
+            self.create_text(2,y,anchor="nw", text=linenum)
+            i = self.textwidget.index("%s+1line" % i)
+
+class CustomText(tk.Text):
+    def __init__(self, *args, **kwargs):
+        tk.Text.__init__(self, *args, **kwargs)
+
+        # create a proxy for the underlying widget
+        self._orig = self._w + "_orig"
+        self.tk.call("rename", self._w, self._orig)
+        self.tk.createcommand(self._w, self._proxy)
+
+    def _proxy(self, *args):
+        # let the actual widget perform the requested action
+        cmd = (self._orig,) + args
+        result = self.tk.call(cmd)
+
+        # generate an event if something was added or deleted,
+        # or the cursor position changed
+        if (args[0] in ("insert", "replace", "delete") or 
+            args[0:3] == ("mark", "set", "insert") or
+            args[0:2] == ("xview", "moveto") or
+            args[0:2] == ("xview", "scroll") or
+            args[0:2] == ("yview", "moveto") or
+            args[0:2] == ("yview", "scroll")
+        ):
+            self.event_generate("<<Change>>", when="tail")
+
+        # return what the actual widget returned
+        return result       
+class NumberedText(tk.Frame):
+    def __init__(self, *args, **kwargs):
+        tk.Frame.__init__(self, *args, **kwargs)
+        self.text = CustomText(self)
+        self.vsb = tk.Scrollbar(orient="vertical", command=self.text.yview)
+        self.text.configure(yscrollcommand=self.vsb.set)
+        self.linenumbers = TextLineNumbers(self, width=30)
+        self.linenumbers.attach(self.text)
+
+        self.vsb.pack(side="right", fill="y")
+        self.linenumbers.pack(side="left", fill="y")
+        self.text.pack(side="right", fill="both", expand=True)
+
+        self.text.bind("<<Change>>", self._on_change)
+        self.text.bind("<Configure>", self._on_change)
+
+    def _on_change(self, event):
+        self.linenumbers.redraw()
 
 class Application(tk.Frame):
    def __init__(self, master=None):
@@ -149,12 +215,14 @@ class Application(tk.Frame):
 
    # Creates textbox to receive user input
    def create_input_window(self):
-      self.input = tk.scrolledtext.ScrolledText(self.leftframe)
+      self.input = NumberedText(self.leftframe)
       self.input.pack(padx = 5, pady=2, fill = "both", expand = True)
 
    # Creates textbox for the python file
    def create_output_window(self):
-      self.output = tk.scrolledtext.ScrolledText(self.rightframe, state = "disabled", cursor = "arrow")
+      self.output = NumberedText(self.rightframe)
+      self.output.text.config(state = "disabled")
+      self.output.text.config(cursor = "arrow")
       self.output.pack(padx = 5, pady = 2, fill = "both", expand = True)
 
    # Create textbox for the console
@@ -172,10 +240,10 @@ class Application(tk.Frame):
    # prints py file to right window
    def print_to_output(self):
       output = open(self.python_file_name, "r")
-      self.output.config(state = "normal")
-      self.output.delete("1.0", tk.END)
-      self.output.insert(tk.INSERT, output.read())
-      self.output.config(state = "disable")
+      self.output.text.config(state = "normal")
+      self.output.text.delete("1.0", tk.END)
+      self.output.text.insert(tk.INSERT, output.read())
+      self.output.text.config(state = "disable")
 
    
    def take_input_file(self):
@@ -185,8 +253,8 @@ class Application(tk.Frame):
 
       if file is not None:
         content = file.read()
-        self.input.delete('1.0', fd.END)
-        self.input.insert(tk.INSERT, content)
+        self.input.text.delete('1.0', fd.END)
+        self.input.text.insert(tk.INSERT, content)
         self.master.title("Pseudo " + file.name)
         self.filePointer = True
         self.filePointerName = file.name
@@ -206,13 +274,13 @@ class Application(tk.Frame):
 
       if self.filePointer == True:
         file = open(self.filePointerName, "w")
-        file.write(self.input.get("1.0","end-1c"))
+        file.write(self.input.text.get("1.0","end-1c"))
 
       else:
         file = fd.asksaveasfile(filetypes = [('Pseudo Files', '*.pseudo')],
                                 defaultextension = [('Pseudo Files', '*.pseudo')])
         if file is not None:
-          file.write(self.input.get("1.0","end-1c"))
+          file.write(self.input.text.get("1.0","end-1c"))
           self.master.title("Pseudo " + file.name)
           self.filePointer = True
           self.filePointerName = file.name
@@ -231,7 +299,7 @@ class Application(tk.Frame):
     time = time.strftime('%H:%M %m/%d/%Y')
 
     if file is not None:
-      file.write(self.input.get("1.0","end-1c"))
+      file.write(self.input.text.get("1.0","end-1c"))
       self.master.title("Pseudo " + file.name)
       self.filePointer = True
       self.filePointerName = file.name
@@ -248,8 +316,8 @@ class Application(tk.Frame):
       self.filePointer = False
       self.filePointerName = ""
       self.python_file_name = ""
-      self.input.delete('1.0', fd.END)
-      self.output.delete('1.0', fd.END)
+      self.input.text.delete('1.0', fd.END)
+      self.output.text.delete('1.0', fd.END)
 
    
    # Reads the output.txt file and puts it into the console of the GUI
