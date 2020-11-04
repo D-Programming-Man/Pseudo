@@ -5,6 +5,7 @@ from interpreter import interpret
 import os
 from datetime import datetime
 from tkinter import filedialog as fd
+import sys
 
 class TextLineNumbers(tk.Canvas):
     def __init__(self, *args, **kwargs):
@@ -87,13 +88,30 @@ class Application(tk.Frame):
       self.create_input_window()
       self.create_output_window()
       self.create_console_window()
+
+      # Buttons
+      #self.create_new()
+      #self.create_open()
+      #self.create_save()
+      #self.create_saveAs()
+      #self.create_settings()
+      #self.create_execute()
       
-      self.create_new()
-      self.create_open()
-      self.create_save()
-      self.create_saveAs()
-      self.create_settings()
-      self.create_execute()
+      # Setting values needed for the menu
+      self.show_python = tk.BooleanVar()
+      self.show_python.set(True)
+      self.gui_theme = tk.StringVar()
+      self.gui_theme.set("normal")
+      self.prev_theme = tk.StringVar()
+      self.prev_theme.set("")
+      self.normal_theme = tk.BooleanVar()
+      self.dark_theme = tk.BooleanVar()
+      self.normal_theme.set(True)
+      self.dark_theme.set(False)
+      
+      # Menu that contains all of the functions of the buttons and more
+      self.create_menu()
+      
 
       self.filePointer = False
       self.filePointerName = ""
@@ -319,7 +337,6 @@ class Application(tk.Frame):
       self.python_file_name = ""
       self.input.text.delete('1.0', fd.END)
       self.output.text.delete('1.0', fd.END)
-
    
    # Reads the output.txt file and puts it into the console of the GUI
    def read_to_console(self):
@@ -327,8 +344,121 @@ class Application(tk.Frame):
       self.console.config(state = "normal")
       self.console.insert(tk.INSERT, console_output.read())
       self.console.config(state = "disable")
+      
+   # Creating a menu bar
+   def create_menu(self):
+      menubar = tk.Menu(self.master)
+      
+      # File menu
+      filemenu = tk.Menu(menubar, tearoff=0)
+      filemenu.add_command(label="New", command=lambda :self.new_file())
+      filemenu.add_command(label="Open...", command=lambda :self.take_input_file(), accelerator="Ctrl+O")
+      filemenu.add_command(label="Save", command=lambda :self.save_file(), accelerator="Ctrl+S")
+      filemenu.add_command(label="Save As...", command=lambda :self.saveAs_file())
+      filemenu.add_separator()
+      filemenu.add_command(label="Exit", command=lambda :self.exit_pseudo(), accelerator="Esc")
+      menubar.add_cascade(label="File", menu=filemenu)
+      
+      # Edit menu
+      editmenu = tk.Menu(menubar, tearoff=0)
+      editmenu.add_command(label="Settings", command=lambda :self.show_settings())
+      filemenu.add_separator()
+      menubar.add_cascade(label="Edit", menu=editmenu)
 
+      # Run menu
+      runmenu = tk.Menu(menubar, tearoff=0)
+      runmenu.add_command(label="Execute", command=lambda :self.interpreter_func(), accelerator="F5")
+      menubar.add_cascade(label="Run", menu=runmenu)
+      
+      # window menu
+      windowmenu = tk.Menu(menubar, tearoff=0)
+      windowmenu.add_checkbutton(label="Python Window", onvalue=1, offvalue=0, variable=self.show_python, command=self.toggle_python_window)
+      menubar.add_cascade(label="Window", menu=windowmenu)
+      
+      # theme menu
+      thememenu = tk.Menu(menubar, tearoff=0)
+      thememenu.add_checkbutton(label="Normal", onvalue=1, offvalue=0, variable=self.normal_theme, command=lambda: self.set_theme("normal"))
+      thememenu.add_checkbutton(label="Dark", onvalue=1, offvalue=0, variable=self.dark_theme, command=lambda: self.set_theme("dark"))
+      menubar.add_cascade(label="Theme", menu=thememenu)
+      
+      # Create sortcuts for some options
+      self.bind_all("<F5>", self.run_key)
+      self.bind_all("<Control-o>", self.open_key)
+      self.bind_all("<Control-s>", self.save_key)
+      self.bind_all("<Escape>", self.exit_key)
+      
+      # Pack all menu options and display it
+      self.master.config(menu=menubar)
+   
+   # New small functions for the menu options
+   def newfile_key(self, event):
+       self.new_file()
+      
+   def run_key(self, event):
+      self.interpreter_func()
 
+   def open_key(self, event):
+      self.take_input_file()
+      
+   def save_key(self, event):
+      self.save_file()
+      
+   def exit_pseudo(self):
+       self.exit_key("Escape")
+      
+   def exit_key(self, event):
+       sys.exit(0)
+       
+   def toggle_python_window(self):
+       if (self.show_python.get() == False):
+           self.output.pack_forget()
+       else:
+           self.output.pack(padx = 5, pady = 2, fill = "both", expand = False)
+           
+   def set_theme(self, theme):
+      # 6E7074 = Dark Background
+      # 45474B = Dark Text Background
+      # NOTE: insertbackground is the text cursor color, NOT mouse cursor color
+      #       background is the background color for the text wigit
+      #       foreground is the text's color of that wigit
+      if (self.normal_theme.get() == False and
+          self.dark_theme.get() == False):
+         self.normal_theme.set(True)
+         self.dark_theme.set(False)
+         self.gui_theme.set("normal")
+         self.topframe["bg"] = "#FEF9DA"
+         self.bottomframe["bg"] = "#FEF9DA"
+         self.leftframe["bg"] = "#FEF9DA"
+         self.rightframe["bg"] = "#FEF9DA"
+         self.input.text.configure(background="white", foreground="black", insertbackground="black")
+         self.output.text.configure(background="white", foreground="black", insertbackground="black")
+         self.console.configure(background="white", foreground="black")
+         return
+      
+      if (theme == "normal"):
+         self.gui_theme.set("normal")
+         self.normal_theme.set(True)
+         self.dark_theme.set(False)
+         self.topframe["bg"] = "#FEF9DA"
+         self.bottomframe["bg"] = "#FEF9DA"
+         self.leftframe["bg"] = "#FEF9DA"
+         self.rightframe["bg"] = "#FEF9DA"
+         self.input.text.configure(background="white", foreground="black", insertbackground="black")
+         self.output.text.configure(background="white", foreground="black", insertbackground="black")
+         self.console.configure(background="white", foreground="black")
+      
+      if (theme == "dark"):
+         self.gui_theme.set("dark")
+         self.normal_theme.set(False)
+         self.dark_theme.set(True)
+         self.topframe["bg"] = "#6E7074"
+         self.bottomframe["bg"] = "#6E7074"
+         self.leftframe["bg"] = "#6E7074"
+         self.rightframe["bg"] = "#6E7074"
+         self.input.text.configure(background="#45474B", foreground="white", insertbackground="white")
+         self.output.text.configure(background="#45474B", foreground="white", insertbackground="white")
+         self.console.configure(background="#45474B", foreground="white")
+         
 if __name__ == "__main__":
    root = tk.Tk()
    app = Application(master=root)
