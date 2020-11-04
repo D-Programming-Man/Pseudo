@@ -54,7 +54,33 @@ class CustomText(tk.Text):
             self.event_generate("<<Change>>", when="tail")
 
         # return what the actual widget returned
-        return result       
+        return result
+
+    '''
+    highlighter
+    Takes in a keyword as a string and adds the given tag to all instances of that keyword
+    Currently will tag the keyword inside of strings but this might get solved by overwriting the string with another tag
+    Custom search length is possible but defaults are preferred
+    '''
+
+    def highlighter(self, keyword, tag, start="1.0", finish="end"):
+
+        start = self.index(start)
+        end = self.index(finish)
+        self.mark_set("kw_start", start)
+        self.mark_set("kw_finish", start)
+        self.mark_set("limit", end)
+
+        count = tk.IntVar()
+        while True:
+            index = self.search(keyword, "kw_finish", "limit", count=count, regexp=True, nocase=True)
+            if index == "": break
+            if count.get() == 0: break
+            self.mark_set("kw_start", index)
+            self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
+            self.tag_add(tag, "kw_start", "kw_finish")
+
+
 class NumberedText(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
@@ -69,11 +95,17 @@ class NumberedText(tk.Frame):
         self.linenumbers.pack(side="left", fill="y")
 
 
+        # Current tags for all NumberedText objs
+        self.text.tag_configure("keyword", foreground="red")
+        self.text.tag_configure("datatype", foreground="blue")
+
         self.text.bind("<<Change>>", self._on_change)
         self.text.bind("<Configure>", self._on_change)
 
     def _on_change(self, event):
         self.linenumbers.redraw()
+
+
 
 class Application(tk.Frame):
    def __init__(self, master=None):
@@ -251,10 +283,10 @@ class Application(tk.Frame):
 
    # saves into pseudo file. Calls a print to console and python output
    def interpreter_func(self):
-      self.save_file();
+      self.save_file()
       interpret(self.filePointerName, self.python_file_name)
       self.print_to_output()
-      self.read_to_console();
+      self.read_to_console()
 
    # prints py file to right window
    def print_to_output(self):
@@ -262,6 +294,7 @@ class Application(tk.Frame):
       self.output.text.config(state = "normal")
       self.output.text.delete("1.0", tk.END)
       self.output.text.insert(tk.INSERT, output.read())
+      self.output.text.highlighter("print", "keyword")
       self.output.text.config(state = "disable")
 
    
@@ -274,6 +307,16 @@ class Application(tk.Frame):
         content = file.read()
         self.input.text.delete('1.0', fd.END)
         self.input.text.insert(tk.INSERT, content)
+
+        # this is a really hacky way to do this, need better kw identification
+        # might want to make the kw loop inside the highlighter method but for now it's here
+        keywords = ["Create ", "Display ", "Add ", "Subtract ", "Multiply ", "Divide "]
+        datatype = ["Variable ", "List ", "Table "]
+        for kw in keywords:
+            self.input.text.highlighter(kw, "keyword")
+        for dt in datatype:
+            self.input.text.highlighter(dt, "datatype")
+
         self.master.title("Pseudo " + file.name)
         self.filePointer = True
         self.filePointerName = file.name
