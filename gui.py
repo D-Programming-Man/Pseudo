@@ -423,7 +423,17 @@ class Application(tk.Frame):
       thememenu.add_checkbutton(label="Normal", onvalue=1, offvalue=0, variable=self.normal_theme, command=lambda: self.set_theme("normal"))
       thememenu.add_checkbutton(label="Dark", onvalue=1, offvalue=0, variable=self.dark_theme, command=lambda: self.set_theme("dark"))
       menubar.add_cascade(label="Theme", menu=thememenu)
-      
+        
+      # Specific style configurations, currently a child of the theme menu.
+      configMenu = tk.Menu(thememenu, tearoff=0)
+      thememenu.add_cascade(label="Config", menu=configMenu)
+      backgroundOption = tk.Menu(configMenu, tearoff=0)
+      configMenu.add_cascade(label="Background", menu=backgroundOption)
+      backgroundOption.add_command(label="Red", command=lambda: self.set_background("red"))
+      backgroundOption.add_command(label="Blue", command=lambda: self.set_background("blue"))
+      backgroundOption.add_command(label="Green", command=lambda: self.set_background("green"))
+      backgroundOption.add_command(label="Yellow", command=lambda: self.set_background("yellow"))
+    
       # Create sortcuts for some options
       self.bind_all("<F5>", self.run_key)
       self.bind_all("<Control-o>", self.open_key)
@@ -457,7 +467,13 @@ class Application(tk.Frame):
            self.output.pack_forget()
        else:
            self.output.pack(padx = 5, pady = 2, fill = "both", expand = False)
-           
+            
+   def set_background(self, color):
+      self.topframe["bg"] = color
+      self.bottomframe["bg"] = color
+      self.leftframe["bg"] = color
+      self.rightframe["bg"] = color
+    
    def set_theme(self, theme):
       # 6E7074 = Dark Background
       # 45474B = Dark Text Background
