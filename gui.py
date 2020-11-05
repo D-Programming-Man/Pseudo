@@ -122,11 +122,6 @@ class Application(tk.Frame):
       self.create_console_window()
 
       # Buttons
-      #self.create_new()
-      #self.create_open()
-      #self.create_save()
-      #self.create_saveAs()
-      #self.create_settings()
       #self.create_execute()
       
       # Setting values needed for the menu
@@ -149,6 +144,10 @@ class Application(tk.Frame):
       self.filePointerName = ""
       self.python_file_name = ""
       self.settingsOpen = False
+      self.fontList = ("Courier", "Times", "Helvetica", "Comic Sans MS")
+      self.font = "Helvetica"
+      self.fontValue = 0
+      self.fontSize = 10
       
       self.rgb_value = [0,0,0]
 
@@ -176,95 +175,96 @@ class Application(tk.Frame):
       self.execute["command"] = lambda :self.interpreter_func()
       self.execute.pack(padx = 5, pady = 2, side = "left")
 
-   # Creates button widget which runs save_func
-   def create_save(self):
-      self.save = tk.Button(self.topframe) 
-      self.save["text"] = "Save"
-      self.save["fg"] = "white"
-      self.save["bg"] = "#89CFF0"
-      self.save["activeforeground"] = "blue"
-      self.save["relief"] = "groove"
-      self.save["height"] = 1
-      self.save["width"] = 4
-      self.save["command"] = lambda :self.save_file()
-      self.save.pack(padx = 5, pady = 2, side = "left")
+   def close_settings(self):
+    self.settingsOpen = False
+    self.settingsTab.destroy()
 
-   def create_saveAs(self):
-      self.saveAs = tk.Button(self.topframe) 
-      self.saveAs["text"] = "Save As"
-      self.saveAs["fg"] = "white"
-      self.saveAs["bg"] = "#89CFF0"
-      self.saveAs["activeforeground"] = "blue"
-      self.saveAs["relief"] = "groove"
-      self.saveAs["height"] = 1
-      self.saveAs["width"] = 6
-      self.saveAs["command"] = lambda :self.saveAs_file()
-      self.saveAs.pack(padx = 5, pady = 2, side = "left")
-    
-   def create_open(self):
-      self.open = tk.Button(self.topframe) 
-      self.open["text"] = "Open"
-      self.open["fg"] = "white"
-      self.open["bg"] = "#89CFF0"
-      self.open["activeforeground"] = "blue"
-      self.open["relief"] = "groove"
-      self.open["height"] = 1
-      self.open["width"] = 4
-      self.open["command"] = lambda :self.take_input_file()
-      self.open.pack(padx = 5, pady = 2, side = "left")
+   def update_settings(self):
+    if self.settingsTab.fontValue != None:
+      self.font = self.fontList[self.settingsTab.fontValue]
+      self.fontValue = self.settingsTab.fontValue
 
-   def create_new(self):
-      self.new = tk.Button(self.topframe) 
-      self.new["text"] = "New"
-      self.new["fg"] = "white"
-      self.new["bg"] = "#89CFF0"
-      self.new["activeforeground"] = "blue"
-      self.new["relief"] = "groove"
-      self.new["height"] = 1
-      self.new["width"] = 4
-      self.new["command"] = lambda :self.new_file()
-      self.new.pack(padx = 5, pady = 2, side = "left")
+    if self.settingsTab.fontSize != None:
+      self.fontSize = self.settingsTab.fontSize
 
-   def create_settings(self):
-      self.settings = tk.Button(self.topframe) 
-      self.settings["text"] = "Settings"
-      self.settings["fg"] = "white"
-      self.settings["bg"] = "#89CFF0"
-      self.settings["activeforeground"] = "blue"
-      self.settings["relief"] = "groove"
-      self.settings["height"] = 1
-      self.settings["width"] = 6
-      self.settings["command"] = lambda :self.show_settings()
-      self.settings.pack(padx = 5, pady = 2, side = "left")
+    #Just updates input and output fonts at the moment
+    self.input.text.config(font = (self.font, self.fontSize))
+    self.output.text.config(font = (self.font, self.fontSize))
+    self.close_settings()
 
    def show_settings(self):
       if not self.settingsOpen:
         self.settingsOpen = True
         tabWidth = 400
         tabHeight = 300
-
         parentStats = self.master.geometry().split('+')
         parentWidth = int(parentStats[0].split('x')[0])
         parentHeight = int(parentStats[0].split('x')[1])
 
+        #If maximized window, will assume parent is at x = 0, y = 0
         if root.state() == "zoomed":
           parentStats[1] = "0"
           parentStats[2] = "0"
 
+        #Calculates x and y values for settings window to be centered
         propperX = int(parentStats[1]) + int(parentWidth/2) - int(tabWidth/2);
         propperY = int(parentStats[2]) + int(parentHeight/2) - int(tabHeight/2);
 
-        settingsTab = tk.Tk()
-        settingsTab.geometry(str(tabWidth) + "x" + str(tabHeight)  + "+" + str(propperX) + "+" + str(propperY))
-        settingsTab.title("Settings")
-        settingsTab.wm_attributes("-topmost", 1)
-        settingsTab.focus_force()
+        #Basic setttings window structure
+        self.settingsTab = tk.Tk()
+        self.settingsTab.geometry(str(tabWidth) + "x" + str(tabHeight)  + "+" + str(propperX) + "+" + str(propperY))
+        self.settingsTab.title("Settings")
+        self.settingsTab.wm_attributes("-topmost", 1)
+        self.settingsTab.focus_force()
+        self.settingsTab.protocol("WM_DELETE_WINDOW", self.close_settings)
+        self.settingsTab["bg"] = "#FEF9DA"
+        self.settingsTab.fontValue = None
+        self.settingsTab.fontSize = None
 
-        def closeWindow():
-          self.settingsOpen = False
-          settingsTab.destroy()
-        settingsTab.protocol("WM_DELETE_WINDOW", closeWindow)
+        #Event handler for the font dropdown
+        def onFontSelect(event):
+          self.settingsTab.fontValue = fontDropdown.current()
+          self.settingsTab.focus()
 
+        #Event handler for the font size slider
+        def onFontSize(event):
+          self.settingsTab.fontSize = fontSlider.get()
+        
+        #Options to adjust settings in top frame
+        topFrame = tk.Frame(self.settingsTab)
+        topFrame.pack(pady = 20)
+        
+        fontLabel = tk.Label(topFrame, text = "Font")
+        fontDropdown = ttk.Combobox(topFrame, values = self.fontList, state = "readonly")
+        fontDropdown.current(self.fontValue)
+        fontDropdown.bind("<<ComboboxSelected>>", onFontSelect)
+        
+        fontSizeLabel = tk.Label(topFrame, text = "Font Size")
+        fontSlider = tk.Scale(topFrame, from_= 6, to = 30, orient = tk.HORIZONTAL)
+        fontSlider.set(self.fontSize)
+        fontSlider.bind("<ButtonRelease-1>", onFontSize)
+
+        #Backround colors of settings options
+        fontSlider.config(bg = "#FEF9DA")
+        fontSizeLabel.config(bg="#FEF9DA")
+        fontLabel.config(bg = "#FEF9DA")
+        topFrame.config(bg = "#FEF9DA")
+
+        #Locations where the settings objects are
+        fontLabel.grid(column = 0, row = 0, padx = 25, sticky = tk.W)
+        fontDropdown.grid(column = 2, row = 0, padx = 25)
+        fontSizeLabel.grid(column = 0, row = 1, padx = 25, sticky = tk.W)
+        fontSlider.grid(column = 2, row = 1, padx = 25, ipadx = 20)
+
+        #Save and cancel button in bottom frame
+        bottomFrame = tk.Frame(self.settingsTab)
+        bottomFrame.pack(side = tk.BOTTOM, pady = 20)
+        bottomFrame.config(bg = "#FEF9DA")
+        
+        savebutton = tk.Button(bottomFrame, text = "Save", fg = "black", command = self.update_settings)
+        savebutton.pack(side = tk.LEFT, padx = 10)
+        cancelbutton = tk.Button(bottomFrame, text = "Cancel", fg = "black", command = self.close_settings)
+        cancelbutton.pack(side = tk.LEFT, padx = 10)
 
    # Creates textbox to receive user input
    def create_input_window(self):
