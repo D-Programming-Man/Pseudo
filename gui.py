@@ -149,6 +149,8 @@ class Application(tk.Frame):
       self.filePointerName = ""
       self.python_file_name = ""
       self.settingsOpen = False
+      
+      self.rgb_value = [0,0,0]
 
    # Creates frames: top, left, right, bottom. Each holds widgets
    def create_frames(self):
@@ -387,8 +389,7 @@ class Application(tk.Frame):
       self.console.config(state = "normal")
       self.console.insert(tk.INSERT, console_output.read())
       self.console.config(state = "disable")
-      
-   # Creating a menu bar
+
    def create_menu(self):
       menubar = tk.Menu(self.master)
       
@@ -427,13 +428,105 @@ class Application(tk.Frame):
       # Specific style configurations, currently a child of the theme menu.
       configMenu = tk.Menu(thememenu, tearoff=0)
       thememenu.add_cascade(label="Config", menu=configMenu)
+      rgbMenu = tk.Menu(configMenu, tearoff=0)
+      configMenu.add_cascade(label="RGB menu", menu=rgbMenu)
+      rgbMenu.add_command(
+          label="RGB Scale", command=lambda: self.show_scale_window())
+
       backgroundOption = tk.Menu(configMenu, tearoff=0)
       configMenu.add_cascade(label="Background", menu=backgroundOption)
-      backgroundOption.add_command(label="Red", command=lambda: self.set_background("red"))
-      backgroundOption.add_command(label="Blue", command=lambda: self.set_background("blue"))
-      backgroundOption.add_command(label="Green", command=lambda: self.set_background("green"))
-      backgroundOption.add_command(label="Yellow", command=lambda: self.set_background("yellow"))
-    
+      backgroundOption.add_command(label="Red", command=lambda: self.set_background_color("red"))
+      backgroundOption.add_command(label="Blue", command=lambda: self.set_background_color("blue"))
+      backgroundOption.add_command(label="Green", command=lambda: self.set_background_color("green"))
+      backgroundOption.add_command(
+          label="Yellow", command=lambda: self.set_background_color("yellow"))
+
+      inputOption = tk.Menu(configMenu, tearoff=0)
+      configMenu.add_cascade(label="Input", menu=inputOption)
+      inputOption.add_command(
+          label="Background")
+      inputOption.add_command(
+          label="White", command=lambda: self.set_input_bg("white"))
+      inputOption.add_command(
+          label="Red", command=lambda: self.set_input_bg("red"))
+      inputOption.add_command(
+          label="Blue", command=lambda: self.set_input_bg("blue"))
+      inputOption.add_command(
+          label="Green", command=lambda: self.set_input_bg("green"))
+      inputOption.add_command(
+          label="Yellow", command=lambda: self.set_input_bg("yellow"))
+      inputOption.add_separator()
+      inputOption.add_command(label="Text")
+      inputOption.add_command(
+          label="White", command=lambda: self.set_input_fg("white"))
+      inputOption.add_command(
+          label="Red", command=lambda: self.set_input_fg("red"))
+      inputOption.add_command(
+          label="Blue", command=lambda: self.set_input_fg("blue"))
+      inputOption.add_command(
+          label="Green", command=lambda: self.set_input_fg("green"))
+      inputOption.add_command(
+          label="Yellow", command=lambda: self.set_input_fg("yellow"))
+
+      consoleOption = tk.Menu(configMenu, tearoff=0)
+      configMenu.add_cascade(label="Console", menu=consoleOption)
+      consoleOption.add_command(
+          label="Background")
+      consoleOption.add_command(
+          label="White", command=lambda: self.set_console_bg("white"))
+      consoleOption.add_command(
+          label="Red", command=lambda: self.set_console_bg("red"))
+      consoleOption.add_command(
+          label="Blue", command=lambda: self.set_console_bg("blue"))
+      consoleOption.add_command(
+          label="Green", command=lambda: self.set_console_bg("green"))
+      consoleOption.add_command(
+          label="Yellow", command=lambda: self.set_console_bg("yellow"))
+      consoleOption.add_separator()
+      consoleOption.add_command(label="Text")
+      consoleOption.add_command(
+          label="White", command=lambda: self.set_console_fg("white"))
+      consoleOption.add_command(
+          label="Red", command=lambda: self.set_console_fg("red"))
+      consoleOption.add_command(
+          label="Blue", command=lambda: self.set_console_fg("blue"))
+      consoleOption.add_command(
+          label="Green", command=lambda: self.set_console_fg("green"))
+      consoleOption.add_command(
+          label="Yellow", command=lambda: self.set_console_fg("yellow"))
+
+      outputOption = tk.Menu(configMenu, tearoff=0)
+      configMenu.add_cascade(label="Output", menu=outputOption)
+      outputOption.add_command(
+          label="Background")
+      outputOption.add_command(
+          label="White", command=lambda: self.set_output_bg("white"))
+      outputOption.add_command(
+          label="Red", command=lambda: self.set_output_bg("red"))
+      outputOption.add_command(
+          label="Blue", command=lambda: self.set_output_bg("blue"))
+      outputOption.add_command(
+          label="Green", command=lambda: self.set_output_bg("green"))
+      outputOption.add_command(
+          label="Yellow", command=lambda: self.set_output_bg("yellow"))
+      outputOption.add_separator()
+      outputOption.add_command(label="Text")
+      outputOption.add_command(
+          label="White", command=lambda: self.set_output_fg("white"))
+      outputOption.add_command(
+          label="Red", command=lambda: self.set_output_fg("red"))
+      outputOption.add_command(
+          label="Blue", command=lambda: self.set_output_fg("blue"))
+      outputOption.add_command(
+          label="Green", command=lambda: self.set_output_fg("green"))
+      outputOption.add_command(
+          label="Yellow", command=lambda: self.set_output_fg("yellow"))
+
+
+
+
+    # self.output.text.configure(background="#45474B", foreground="white", insertbackground="white")
+
       # Create sortcuts for some options
       self.bind_all("<F5>", self.run_key)
       self.bind_all("<Control-o>", self.open_key)
@@ -462,13 +555,85 @@ class Application(tk.Frame):
    def exit_key(self, event):
        sys.exit(0)
        
+   def show_scale_window(self):
+        self.scaleWindow = tk.Tk()
+        self.scaleWindow.title('My Window')
+        self.scaleWindow.geometry('500x300')
+        self.l = tk.Label(self.scaleWindow, bg='white',
+                     fg='black', width=20, text='empty')
+        self.l.pack()
+        self.r_var = tk.IntVar()
+        self.b_var = tk.IntVar()
+        self.g_var = tk.IntVar()
+        self.Rscale = tk.Scale(self.scaleWindow, label='R', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
+                               showvalue=0, tickinterval=1, resolution=1, variable=self.r_var, command=self.red_color_scale)
+        self.Rscale.pack()
+        self.Bscale = tk.Scale(self.scaleWindow, label='B', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
+                               showvalue=0, tickinterval=1, resolution=1, variable=self.b_var, command=self.blue_color_scale)
+        self.Bscale.pack()
+        self.Gscale = tk.Scale(self.scaleWindow, label='G', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
+                               showvalue=0, tickinterval=1, resolution=1, variable=self.g_var, command=self.green_color_scale)
+        self.Gscale.pack()
+        self.pack()
+
+   def red_color_scale(self, event):
+        scalevalue = int(event)
+        print(scalevalue)
+        self.rgb_value[0] = scalevalue
+        mycolor = '#%02x%02x%02x' % (
+            self.rgb_value[0], self.rgb_value[1], self.rgb_value[2])
+        print(mycolor)
+        self.topframe.configure(background=(mycolor))
+        self.bottomframe.configure(background=(mycolor))
+        self.leftframe.configure(background=(mycolor))
+        self.rightframe.configure(background=(mycolor))
+
+   def blue_color_scale(self, event):
+        scalevalue = int(event)
+        print(scalevalue)
+        self.rgb_value[2] = scalevalue
+        mycolor = '#%02x%02x%02x' % (
+            self.rgb_value[0], self.rgb_value[1], self.rgb_value[2])
+        print(mycolor)
+        self.topframe.configure(background=(mycolor))
+        self.bottomframe.configure(background=(mycolor))
+        self.leftframe.configure(background=(mycolor))
+        self.rightframe.configure(background=(mycolor))
+
+   def green_color_scale(self, event):
+        scalevalue = int(event)
+        print(scalevalue)
+        self.rgb_value[1] = scalevalue
+        mycolor = '#%02x%02x%02x' % (
+            self.rgb_value[0], self.rgb_value[1], self.rgb_value[2])
+        print(mycolor)
+        self.topframe.configure(background=(mycolor))
+        self.bottomframe.configure(background=(mycolor))
+        self.leftframe.configure(background=(mycolor))
+        self.rightframe.configure(background=(mycolor))
+
    def toggle_python_window(self):
        if (self.show_python.get() == False):
            self.output.pack_forget()
        else:
            self.output.pack(padx = 5, pady = 2, fill = "both", expand = False)
-            
-   def set_background(self, color):
+
+   def set_input_bg(self, bgColor):
+      self.input.text.configure(background=bgColor)
+   def set_input_fg(self, fgColor):
+      self.input.text.configure(foreground=fgColor)
+
+   def set_output_bg(self, bgColor):
+      self.output.text.configure(background=bgColor)
+   def set_output_fg(self, fgColor):
+      self.output.text.configure(foreground=fgColor)
+
+   def set_console_bg(self, bgColor):
+      self.console.configure(background=bgColor)
+   def set_console_fg(self, fgColor):
+      self.console.configure(foreground = fgColor)
+
+   def set_background_color(self, color):
       self.topframe["bg"] = color
       self.bottomframe["bg"] = color
       self.leftframe["bg"] = color
