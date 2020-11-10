@@ -65,14 +65,15 @@ class CustomText(tk.Text):
     '''
     highlighter
     call the method on a customtext or class derived from customtext
-    it will highlight every word in the keywords dict with the tag assigned to it.
+    it will highlight every word in the keywords dict with the tag assigned to it
+    current tags are: keyword, datatype, string
     '''
 
     def highlighter(self):
 
         keywords = {"Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword"
                     , "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
-                    "Variable ": "datatype", "List ": "datatype", "Table ": "datatype", '"': "comment", "'": "comment"}
+                    "Variable ": "datatype", "List ": "datatype", "Table ": "datatype", '"': "string", "'": "string"}
 
         for kw in keywords:
 
@@ -123,7 +124,7 @@ class NumberedText(tk.Frame):
 
         self.text.tag_configure("keyword", foreground="red")
         self.text.tag_configure("datatype", foreground="blue")
-        self.text.tag_configure("comment", foreground="green")
+        self.text.tag_configure("string", foreground="green")
 
 
         self.text.bind("<<Change>>", self._on_change)
@@ -613,6 +614,18 @@ class Application(tk.Frame):
     r5 = tk.Radiobutton(
         self.scaleWindow, text="Text", variable=self.selection, value=5)
     r5.pack(anchor=tk.W)
+
+    r6 = tk.Radiobutton(
+        self.scaleWindow, text="Keywords", variable=self.selection, value=6)
+    r6.pack(anchor=tk.W)
+
+    r7 = tk.Radiobutton(
+        self.scaleWindow, text="Data types", variable=self.selection, value=7)
+    r7.pack(anchor=tk.W)
+
+    r8 = tk.Radiobutton(
+        self.scaleWindow, text="Strings", variable=self.selection, value=8)
+    r8.pack(anchor=tk.W)
     print(self.selection.get())
 
     self.r_var = tk.IntVar()
@@ -632,21 +645,37 @@ class Application(tk.Frame):
 # depending on what which radiobutton selected the color for it will be changed
 # this function takes in a hex color number passed from the scale functions
    def selected_option(self, mycolor):
-    if(self.selection.get() == 1):
-        self.topframe.configure(background=(mycolor))
-        self.bottomframe.configure(background=(mycolor))
-        self.leftframe.configure(background=(mycolor))
-        self.rightframe.configure(background=(mycolor))
-    elif(self.selection.get() == 2):
+    if self.selection.get() == 1:
+        self.topframe.configure(background=mycolor)
+        self.bottomframe.configure(background=mycolor)
+        self.leftframe.configure(background=mycolor)
+        self.rightframe.configure(background=mycolor)
+    elif self.selection.get() == 2:
         self.input.text.configure(background=mycolor)
-    elif(self.selection.get() == 3):
+    elif self.selection.get() == 3:
         self.output.text.configure(background=mycolor)
-    elif(self.selection.get() == 4):
+    elif self.selection.get() == 4:
         self.console.configure(background=mycolor)
-    elif(self.selection.get() == 5):
+    elif self.selection.get() == 5:
         self.output.text.configure(foreground=mycolor)
         self.input.text.configure(foreground=mycolor)
         self.console.configure(foreground=mycolor)
+    elif self.selection.get() == 6:
+        self.input.text.tag_configure("keyword", foreground=mycolor)
+        self.output.text.tag_configure("keyword", foreground=mycolor)
+        self.input.text.highlighter()
+        self.output.text.highlighter()
+    elif self.selection.get() == 7:
+        self.input.text.tag_configure("datatype", foreground=mycolor)
+        self.output.text.tag_configure("datatype", foreground=mycolor)
+        self.input.text.highlighter()
+        self.output.text.highlighter()
+    elif self.selection.get() == 8:
+        self.input.text.tag_configure("string", foreground=mycolor)
+        self.output.text.tag_configure("string", foreground=mycolor)
+        self.input.text.highlighter()
+        self.output.text.highlighter()
+
 # functions for each scale r b g
    def red_color_scale(self, event):
         scalevalue = int(event)
@@ -714,12 +743,12 @@ class Application(tk.Frame):
          self.input.text.configure(background="white", foreground="black", insertbackground="black")
          self.input.text.tag_configure("keyword", foreground="red")
          self.input.text.tag_configure("datatype", foreground="blue")
-         self.input.text.tag_configure("comment", foreground="green")
+         self.input.text.tag_configure("string", foreground="green")
 
          self.output.text.configure(background="white", foreground="black", insertbackground="black")
          self.output.text.tag_configure("keyword", foreground="red")
          self.output.text.tag_configure("datatype", foreground="blue")
-         self.output.text.tag_configure("comment", foreground="green")
+         self.output.text.tag_configure("string", foreground="green")
 
          self.console.configure(background="white", foreground="black")
          return
@@ -735,13 +764,13 @@ class Application(tk.Frame):
          self.input.text.configure(background="white", foreground="black", insertbackground="black")
          self.input.text.tag_configure("keyword", foreground="red")
          self.input.text.tag_configure("datatype", foreground="blue")
-         self.input.text.tag_configure("comment", foreground="green")
+         self.input.text.tag_configure("string", foreground="green")
          self.input.text.highlighter()
 
          self.output.text.configure(background="white", foreground="black", insertbackground="black")
          self.output.text.tag_configure("keyword", foreground="red")
          self.output.text.tag_configure("datatype", foreground="blue")
-         self.output.text.tag_configure("comment", foreground="green")
+         self.output.text.tag_configure("string", foreground="green")
          self.output.text.highlighter()
 
          self.console.configure(background="white", foreground="black")
@@ -757,13 +786,13 @@ class Application(tk.Frame):
          self.input.text.configure(background="#45474B", foreground="white", insertbackground="white")
          self.input.text.tag_configure("keyword", foreground="orange")
          self.input.text.tag_configure("datatype", foreground="lightblue")
-         self.input.text.tag_configure("comment", foreground="lightgreen")
+         self.input.text.tag_configure("string", foreground="lightgreen")
          self.input.text.highlighter()
 
          self.output.text.configure(background="#45474B", foreground="white", insertbackground="white")
          self.output.text.tag_configure("keyword", foreground="orange")
          self.output.text.tag_configure("datatype", foreground="lightblue")
-         self.output.text.tag_configure("comment", foreground="lightgreen")
+         self.output.text.tag_configure("string", foreground="lightgreen")
          self.output.text.highlighter()
 
          self.console.configure(background="#45474B", foreground="white")
