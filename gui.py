@@ -320,6 +320,7 @@ class Application(tk.Frame):
    def interpreter_func(self):
       self.save_file()
       interpret(self.filePointerName, self.python_file_name)
+      self.input.text.highlighter()
       self.print_to_output()
       self.read_to_console()
 
