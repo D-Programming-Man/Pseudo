@@ -11,7 +11,8 @@ class TextLineNumbers(tk.Canvas):
     def __init__(self, *args, **kwargs):
         tk.Canvas.__init__(self, *args, **kwargs)
         self.textwidget = None
-        self.font = "Helvetica"
+        self.font = "Courier"
+        self.fill = "black"
         self.fontsize = 10
 
     def attach(self, text_widget):
@@ -31,7 +32,7 @@ class TextLineNumbers(tk.Canvas):
             if dline is None: break
             y = dline[1]
             linenum = str(i).split(".")[0]
-            self.create_text(2,y,anchor="nw", text=linenum, font=(self.font, self.fontsize))
+            self.create_text(2,y,anchor="nw", text=linenum, font=(self.font, self.fontsize), fill = self.fill)
             i = self.textwidget.index("%s+1line" % i)
 
 class CustomText(tk.Text):
@@ -117,6 +118,7 @@ class NumberedText(tk.Frame):
         self.vsb = tk.Scrollbar(self, orient="vertical", command=self.text.yview)
         self.text.configure(yscrollcommand=self.vsb.set)
         self.linenumbers = TextLineNumbers(self, width=30)
+        self.linenumbers.configure(bd = 0)
         self.linenumbers.attach(self.text)
 
         self.vsb.pack(side="right", fill="y")
@@ -222,6 +224,8 @@ class Application(tk.Frame):
     self.console.config(font = (self.font, self.fontSize))
     self.input.linenumbers.setFont(self.font, self.fontSize)
     self.output.linenumbers.setFont(self.font, self.fontSize)
+    self.output.linenumbers.redraw()
+    self.input.linenumbers.redraw()
     
     self.close_settings()
 
@@ -763,12 +767,18 @@ class Application(tk.Frame):
          self.bottomframe["bg"] = "#FEF9DA"
          self.leftframe["bg"] = "#FEF9DA"
          self.rightframe["bg"] = "#FEF9DA"
+         self.input.linenumbers.configure(background = "#E4E4E4", highlightbackground = "#E4E4E4")
+         self.input.linenumbers.fill = "black"
+         self.input.linenumbers.redraw()
          self.input.text.configure(background="white", foreground="black", insertbackground="black")
          self.input.text.tag_configure("keyword", foreground="red")
          self.input.text.tag_configure("datatype", foreground="blue")
          self.input.text.tag_configure("string", foreground="green")
          self.input.text.highlighter()
 
+         self.output.linenumbers.configure(background = "#E4E4E4", highlightbackground = "#E4E4E4")
+         self.output.linenumbers.fill = "black"
+         self.output.linenumbers.redraw()
          self.output.text.configure(background="white", foreground="black", insertbackground="black")
          self.output.text.tag_configure("keyword", foreground="red")
          self.output.text.tag_configure("datatype", foreground="blue")
@@ -785,12 +795,18 @@ class Application(tk.Frame):
          self.bottomframe["bg"] = "#6E7074"
          self.leftframe["bg"] = "#6E7074"
          self.rightframe["bg"] = "#6E7074"
+         self.input.linenumbers.configure(background = "#616161", highlightbackground = "#616161")
+         self.input.linenumbers.fill = "white"
+         self.input.linenumbers.redraw()
          self.input.text.configure(background="#45474B", foreground="white", insertbackground="white")
          self.input.text.tag_configure("keyword", foreground="orange")
          self.input.text.tag_configure("datatype", foreground="lightblue")
          self.input.text.tag_configure("string", foreground="lightgreen")
          self.input.text.highlighter()
 
+         self.output.linenumbers.configure(background = "#616161", highlightbackground = "#616161")
+         self.output.linenumbers.fill = "white"
+         self.output.linenumbers.redraw()
          self.output.text.configure(background="#45474B", foreground="white", insertbackground="white")
          self.output.text.tag_configure("keyword", foreground="orange")
          self.output.text.tag_configure("datatype", foreground="lightblue")
