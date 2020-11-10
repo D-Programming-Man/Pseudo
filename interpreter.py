@@ -1,11 +1,8 @@
 import sys
 import os
-from interlib import create
-from interlib import display
-from interlib import arithmetic
+from collections import deque
 
-def interpret(pseudo_file, python_file):
-  # This file will later become a function to call, but for now let's just assume that this is the main function that takes in these files in the same directory
+def interpret(pseudo_file, python_file, keyword_dict):
   in_file = open(pseudo_file, "r")
   py_file = open(python_file, "w")
   default_stdout = sys.stdout
@@ -14,24 +11,33 @@ def interpret(pseudo_file, python_file):
   
   if (os.stat(pseudo_file).st_size == 0):
     print("Error: Pseudo file emtpy. Did you properly saved it first?")
-  
+    
   # All varaibles, list, and dictionaries are put into here from the "Create" keyword
   # Key = variable name, Values = {data type, data for that variable name}
   # For example, an entry in the dictionary could be {"x": {"data_type": "number", "value": 1}}
   # This means that x is a variable with the value 1
-  # {}
   all_variables = {}
   
   # Line number where the parser is at, used for showing error exceptions.
   line_numb = 1
 
   # List of all python lines to be written to the outfile
-  py_lines = []
+  py_lines = deque()
   
   # Some initialization to write to the py_file
   py_lines.append('if __name__ == "__main__":\n')
   indent = 2
   parse_success = False
+  
+  # In the future, we might want to add our own values to pass to a function for specific cases. In order to generalize, we will put any important values into this dictionary and pass this dictionary around to all of the keyword functions
+  # NOTE: dict and list are passed by reference
+  # NOTE: numbers and strings are passed by value
+  interpret_state = {}
+  interpret_state["all_variables"] = all_variables
+  interpret_state["line_numb"] = line_numb
+  interpret_state["py_lines"] = py_lines
+  interpret_state["indent"] = indent
+  interpret_state["parse_success"] = parse_success
   
   # main loop to parse all words in the file
   for line in in_file:
@@ -58,25 +64,13 @@ def interpret(pseudo_file, python_file):
     if line_list[-1][-1] == "\n":
       line_list[-1] = line_list[-1][:-1]
     
-    # Checking each starting word to run their own handlers.
-    # There should be something more optimal than doing elif statements.
-    if line_list[0].lower() == "create":
-      parse_success = create.handler(line_numb, line_list, py_lines, all_variables, indent, py_file)
+    #TODO: In here, we would want to check if the very first character of the line is a #, and if so then put the whole line into the py_lines list and parse the next line
     
-    elif line_list[0].lower() == "add":
-      parse_success = arithmetic.add(line_numb, line_list, py_lines, all_variables, indent, py_file)
+    interpret_state["line_list"] = line_list
     
-    elif line_list[0].lower() == "subtract":
-      parse_success = arithmetic.subtract(line_numb, line_list, py_lines, all_variables, indent, py_file)
-    
-    elif line_list[0].lower() == "multiply":
-      parse_success = arithmetic.multiply(line_numb, line_list, py_lines, all_variables, indent, py_file)
-    
-    elif line_list[0].lower() == "divide":
-      parse_success = arithmetic.divide(line_numb, line_list, py_lines, all_variables, indent, py_file)
-    
-    elif line_list[0].lower() == "display":
-      parse_success = display.handler(line_numb, line_list, py_lines, all_variables, indent, py_file)
+    # Parse the lines based on the keywords
+    keyword = line_list[0].lower()
+    parse_success = keyword_dict[keyword].handler(interpret_state)
       
     # At the end of parsing the line, increment the line counter
     line_numb += 1
@@ -84,7 +78,7 @@ def interpret(pseudo_file, python_file):
     # Terminate loop when error occurs
     if not parse_success:
       break
-
+   
    # write every line into py_file
   for line in py_lines:
     py_file.write(line)
@@ -123,8 +117,8 @@ def interpret(pseudo_file, python_file):
   sys.stdout = default_stdout
   
   # Print the output to the console
-  out_file = open("output.txt", 'r')
-  for line in out_file:
-    print(line[0:-1])
+  #out_file = open("output.txt", 'r')
+  #for line in out_file:
+  #  print(line[0:-1])
   
-  out_file.close()
+  #out_file.close()

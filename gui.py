@@ -6,6 +6,7 @@ import os
 from datetime import datetime
 from tkinter import filedialog as fd
 import sys
+from importlib import import_module
 
 class TextLineNumbers(tk.Canvas):
     def __init__(self, *args, **kwargs):
@@ -143,17 +144,29 @@ class Application(tk.Frame):
       super().__init__(master)
       self.master = master
       master.title("Pseudo")
-      master.geometry("720x480")
+      #master.geometry("720x480")
       self.pack()
+      
+      # What this does is to dynamically import python files/modules from the "interlib" directory.
+      # This means that we won't have to hardcode function names in the interpreter.py file,
+      # adding more flexability to the interpreter
+      base_lib = "interlib"
+      keyword_py = [f for f in os.listdir(base_lib) if os.path.isfile(os.path.join(base_lib, f))]
+  
+      # Imports each keyword python file
+      self.keyword_dict = {}
+      for keyword in keyword_py:
+         if keyword[-3:] != ".py":
+            print(keyword + " is not a python file. Ignoring keyword.")
+            continue
+         keyword_file = keyword[0:-3]
+         self.keyword_dict[keyword_file] = import_module(base_lib + "." + keyword_file, base_lib)
       
       # Create all aspects of the window
       self.create_frames()
       self.create_input_window()
       self.create_output_window()
       self.create_console_window()
-
-      # Buttons
-      #self.create_execute()
       
       # Setting values needed for the menu
       self.show_python = tk.BooleanVar()
@@ -192,19 +205,6 @@ class Application(tk.Frame):
       self.leftframe.pack(side = "left", fill = "both", expand = True)
       self.rightframe = tk.Frame(self.master, bg = "#FEF9DA")
       self.rightframe.pack(side = "right", fill = "both", expand = True)
-
-   # Creates button widget which runs the interpreter
-   def create_execute(self):
-      self.execute = tk.Button(self.topframe, command = lambda:self.unit_test_print()) 
-      self.execute["text"] = "Run"
-      self.execute["fg"] = "white"
-      self.execute["bg"] = "#89CFF0"
-      self.execute["activeforeground"] = "blue"
-      self.execute["relief"] = "groove"
-      self.execute["height"] = 1
-      self.execute["width"] = 4
-      self.execute["command"] = lambda :self.interpreter_func()
-      self.execute.pack(padx = 5, pady = 2, side = "left")
 
    def close_settings(self):
     self.settingsOpen = False
@@ -322,8 +322,24 @@ class Application(tk.Frame):
 
    # saves into pseudo file. Calls a print to console and python output
    def interpreter_func(self):
+      # Maybe have a toggle to enable library updates in here so that when
+      # a user wants to develop their own keyword, then they can live test it
+      # and not have to exit out of the application to load it in.
+      base_lib = "interlib"
+      keyword_py = [f for f in os.listdir(base_lib) if os.path.isfile(os.path.join(base_lib, f))]
+  
+      # Imports each keyword python file
+      self.keyword_dict = {}
+      for keyword in keyword_py:
+         if keyword[-3:] != ".py":
+            print(keyword + " is not a python file. Ignoring keyword.")
+            continue
+         keyword_file = keyword[0:-3]
+         self.keyword_dict[keyword_file] = import_module(base_lib + "." + keyword_file, base_lib)
+      
+       
       self.save_file()
-      interpret(self.filePointerName, self.python_file_name)
+      interpret(self.filePointerName, self.python_file_name, self.keyword_dict)
       self.input.text.highlighter()
       self.print_to_output()
       self.read_to_console()
@@ -553,11 +569,6 @@ class Application(tk.Frame):
       outputOption.add_command(
           label="Yellow", command=lambda: self.set_output_fg("yellow"))
 
-
-
-
-    # self.output.text.configure(background="#45474B", foreground="white", insertbackground="white")
-
       # Create sortcuts for some options
       self.bind_all("<F5>", self.run_key)
       self.bind_all("<Control-o>", self.open_key)
@@ -708,7 +719,7 @@ class Application(tk.Frame):
        if (self.show_python.get() == False):
            self.output.pack_forget()
        else:
-           self.output.pack(padx = 5, pady = 2, fill = "both", expand = False)
+           self.output.pack(padx = 5, pady = 2, fill = "both", expand = True)
 
    def set_input_bg(self, bgColor):
       self.input.text.configure(background=bgColor)

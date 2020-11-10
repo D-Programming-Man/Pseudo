@@ -16,7 +16,13 @@ Requires:
  Returns:
  . A boolean value. This is used in the interpreter.py file to make sure that the parsing of the code executes correctly. Otherwise the parsing stops and ends it prematurely.
 '''
-def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
+def handler(interpret_state):
+  line_numb = interpret_state["line_numb"]
+  line_list = interpret_state["line_list"]
+  all_variables = interpret_state["all_variables"]
+  indent = interpret_state["indent"]
+  py_lines = interpret_state["py_lines"]
+
   word_pos = 1
   indent_space = indent * " "
     

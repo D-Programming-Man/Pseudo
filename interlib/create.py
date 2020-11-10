@@ -130,13 +130,18 @@ def dct_parse(var_dict, value_list):
  . line_list = The line we took from the Psudo code file, but in list format
  . all_variables = The dictionary that contains all of the variables for that Psudo code file
  . indent = The indentation to correctly format the line of python code
- . py_file = The output python code file we are writing to
+ . py_lines = The python code that we will append our finalized parsed code to it
  
  Returns:
  . A boolean value. This is used in the interpreter.py file to make sure that the parsing of the code executes correctly. Otherwise the parsing stops and ends it prematurely.
  
 '''
-def handler(line_numb, line_list, py_lines, all_variables, indent, py_file):
+def handler(interpret_state):
+  line_numb = interpret_state["line_numb"]
+  line_list = interpret_state["line_list"]
+  all_variables = interpret_state["all_variables"]
+  indent = interpret_state["indent"]
+  py_lines = interpret_state["py_lines"]
 
   # The position of the line_list
   word_pos = 1
