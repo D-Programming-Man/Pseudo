@@ -71,9 +71,10 @@ class CustomText(tk.Text):
 
     def highlighter(self):
 
-        keywords = {"Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword"
-                    , "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
-                    "Variable ": "datatype", "List ": "datatype", "Table ": "datatype", '"': "string", "'": "string"}
+        keywords = {"Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword",
+                    "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
+                    "str": "keyword", "Variable ": "datatype", "List ": "datatype", "Table ": "datatype",
+                    '"': "string", "'": "string"}
 
         for kw in keywords:
 
