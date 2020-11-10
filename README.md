@@ -3,24 +3,20 @@ An interpreter that translate English to python code
 
 User Stories for Sprint 2:
 
-* As a user, I want to save and load my Pseudo code in the GUI
+* As a user, I want to write functions so that I don't have to write a bunch of lines over again
 
-* As a user, I want a button to translate and execute my Pseudo code into Python code
+* As a user, I want to create if-statements so that I can branch and execute different code
 
-* As a user, I want to see my Python code along side my Pseudo file
+* As a user, I want to loop code so that I don't have to copy multiple lines of code over again
 
-* As a user, I want to see my outputs from my Psuedo file with the "Display" keyword 
+* As a user, I want to loop my code by specifying a condition
+
+* As a user, I want to add comments to part of my code so that I can summarize each code section
 
 
 Completed:
 
-* As a user, I want to save and load my Pseudo code in the GUI
-
-* As a user, I want a button to translate and execute my Pseudo code into Python code
-
-* As a user, I want to see my Python code along side my Pseudo file
-
-* As a user, I want to see my outputs from my Psuedo file with the "Display" keyword 
+* NONE
 
 
 TODO:
