@@ -125,7 +125,22 @@ class Application(tk.Frame):
       self.pyoutput.config(state="normal")
       self.pyoutput.delete("1.0", tk.END)
       self.pyoutput.insert(tk.INSERT, console_output.read())
+
+    #  self.pyoutput.tag_configure("red", foreground="#ff0000")
+    #  index = self.pyoutput.search('print', "1.0", tk.END, regexp=False)
+    #  self.pyoutput.insert(index, "what the shit")
+    #  self.pyoutput.mark_set("start", index)
+    #  self.pyoutput.mark_set("finish", "%s+%sc" % (index, 5))
+
+    #  self.pyoutput.tag_add("red", index, "finish")
+
+    #  self.highlighter(self.pyoutput, "print", "red")
+
       self.pyoutput.config(state="disable")
+
+
+
+
 
 if __name__ == "__main__":
    root = tk.Tk()

@@ -58,27 +58,48 @@ class CustomText(tk.Text):
 
     '''
     highlighter
-    Takes in a keyword as a string and adds the given tag to all instances of that keyword
-    Currently will tag the keyword inside of strings but this might get solved by overwriting the string with another tag
-    Custom search length is possible but defaults are preferred
+    call the method on a customtext or class derived from customtext
+    it will highlight every word in the keywords dict with the tag assigned to it.
     '''
 
-    def highlighter(self, keyword, tag, start="1.0", finish="end"):
+    def highlighter(self):
 
-        start = self.index(start)
-        end = self.index(finish)
-        self.mark_set("kw_start", start)
-        self.mark_set("kw_finish", start)
-        self.mark_set("limit", end)
+        keywords = {"Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword"
+                    , "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
+                    "Variable ": "datatype", "List ": "datatype", "Table ": "datatype", '"': "comment", "'": "comment"}
 
-        count = tk.IntVar()
-        while True:
-            index = self.search(keyword, "kw_finish", "limit", count=count, regexp=True, nocase=True)
-            if index == "": break
-            if count.get() == 0: break
-            self.mark_set("kw_start", index)
-            self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
-            self.tag_add(tag, "kw_start", "kw_finish")
+        for kw in keywords:
+
+            start = self.index("1.0")
+            end = self.index(tk.END)
+            self.mark_set("kw_start", start)
+            self.mark_set("kw_finish", start)
+            self.mark_set("comment_blk", start)
+            self.mark_set("limit", end)
+
+            count = tk.IntVar()
+            while True:
+                index = self.search(kw, "kw_finish", "limit", count=count, regexp=True, nocase=True)
+                if index == "":
+                    break
+                if count.get() == 0:
+                    break
+                self.mark_set("kw_start", index)
+
+                if kw == '"' or kw == "'":
+
+                    self.mark_set("comment_blk", "%s+%sc" % (index, count.get()))
+                    index = self.search(kw, "comment_blk", "limit", count=count, regexp=True, nocase=True)
+                    if index == "":
+                        break
+                    if count.get() == 0:
+                        break
+                    self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
+
+                else:
+                    self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
+
+                self.tag_add(keywords[kw], "kw_start", "kw_finish")
 
 
 class NumberedText(tk.Frame):
@@ -94,10 +115,10 @@ class NumberedText(tk.Frame):
         self.text.pack(side="right", fill="both", expand=True)
         self.linenumbers.pack(side="left", fill="y")
 
-
-        # Current tags for all NumberedText objs
         self.text.tag_configure("keyword", foreground="red")
         self.text.tag_configure("datatype", foreground="blue")
+        self.text.tag_configure("comment", foreground="green")
+
 
         self.text.bind("<<Change>>", self._on_change)
         self.text.bind("<Configure>", self._on_change)
@@ -293,11 +314,11 @@ class Application(tk.Frame):
    # prints py file to right window
    def print_to_output(self):
       output = open(self.python_file_name, "r")
-      self.output.text.config(state = "normal")
+      self.output.text.config(state="normal")
       self.output.text.delete("1.0", tk.END)
       self.output.text.insert(tk.INSERT, output.read())
-      self.output.text.highlighter("print", "keyword")
-      self.output.text.config(state = "disable")
+      self.output.text.highlighter()
+      self.output.text.config(state="disable")
 
    
    def take_input_file(self):
@@ -310,14 +331,7 @@ class Application(tk.Frame):
         self.input.text.delete('1.0', fd.END)
         self.input.text.insert(tk.INSERT, content)
 
-        # this is a really hacky way to do this, need better kw identification
-        # might want to make the kw loop inside the highlighter method but for now it's here
-        keywords = ["Create ", "Display ", "Add ", "Subtract ", "Multiply ", "Divide "]
-        datatype = ["Variable ", "List ", "Table "]
-        for kw in keywords:
-            self.input.text.highlighter(kw, "keyword")
-        for dt in datatype:
-            self.input.text.highlighter(dt, "datatype")
+        self.input.text.highlighter()
 
         self.master.title("Pseudo " + file.name)
         self.filePointer = True
@@ -645,8 +659,8 @@ class Application(tk.Frame):
       # NOTE: insertbackground is the text cursor color, NOT mouse cursor color
       #       background is the background color for the text wigit
       #       foreground is the text's color of that wigit
-      if (self.normal_theme.get() == False and
-          self.dark_theme.get() == False):
+      if self.normal_theme.get() == False and self.dark_theme.get() == False:
+
          self.normal_theme.set(True)
          self.dark_theme.set(False)
          self.gui_theme.set("normal")
@@ -655,7 +669,15 @@ class Application(tk.Frame):
          self.leftframe["bg"] = "#FEF9DA"
          self.rightframe["bg"] = "#FEF9DA"
          self.input.text.configure(background="white", foreground="black", insertbackground="black")
+         self.input.text.tag_configure("keyword", foreground="red")
+         self.input.text.tag_configure("datatype", foreground="blue")
+         self.input.text.tag_configure("comment", foreground="green")
+
          self.output.text.configure(background="white", foreground="black", insertbackground="black")
+         self.output.text.tag_configure("keyword", foreground="red")
+         self.output.text.tag_configure("datatype", foreground="blue")
+         self.output.text.tag_configure("comment", foreground="green")
+
          self.console.configure(background="white", foreground="black")
          return
       
@@ -668,7 +690,17 @@ class Application(tk.Frame):
          self.leftframe["bg"] = "#FEF9DA"
          self.rightframe["bg"] = "#FEF9DA"
          self.input.text.configure(background="white", foreground="black", insertbackground="black")
+         self.input.text.tag_configure("keyword", foreground="red")
+         self.input.text.tag_configure("datatype", foreground="blue")
+         self.input.text.tag_configure("comment", foreground="green")
+         self.input.text.highlighter()
+
          self.output.text.configure(background="white", foreground="black", insertbackground="black")
+         self.output.text.tag_configure("keyword", foreground="red")
+         self.output.text.tag_configure("datatype", foreground="blue")
+         self.output.text.tag_configure("comment", foreground="green")
+         self.output.text.highlighter()
+
          self.console.configure(background="white", foreground="black")
       
       if (theme == "dark"):
@@ -680,7 +712,17 @@ class Application(tk.Frame):
          self.leftframe["bg"] = "#6E7074"
          self.rightframe["bg"] = "#6E7074"
          self.input.text.configure(background="#45474B", foreground="white", insertbackground="white")
+         self.input.text.tag_configure("keyword", foreground="orange")
+         self.input.text.tag_configure("datatype", foreground="lightblue")
+         self.input.text.tag_configure("comment", foreground="lightgreen")
+         self.input.text.highlighter()
+
          self.output.text.configure(background="#45474B", foreground="white", insertbackground="white")
+         self.output.text.tag_configure("keyword", foreground="orange")
+         self.output.text.tag_configure("datatype", foreground="lightblue")
+         self.output.text.tag_configure("comment", foreground="lightgreen")
+         self.output.text.highlighter()
+
          self.console.configure(background="#45474B", foreground="white")
          
 if __name__ == "__main__":
