@@ -1,31 +1,43 @@
 import sys
-from interlib import create
-from interlib import display
-from interlib import arithmetic
+import os
+from collections import deque
 
-if __name__ == "__main__":
-  # This file will later become a function to call, but for now let's just assume that this is the main function that takes in these files in the same directory
-  in_file = open("test.pseudo", "r")
-  py_file = open("outfile.py", "w")
+def interpret(pseudo_file, python_file, keyword_dict):
+  in_file = open(pseudo_file, "r")
+  py_file = open(python_file, "w")
+  default_stdout = sys.stdout
+  output_file = open('output.txt', 'w')
+  sys.stdout = output_file
   
-  
+  if (os.stat(pseudo_file).st_size == 0):
+    print("Error: Pseudo file emtpy. Did you properly saved it first?")
+    
   # All varaibles, list, and dictionaries are put into here from the "Create" keyword
   # Key = variable name, Values = {data type, data for that variable name}
   # For example, an entry in the dictionary could be {"x": {"data_type": "number", "value": 1}}
   # This means that x is a variable with the value 1
-  # {}
   all_variables = {}
   
   # Line number where the parser is at, used for showing error exceptions.
   line_numb = 1
 
   # List of all python lines to be written to the outfile
-  py_lines = []
+  py_lines = deque()
   
   # Some initialization to write to the py_file
   py_lines.append('if __name__ == "__main__":\n')
   indent = 2
-  parse_success = True
+  parse_success = False
+  
+  # In the future, we might want to add our own values to pass to a function for specific cases. In order to generalize, we will put any important values into this dictionary and pass this dictionary around to all of the keyword functions
+  # NOTE: dict and list are passed by reference
+  # NOTE: numbers and strings are passed by value
+  interpret_state = {}
+  interpret_state["all_variables"] = all_variables
+  interpret_state["line_numb"] = line_numb
+  interpret_state["py_lines"] = py_lines
+  interpret_state["indent"] = indent
+  interpret_state["parse_success"] = parse_success
   
   # main loop to parse all words in the file
   for line in in_file:
@@ -52,25 +64,13 @@ if __name__ == "__main__":
     if line_list[-1][-1] == "\n":
       line_list[-1] = line_list[-1][:-1]
     
-    # Checking each starting word to run their own handlers.
-    # There should be something more optimal than doing elif statements.
-    if line_list[0].lower() == "create":
-      parse_success = create.handler(line_numb, line_list, py_lines, all_variables, indent, py_file)
+    #TODO: In here, we would want to check if the very first character of the line is a #, and if so then put the whole line into the py_lines list and parse the next line
     
-    elif line_list[0].lower() == "add":
-      parse_success = arithmetic.add(line_numb, line_list, py_lines, all_variables, indent, py_file)
+    interpret_state["line_list"] = line_list
     
-    elif line_list[0].lower() == "subtract":
-      parse_success = arithmetic.subtract(line_numb, line_list, py_lines, all_variables, indent, py_file)
-    
-    elif line_list[0].lower() == "multiply":
-      parse_success = arithmetic.multiply(line_numb, line_list, py_lines, all_variables, indent, py_file)
-    
-    elif line_list[0].lower() == "divide":
-      parse_success = arithmetic.divide(line_numb, line_list, py_lines, all_variables, indent, py_file)
-    
-    elif line_list[0].lower() == "display":
-      parse_success = display.handler(line_numb, line_list, py_lines, all_variables, indent, py_file)
+    # Parse the lines based on the keywords
+    keyword = line_list[0].lower()
+    parse_success = keyword_dict[keyword].handler(interpret_state)
       
     # At the end of parsing the line, increment the line counter
     line_numb += 1
@@ -78,7 +78,7 @@ if __name__ == "__main__":
     # Terminate loop when error occurs
     if not parse_success:
       break
-
+   
    # write every line into py_file
   for line in py_lines:
     py_file.write(line)
@@ -92,16 +92,33 @@ if __name__ == "__main__":
   py_file.close()
   
   # Runs the output file, stores output into output.txt file
-  default_stdout = sys.stdout
-  output_file = open('output.txt', 'w')
-  sys.stdout = output_file
-  exec(open('outfile.py').read())
+  py_cmds = ""
+  py_line_main_pos = 0
+  
+  # Kind of stupid, but apparently the output.txt file will not
+  # generate the outputs because of the if __name__ == "__main__"
+  # line. So we need to omit this and then omit the two space
+  # indentation for all lines after it.
+  for line in py_lines:
+    if line == 'if __name__ == "__main__":\n':
+      break
+    py_line_main_pos += 1
+    
+  py_lines.remove('if __name__ == "__main__":\n')
+  for i in range(0, len(py_lines)):
+    if i < py_line_main_pos:
+      py_cmds += py_lines[i]
+    else:
+      py_cmds += py_lines[i][2:]
+  
+  # Print the outputs to the output.txt file
+  exec(py_cmds)
   output_file.close()
   sys.stdout = default_stdout
   
   # Print the output to the console
-  out_file = open("output.txt", 'r')
-  for line in out_file:
-    print(line[0:-1])
+  #out_file = open("output.txt", 'r')
+  #for line in out_file:
+  #  print(line[0:-1])
   
-  out_file.close()
+  #out_file.close()
