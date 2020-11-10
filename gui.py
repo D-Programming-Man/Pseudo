@@ -578,63 +578,96 @@ class Application(tk.Frame):
       
    def exit_key(self, event):
        sys.exit(0)
-       
-   def show_scale_window(self):
-        self.scaleWindow = tk.Tk()
-        self.scaleWindow.title('My Window')
-        self.scaleWindow.geometry('500x300')
-        self.l = tk.Label(self.scaleWindow, bg='white',
-                     fg='black', width=20, text='empty')
-        self.l.pack()
-        self.r_var = tk.IntVar()
-        self.b_var = tk.IntVar()
-        self.g_var = tk.IntVar()
-        self.Rscale = tk.Scale(self.scaleWindow, label='R', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
-                               showvalue=0, tickinterval=1, resolution=1, variable=self.r_var, command=self.red_color_scale)
-        self.Rscale.pack()
-        self.Bscale = tk.Scale(self.scaleWindow, label='B', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
-                               showvalue=0, tickinterval=1, resolution=1, variable=self.b_var, command=self.blue_color_scale)
-        self.Bscale.pack()
-        self.Gscale = tk.Scale(self.scaleWindow, label='G', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
-                               showvalue=0, tickinterval=1, resolution=1, variable=self.g_var, command=self.green_color_scale)
-        self.Gscale.pack()
-        self.pack()
+# Window for RGB scales to choose color scheme
+# Radiobuttons allow users to select what they want to change, currently options are{Background,Input,Output,Console,Text}
+  def show_scale_window(self):
+    self.scaleWindow = tk.Tk()
+    self.scaleWindow.title('My Window')
+    self.scaleWindow.geometry('500x300')
 
+    self.selection = tk.IntVar(self.scaleWindow, value = 6, name = "optionVar")
+    self.selection.set(0)
+    self.l = tk.Label(self.scaleWindow, bg='white',
+                      fg='black', width=20, text=self.selection.get())
+    self.l.pack(anchor=tk.N)
+    r1 = tk.Radiobutton(self.scaleWindow, text="Background",
+                        variable=self.selection, value=1)
+    r1.pack(anchor = tk.W)
+    print(self.selection.get())
+
+    r2 = tk.Radiobutton(self.scaleWindow, text="Input",
+                        variable=self.selection, value=2)
+
+    r2.pack(anchor = tk.W)
+    print(self.selection.get())
+
+    r3 = tk.Radiobutton(self.scaleWindow, text="Output",
+                        variable=self.selection, value=3)
+    r3.pack(anchor = tk.W)
+    print(self.selection.get())
+
+    r4 = tk.Radiobutton(
+        self.scaleWindow, text="Console", variable=self.selection, value=4)
+    r4.pack(anchor=tk.W)
+
+    r5 = tk.Radiobutton(
+        self.scaleWindow, text="Text", variable=self.selection, value=5)
+    r5.pack(anchor=tk.W)
+    print(self.selection.get())
+
+    self.r_var = tk.IntVar()
+    self.b_var = tk.IntVar()
+    self.g_var = tk.IntVar()
+    self.Rscale = tk.Scale(self.scaleWindow, label='R', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
+                           showvalue=0, tickinterval=1, resolution=1, variable=self.r_var, command=self.red_color_scale)
+    self.Rscale.place(x=100, y=25)
+    self.Bscale = tk.Scale(self.scaleWindow, label='B', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
+                           showvalue=0, tickinterval=1, resolution=1, variable=self.b_var, command=self.blue_color_scale)
+    self.Bscale.place(x=100, y=65)
+    self.Gscale = tk.Scale(self.scaleWindow, label='G', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
+                           showvalue=0, tickinterval=1, resolution=1, variable=self.g_var, command=self.green_color_scale)
+    self.Gscale.place(x=100, y=105)
+    self.pack()
+    
+# depending on what which radiobutton selected the color for it will be changed
+# this function takes in a hex color number passed from the scale functions
+   def selected_option(self, mycolor):
+    if(self.selection.get() == 1):
+        self.topframe.configure(background=(mycolor))
+        self.bottomframe.configure(background=(mycolor))
+        self.leftframe.configure(background=(mycolor))
+        self.rightframe.configure(background=(mycolor))
+    elif(self.selection.get() == 2):
+        self.input.text.configure(background=mycolor)
+    elif(self.selection.get() == 3):
+        self.output.text.configure(background=mycolor)
+    elif(self.selection.get() == 4):
+        self.console.configure(background=mycolor)
+    elif(self.selection.get() == 5):
+        self.output.text.configure(foreground=mycolor)
+        self.input.text.configure(foreground=mycolor)
+        self.console.configure(foreground=mycolor)
+# functions for each scale r b g
    def red_color_scale(self, event):
         scalevalue = int(event)
-        print(scalevalue)
         self.rgb_value[0] = scalevalue
         mycolor = '#%02x%02x%02x' % (
             self.rgb_value[0], self.rgb_value[1], self.rgb_value[2])
-        print(mycolor)
-        self.topframe.configure(background=(mycolor))
-        self.bottomframe.configure(background=(mycolor))
-        self.leftframe.configure(background=(mycolor))
-        self.rightframe.configure(background=(mycolor))
+        self.selected_option(mycolor)
 
    def blue_color_scale(self, event):
         scalevalue = int(event)
-        print(scalevalue)
         self.rgb_value[2] = scalevalue
         mycolor = '#%02x%02x%02x' % (
             self.rgb_value[0], self.rgb_value[1], self.rgb_value[2])
-        print(mycolor)
-        self.topframe.configure(background=(mycolor))
-        self.bottomframe.configure(background=(mycolor))
-        self.leftframe.configure(background=(mycolor))
-        self.rightframe.configure(background=(mycolor))
+        self.selected_option(mycolor)
 
    def green_color_scale(self, event):
         scalevalue = int(event)
-        print(scalevalue)
         self.rgb_value[1] = scalevalue
         mycolor = '#%02x%02x%02x' % (
             self.rgb_value[0], self.rgb_value[1], self.rgb_value[2])
-        print(mycolor)
-        self.topframe.configure(background=(mycolor))
-        self.bottomframe.configure(background=(mycolor))
-        self.leftframe.configure(background=(mycolor))
-        self.rightframe.configure(background=(mycolor))
+        self.selected_option(mycolor)
 
    def toggle_python_window(self):
        if (self.show_python.get() == False):
