@@ -48,7 +48,15 @@ def interpret(pseudo_file, python_file, keyword_dict):
     if line.isspace():
       py_lines.append("\n")
       continue
-      
+    
+    # Checks how many spaces are at the beginning of the line
+    pseudo_indent = 0
+    for char in line:
+      if char != " ":
+        break
+      pseudo_indent += 1
+    interpret_state["pseudo_indent"] = pseudo_indent
+  
     line_list = line.split(" ")
     
     # Filters out each line
