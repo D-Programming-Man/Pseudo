@@ -1,7 +1,7 @@
 # Pseudo
 An interpreter that translate English to python code
 
-User Stories for Sprint 2:
+User Stories for Sprint 3:
 
 * As a user, I want to write functions so that I don't have to write a bunch of lines over again
 
