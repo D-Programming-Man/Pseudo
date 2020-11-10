@@ -11,9 +11,15 @@ class TextLineNumbers(tk.Canvas):
     def __init__(self, *args, **kwargs):
         tk.Canvas.__init__(self, *args, **kwargs)
         self.textwidget = None
+        self.font = "Helvetica"
+        self.fontsize = 10
 
     def attach(self, text_widget):
         self.textwidget = text_widget
+
+    def setFont(self, name, size):
+        self.font = name
+        self.fontsize = size
 
     def redraw(self, *args):
         '''redraw line numbers'''
@@ -25,7 +31,7 @@ class TextLineNumbers(tk.Canvas):
             if dline is None: break
             y = dline[1]
             linenum = str(i).split(".")[0]
-            self.create_text(2,y,anchor="nw", text=linenum)
+            self.create_text(2,y,anchor="nw", text=linenum, font=(self.font, self.fontsize))
             i = self.textwidget.index("%s+1line" % i)
 
 class CustomText(tk.Text):
@@ -187,9 +193,13 @@ class Application(tk.Frame):
     if self.settingsTab.fontSize != None:
       self.fontSize = self.settingsTab.fontSize
 
-    #Just updates input and output fonts at the moment
+    #Updating fonts
     self.input.text.config(font = (self.font, self.fontSize))
     self.output.text.config(font = (self.font, self.fontSize))
+    self.console.config(font = (self.font, self.fontSize))
+    self.input.linenumbers.setFont(self.font, self.fontSize)
+    self.output.linenumbers.setFont(self.font, self.fontSize)
+    
     self.close_settings()
 
    def show_settings(self):
