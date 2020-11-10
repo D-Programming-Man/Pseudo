@@ -580,7 +580,7 @@ class Application(tk.Frame):
        sys.exit(0)
 # Window for RGB scales to choose color scheme
 # Radiobuttons allow users to select what they want to change, currently options are{Background,Input,Output,Console,Text}
-  def show_scale_window(self):
+   def show_scale_window(self):
     self.scaleWindow = tk.Tk()
     self.scaleWindow.title('My Window')
     self.scaleWindow.geometry('500x300')
