@@ -155,12 +155,15 @@ class Application(tk.Frame):
   
       # Imports each keyword python file
       self.keyword_dict = {}
-      for keyword in keyword_py:
-         if keyword[-3:] != ".py":
-            print(keyword + " is not a python file. Ignoring keyword.")
+      for keyword_file in keyword_py:
+         if keyword_file[-3:] != ".py":
+            print(keyword_file + " is not a python file. Ignoring keyword.")
             continue
-         keyword_file = keyword[0:-3]
-         self.keyword_dict[keyword_file] = import_module(base_lib + "." + keyword_file, base_lib)
+         keyword = keyword_file[0:-3]
+         try:
+            self.keyword_dict[keyword] = import_module(base_lib + "." + keyword, base_lib)
+         except:
+            print("Could not load the keyword file: " + keyword_file)
       
       # Create all aspects of the window
       self.create_frames()
@@ -330,13 +333,15 @@ class Application(tk.Frame):
   
       # Imports each keyword python file
       self.keyword_dict = {}
-      for keyword in keyword_py:
-         if keyword[-3:] != ".py":
-            print(keyword + " is not a python file. Ignoring keyword.")
+      for keyword_file in keyword_py:
+         if keyword_file[-3:] != ".py":
+            print(keyword_file + " is not a python file. Ignoring keyword.")
             continue
-         keyword_file = keyword[0:-3]
-         self.keyword_dict[keyword_file] = import_module(base_lib + "." + keyword_file, base_lib)
-      
+         keyword = keyword_file[0:-3]
+         try:
+            self.keyword_dict[keyword] = import_module(base_lib + "." + keyword, base_lib)
+         except:
+            print("Could not load the keyword file: " + keyword_file)
        
       self.save_file()
       interpret(self.filePointerName, self.python_file_name, self.keyword_dict)
