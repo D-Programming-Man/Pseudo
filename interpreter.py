@@ -1,6 +1,7 @@
 import sys
 import os
 from collections import deque
+from interlib.utility import ImportQueue
 
 def interpret(pseudo_file, python_file, keyword_dict):
   in_file = open(pseudo_file, "r")
@@ -43,7 +44,11 @@ def interpret(pseudo_file, python_file, keyword_dict):
   interpret_state["py_lines"] = py_lines
   interpret_state["indent"] = indent
   interpret_state["parse_success"] = parse_success
-  interpret_state["in_file_lines"] = in_file_lines 
+  interpret_state["in_file_lines"] = in_file_lines
+  interpret_state["keyword_dict"] = keyword_dict
+  interpret_state["pseudo_indent"] = 0
+  interpret_state["import_queue"] = ImportQueue()
+  
 
   # main loop to parse all words in the file
   while interpret_state["line_numb"] < len(in_file_lines):
@@ -97,14 +102,10 @@ def interpret(pseudo_file, python_file, keyword_dict):
     # Terminate loop when error occurs
     if not parse_success:
       break
-
-
-
+      
   # write every line into py_file
   for line in py_lines:
     py_file.write(line)
-
-
       
   # Debugging stuff
   #for var in all_variables:
@@ -116,17 +117,12 @@ def interpret(pseudo_file, python_file, keyword_dict):
   
   # Runs the output file, stores output into output.txt file
   py_cmds = ""
-  py_line_main_pos = 0
   
   # Kind of stupid, but apparently the output.txt file will not
   # generate the outputs because of the if __name__ == "__main__"
   # line. So we need to omit this and then omit the two space
   # indentation for all lines after it.
-  for line in py_lines:
-    if line == 'if __name__ == "__main__":\n':
-      break
-    py_line_main_pos += 1
-    
+  py_line_main_pos = py_lines.index('if __name__ == "__main__":\n')
   py_lines.remove('if __name__ == "__main__":\n')
   for i in range(0, len(py_lines)):
     if i < py_line_main_pos:
