@@ -30,7 +30,6 @@ def interpret(pseudo_file, python_file, keyword_dict):
   py_lines = deque()
   
   # Some initialization to write to the py_file
-  py_lines.append('if __name__ == "__main__":\n')
   indent = 2
   parse_success = False
   
@@ -97,10 +96,15 @@ def interpret(pseudo_file, python_file, keyword_dict):
     # Terminate loop when error occurs
     if not parse_success:
       break
-      
+
+  # Initial line in py_file
+  py_lines.appendleft('if __name__ == "__main__":\n')
+
   # write every line into py_file
   for line in py_lines:
     py_file.write(line)
+
+
       
   # Debugging stuff
   #for var in all_variables:
