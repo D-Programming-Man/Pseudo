@@ -1,3 +1,36 @@
+import sys
+import os
+from collections import deque
+
+# A small class used for the Import keyword to keep track of
+# cyclic imports of other .pseudo files
+class ImportQueue():
+  def __init__(self):
+    self.queue = []
+    self.queue_rotation = 0
+    self.MAX_ROTATION = 20
+        
+  def is_infinite_loop(self):
+    return self.queue_rotation > self.MAX_ROTATION
+
+  def size(self):
+    return len(self.queue)
+
+  def insert(self, pos, data):
+    self.queue.insert(pos, data)
+    self.queue_rotation += 1
+    
+  def remove(self, data):
+    self.queue.remove(data)
+    
+  def push(self, data):
+    self.queue.append(data)
+  
+  def pop(self):
+    temp = self.queue.pop()
+    self.queue_rotation = 0
+    return temp
+
 # Returns the string "null" to indicate an unknown data type
 def null_data_type(data):
   # Debug stuff
@@ -91,3 +124,82 @@ def print_line(line_numb, line_list):
   for word in line_list:
     line += word + " "
   print("Line " + str(line_numb) + ': ' + line)
+
+# Used within the "Import" handler to translate the other pseudo files into python files.
+# Similar to the interpret function, but slightly modifed
+def import_interpret(pseudo_file, python_file, keyword_dict, import_queue):
+  in_file = open(pseudo_file, "r")
+  py_file = open(python_file, "w")
+  
+  if (os.stat(pseudo_file).st_size == 0):
+    print("Error: Pseudo file " + pseduo_file + " emtpy. Did you properly saved it first?")
+    err = {"success": False}
+    return err
+    
+  in_file_lines = []
+  for line in in_file:
+    in_file_lines.append(line)
+
+  all_variables = {}
+  line_numb = 0
+  py_lines = deque()
+  indent = 0
+  parse_success = False
+
+  interpret_state = {}
+  interpret_state["all_variables"] = all_variables
+  interpret_state["line_numb"] = line_numb
+  interpret_state["py_lines"] = py_lines
+  interpret_state["indent"] = indent
+  interpret_state["parse_success"] = parse_success
+  interpret_state["in_file_lines"] = in_file_lines
+  interpret_state["keyword_dict"] = keyword_dict
+  interpret_state["import_queue"] = import_queue
+  interpret_state["success"] = parse_success 
+
+  while interpret_state["line_numb"] < len(in_file_lines):
+    curr_pc = interpret_state["line_numb"]
+    line = in_file_lines[interpret_state["line_numb"]]
+
+    if line.isspace():
+      py_lines.append("\n")
+      interpret_state["line_numb"] = interpret_state["line_numb"] + 1
+      continue
+
+    pseudo_indent = 0
+    for char in line:
+      if char != " ":
+        break
+      pseudo_indent += 1
+    interpret_state["pseudo_indent"] = pseudo_indent
+  
+    line_list = line.split(" ")
+
+    while "\n" in line_list:
+      line_list.remove("\n")
+
+    while '' in line_list:
+      line_list.remove("")
+
+    if line_list[-1][-1] == "\n":
+      line_list[-1] = line_list[-1][:-1]
+
+    interpret_state["line_list"] = line_list
+    
+    keyword = line_list[0].lower()
+    parse_success = keyword_dict[keyword].handler(interpret_state)
+    interpret_state["success"] = parse_success
+
+    if interpret_state["line_numb"] == curr_pc:
+      interpret_state["line_numb"] += 1
+
+    if not parse_success:
+      break
+    
+  for line in py_lines:
+    py_file.write(line)
+  
+  in_file.close()
+  py_file.close()
+  
+  return interpret_state
