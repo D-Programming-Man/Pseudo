@@ -73,8 +73,9 @@ class CustomText(tk.Text):
 
     def highlighter(self):
 
-        keywords = {"Variable ": "datatype", "Number": "datatype", " Int": "datatype", "String": "datatype",
-                    "str": "datatype", "List ": "datatype", "Table ": "datatype", "Function": "datatype",
+        keywords = {"Variable": "datatype", "Number": "datatype", " Int": "datatype", "String": "datatype",
+                    "str": "datatype", "List": "datatype", "Table": "datatype", "dict": "datatype",
+                    "Function": "datatype",
 
                     "Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword",
                     "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
