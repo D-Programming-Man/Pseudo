@@ -82,7 +82,7 @@ def interpret(pseudo_file, python_file, keyword_dict):
     while '' in line_list:
       line_list.remove("")
         
-    # Removes the newline character from teh last word 
+    # Removes the newline character from the last word
     if line_list[-1][-1] == "\n":
       line_list[-1] = line_list[-1][:-1]
     
