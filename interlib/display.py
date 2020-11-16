@@ -20,7 +20,7 @@ def handler(interpret_state):
   line_numb = interpret_state["line_numb"]
   line_list = interpret_state["line_list"]
   all_variables = interpret_state["all_variables"]
-  indent = interpret_state["pseudo_indent"]
+  indent = interpret_state["pseudo_indent"] + interpret_state["indent"]
   py_lines = interpret_state["py_lines"]
 
   word_pos = 1
