@@ -73,9 +73,9 @@ class CustomText(tk.Text):
 
     def highlighter(self):
 
-        keywords = {"Variable": "datatype", "Number": "datatype", " Int": "datatype", "String": "datatype",
-                    "str": "datatype", "List": "datatype", "Table": "datatype", "dict": "datatype",
-                    "Function": "datatype",
+        keywords = {"Variable": "datatype", "Number": "datatype", "Int ": "datatype", "Int)": "datatype",
+                    "Int,": "datatype", "String": "datatype", "str": "datatype", "List": "datatype",
+                    "Table": "datatype", "dict": "datatype", "Function": "datatype",
 
                     "Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword",
                     "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
@@ -94,7 +94,7 @@ class CustomText(tk.Text):
 
             count = tk.IntVar()
             while True:
-                index = self.search(kw, "kw_finish", "limit", count=count, regexp=True, nocase=True)
+                index = self.search(kw, "kw_finish", "limit", count=count, regexp=False, nocase=True)
                 if index == "":
                     break
                 if count.get() == 0:
@@ -110,6 +110,9 @@ class CustomText(tk.Text):
                     if count.get() == 0:
                         break
                     self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
+
+                elif kw[-1] == ")" or kw[-1] == ",":
+                    self.mark_set("kw_finish", "%s+%sc-%sc" % (index, count.get(), "1"))
 
                 else:
                     self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
