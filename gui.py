@@ -75,7 +75,9 @@ class CustomText(tk.Text):
 
         keywords = {"Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword",
                     "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
-                    "str": "keyword", "Variable ": "datatype", "List ": "datatype", "Table ": "datatype",
+                    "Define": "keyword", "str": "keyword", "def": "keyword", "Run": "keyword",
+                    "Variable ": "datatype", "Number": "datatype", "String": "datatype", "List ": "datatype",
+                    "Table ": "datatype", "Function": "datatype",
                     '"': "string", "'": "string"}
 
         for kw in keywords:
