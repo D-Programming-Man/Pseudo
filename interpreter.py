@@ -87,12 +87,17 @@ def interpret(pseudo_file, python_file, keyword_dict):
       line_list[-1] = line_list[-1][:-1]
     
     #TODO: In here, we would want to check if the very first character of the line is a #, and if so then put the whole line into the py_lines list and parse the next line
+    parse_success = True
+    if line[0] == "#":
+      py_lines.append((pseudo_indent+interpret_state["indent"])*" " + line)
+    elif line_list[0].lower() == "pycode":
+      py_lines.append((pseudo_indent+interpret_state["indent"])*" " + line[7:])
+    else:
+      interpret_state["line_list"] = line_list
     
-    interpret_state["line_list"] = line_list
-    
-    # Parse the lines based on the keywords
-    keyword = line_list[0].lower()
-    parse_success = keyword_dict[keyword].handler(interpret_state)
+      # Parse the lines based on the keywords
+      keyword = line_list[0].lower()
+      parse_success = keyword_dict[keyword].handler(interpret_state)
       
     # At the end of parsing the line, increment the line counter
     # if we did not change the program counter
