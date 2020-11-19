@@ -41,11 +41,19 @@ def handler(interpret_state):
     if file == line_list[1]:
       break;
     file_list_pos += 1
-  
-  pseudo_file_name = pseudo_files[file_list_pos][2:-7]
-  pseudo_file = pseudo_files[file_list_pos][2:]
-  pseudo_file_py = pseudo_file_name + ".py"
-  
+
+  pseduo_file_name = ""
+  pseduo_file = ""
+  pseduo_file_py = ""
+  try:
+    pseudo_file_name = pseudo_files[file_list_pos][2:-7]
+    pseudo_file = pseudo_files[file_list_pos][2:]
+    pseudo_file_py = pseudo_file_name + ".py"
+  except:
+    print("There is no pseudo file named \"" + line_list[1] + "\"")
+    print_line(line_numb, line_list)
+    return False
+
   # Check if the importing pseudo file is a queue of already imported files 
   if pseudo_file_name not in import_queue.queue:
     import_queue.push(pseudo_file_name)
