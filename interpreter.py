@@ -2,6 +2,7 @@ import sys
 import os
 from collections import deque
 from interlib.utility import ImportQueue
+from interlib.utility import print_line
 
 def interpret(pseudo_file, python_file, keyword_dict):
   in_file = open(pseudo_file, "r")
@@ -86,18 +87,28 @@ def interpret(pseudo_file, python_file, keyword_dict):
     if line_list[-1][-1] == "\n":
       line_list[-1] = line_list[-1][:-1]
     
-    #TODO: In here, we would want to check if the very first character of the line is a #, and if so then put the whole line into the py_lines list and parse the next line
-    parse_success = True
-    if line[0] == "#":
+    # Check if the very first character of the line is a #, Pycode, or % and if so then put the whole line into the py_lines list and parse the next line
+    interpret_state["parse_success"] = True
+    if line_list[0][0] == "#":
       py_lines.append((pseudo_indent+interpret_state["indent"])*" " + line)
-    elif line_list[0].lower() == "pycode":
-      py_lines.append((pseudo_indent+interpret_state["indent"])*" " + line[7:])
+    elif line_list[0].lower() == "pycode" or line_list[0][0] == "%":
+      py_line = ""
+      if line_list[0][0] == "%" and len(line_list[0]) > 1:
+        py_line += line_list[0][1:] + " "
+      for i in range(1, len(line_list)):
+        py_line += line_list[i] + " "
+      py_lines.append((pseudo_indent+interpret_state["indent"])*" " + py_line + "\n")
     else:
       interpret_state["line_list"] = line_list
     
       # Parse the lines based on the keywords
       keyword = line_list[0].lower()
-      parse_success = keyword_dict[keyword].handler(interpret_state)
+      try:
+        interpret_state["parse_success"] = keyword_dict[keyword].handler(interpret_state)
+      except:
+        print("Error: \"" + line_list[0] + "\" keyword not known.")
+        print_line(interpret_state["line_numb"], line_list)
+        parse_success = False;
       
     # At the end of parsing the line, increment the line counter
     # if we did not change the program counter
@@ -105,8 +116,8 @@ def interpret(pseudo_file, python_file, keyword_dict):
       interpret_state["line_numb"] += 1
 
     # Terminate loop when error occurs
-    if not parse_success:
-      break
+    if not interpret_state["parse_success"]:
+      return
       
   # write every line into py_file
   for line in py_lines:
@@ -136,7 +147,11 @@ def interpret(pseudo_file, python_file, keyword_dict):
       py_cmds += py_lines[i][2:]
   
   # Print the outputs to the output.txt file
-  exec(py_cmds)
+  try:
+    exec(py_cmds)
+  except:
+    print("Error: Something in your python code did not execute successfully.")
+    print("       Check to make sure that your pseudo code is correctly formatted.")
   output_file.close()
   sys.stdout = default_stdout
   
@@ -146,3 +161,4 @@ def interpret(pseudo_file, python_file, keyword_dict):
   #  print(line[0:-1])
   
   #out_file.close()
+
