@@ -7,17 +7,16 @@ User Stories for Sprint 3:
 
 * As a user, I want to create if-statements so that I can branch and execute different code
 
+* (Extra) As a user, I want to import other pseudo files to my main one so that I can better clean up my code
+  - Partially done, this user story is dependent on the completion of the other user stories
+
+Completed:
+
 * As a user, I want to loop code so that I don't have to copy multiple lines of code over again
 
 * As a user, I want to loop my code by specifying a condition
 
 * As a user, I want to add comments to part of my code so that I can summarize each code section
-
-
-Completed:
-
-* NONE
-
 
 TODO:
 
