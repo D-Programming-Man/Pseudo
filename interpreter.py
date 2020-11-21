@@ -147,8 +147,9 @@ def interpret(pseudo_file, python_file, keyword_dict):
       py_cmds += py_lines[i][2:]
   
   # Print the outputs to the output.txt file
+  recursive_fix = {}
   try:
-    exec(py_cmds)
+    exec(py_cmds, recursive_fix)
   except:
     print("Error: Something in your python code did not execute successfully.")
     print("       Check to make sure that your pseudo code is correctly formatted.")
