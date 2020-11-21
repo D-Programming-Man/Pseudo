@@ -146,7 +146,7 @@ def handler(interpret_state):
   # The position of the line_list
   word_pos = 1
 
-  # Ignoreing the articles if encountered and move along with the word position
+  # Ignoring the articles if encountered and move along with the word position
   if line_list[word_pos] == "a" or line_list[word_pos] == "an":
     word_pos += 1
 
@@ -163,10 +163,7 @@ def handler(interpret_state):
   elif line_list[word_pos].lower() == "table":
     data_type = "table"
     word_pos += 1
-  ### IMPLEMENT LATER
-  #elif line_list[word_pos].lower() == "function"
-  #  data_type = "function"
-  #  word_pos += 1
+
 
   # Checks if the next word is "named", if not then display error
   if line_list[word_pos].lower() == "named":
