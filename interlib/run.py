@@ -4,14 +4,15 @@ from interlib.utility import print_line
     Handler that allows running of functions
 
 Requires:
- . line_numb = The line number we are looking at in the Psudo code file
- . line_list = The line we took from the Psudo code file, but in list format
+ . line_numb = The line number we are looking at in the Pseudo code file
+ . line_list = The line we took from the Pseudo code file, but in list format
  . all_variables = The dictionary that contains all of the variables for that Psudo code file
  . indent = The indentation to correctly format the line of python code
  . py_file = The output python code file we are writing to
 
  Returns:
- . A boolean value. This is used in the interpreter.py file to make sure that the parsing of the code executes correctly. Otherwise the parsing stops and ends it prematurely.
+ . A boolean. This is used in the interpreter.py file to make sure that the parsing of the code executes correctly.
+   Otherwise the parsing stops and ends it prematurely.
 '''
 
 
@@ -69,8 +70,6 @@ def handler(interpret_state):
       word_pos += 1
 
   py_line = indent_space + func_name + "("
-
-  i = 0
 
   for name in param_names:
     py_line += name
