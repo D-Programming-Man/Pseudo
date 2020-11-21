@@ -56,18 +56,24 @@ def handler(interpret_state):
 
     while len(line_list) > word_pos:
 
-      if line_list[word_pos] in data_types:
-        param_types.append(data_types[line_list[word_pos]])
+      datatype = line_list[word_pos]
+      if datatype in data_types:
+        param_types.append(data_types[datatype])
         word_pos += 1
       else:
         print("Error on line " + str(line_numb) + ". Improper data type.")
         print_line(line_numb, line_list)
         return False
 
-      if line_list[word_pos][-1] == ",":
-        param_names.append(line_list[word_pos][:-1])
+      var_name = line_list[word_pos]
+      if var_name[-1] == ",":
+        param_names.append(var_name[:-1])
+        all_variables[var_name[:-1]] = {"data_type": datatype, "value": 0}
       else:
         param_names.append(line_list[word_pos])
+        all_variables[var_name] = {"data_type": datatype, "value": 0}
+
+
       word_pos += 1
 
 
