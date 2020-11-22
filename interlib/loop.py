@@ -1,7 +1,5 @@
 from interlib.utility import print_line
-from interlib.utility import inter_data_type
-from interlib.utility import key_var_check
-
+import random
 '''
     Handler that allows creation of functions
 
@@ -28,25 +26,19 @@ def handler(interpret_state):
   indent_space = indent * " "
 
   iterator_name = line_list[word_pos]
-  iterator_value = None
 
   if(iterator_name.isdigit() == False and all_variables.get(iterator_name) == None):
-    print("Error on line " + str(line_numb) + iterator_name +
+    print("Error on line " + str(line_numb) + ", " + iterator_name +
           " is not a valid integer. Refer to looping documentation")
     print_line(line_numb, line_list)
     return False
   if(iterator_name.isdigit() == False):
     temp = all_variables.get(iterator_name)
     if(type(temp["value"]) is not int):
-        print("Error on line " + str(line_numb) + iterator_name +
+        print("Error on line " + str(line_numb) + ", " + iterator_name +
               " is not a valid integer. Refer to looping documentation")
         print_line(line_numb, line_list)
         return False
-    else:
-      iterator_name = str(temp["value"])
-  else:
-    #   it is a number, still check if its an integer?
-    iterator_value = iterator_name
   # Checking the next word matches and if there is an optional phrase
   step_name = ""
   word_pos += 1
@@ -65,7 +57,7 @@ def handler(interpret_state):
           step_name = step_name[:-1]
 
         if(step_name.isdigit() == False and all_variables.get(step_name) == None):
-            print("Error on line " + str(line_numb) + step_name +
+            print("Error on line " + str(line_numb) + ", " + step_name +
                 " is not a valid integer. Refer to looping documentation")
             print_line(line_numb, line_list)
             return False
@@ -73,28 +65,19 @@ def handler(interpret_state):
         if(step_name.isdigit() == False):
             temp = all_variables.get(step_name)
             if(type(temp["value"]) is not int):
-                print("Error on line " + str(line_numb) + step_name +
+                print("Error on line " + str(line_numb) + ", " + step_name +
                     " is not a valid integer. Refer to looping documentation")
                 print_line(line_numb, line_list)
                 return False
-            else:
-                # variable is an integer
-                step_name = str(temp["value"])
-        else:
+        step_size = step_name
             # it is a number, still check if its an integer?
-            step_size = step_name
+  letters = 'abcdefghijklmnop'
+  rand_iter_name = ''.join(random.choice(letters) for i in range(8))
+  py_line = indent_space + "for " + rand_iter_name +" in range (0,"
+  py_line += iterator_name
 
-  py_line = indent_space + "for ahdfienf in range (0,"
-
-  if iterator_value == None: 
-    py_line += iterator_name
-  else:
-    py_line += iterator_value
-
-  if step_size == None:
+  if step_size != None:
     py_line += ","+step_name
-  else:
-    py_line += ","+step_size
 
   py_line += "):\n"
   py_lines.append(py_line)
