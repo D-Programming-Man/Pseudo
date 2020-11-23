@@ -6,7 +6,7 @@ def handler(interpret_state):
   line_numb = interpret_state["line_numb"]
   line_list = interpret_state["line_list"]
   all_variables = interpret_state["all_variables"]
-  indent = interpret_state["indent"]
+  indent = interpret_state["indent"] + interpret_state["pseudo_indent"]
   py_lines = interpret_state["py_lines"]
 
   while_statement = line_list
