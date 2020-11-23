@@ -68,13 +68,23 @@ def handler(interpret_state):
 
   # Parse all code in the importing pseudo file
   sub_interpret_state = import_interpret(pseudo_file, pseudo_file_py, interpret_state["keyword_dict"], import_queue)
-  if sub_interpret_state["success"]:
+  if sub_interpret_state["parse_success"]:
     import_queue.pop()
-    import_statement = "import " + pseudo_file_name +"\n" 
-    py_lines.appendleft(import_statement)
     
     # Add all functions from the sub_interpret_state to the current interpret_state
     # error out if we override functions, print out what file name of where the
     # overriding function is at
-    
-  return sub_interpret_state["success"]
+    contains_functions = False
+    for var in sub_interpret_state["all_variables"]:
+      if sub_interpret_state["all_variables"][var]["data_type"] == "function":
+        if var not in all_variables:
+          contains_functions = True
+          interpret_state["all_variables"][var] = sub_interpret_state["all_variables"][var]
+          py_lines.appendleft("from " + pseudo_file_name + " import " + var + "\n")
+        else:
+          print("Error: Function " + var + " is already defined in this file as well as in \"" + pseudo_file + "\".")
+          return False
+    if not contains_functions:
+      py_lines.appendleft("import " + pseudo_file_name + "\n")
+      
+  return sub_interpret_state["parse_success"]
