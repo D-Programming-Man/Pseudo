@@ -1,21 +1,25 @@
 # Pseudo
 An interpreter that translate English to python code
 
-User Stories for Sprint 3:
+User Stories for Sprint 4:
+
+* As a user, I want to set a variable to some new value so that I don't need to create new ones
+
+* As a user, I want to see my Pseudo code update in real time
+
+* As a uesr, I want to use things in a dictionary or list
+
+* As a user, I want to add things into a dictionary or list
+
+* As a user, I want to remove things in a dictionary or list
+
+* As a user, I want to retrieve data from a function
+
+* As a user, I want to clear the console so that I don't have to see old data and timestamps when translating my Pseudo code
+
+* As a user, I want to see advance debugging info when the code doesn't run correctly
 
 Completed:
-
-* As a user, I want to create if-statements so that I can branch and execute different code
-
-* As a user, I want to loop code so that I don't have to copy multiple lines of code over again
-
-* As a user, I want to loop my code by specifying a condition
-
-* As a user, I want to add comments to part of my code so that I can summarize each code section
-
-* As a user, I want to write functions so that I don't have to write a bunch of lines over again
-
-* (Extra) As a user, I want to import other pseudo files to my main one so that I can better clean up my code
 
 TODO:
 
