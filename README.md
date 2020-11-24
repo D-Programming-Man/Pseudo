@@ -3,11 +3,9 @@ An interpreter that translate English to python code
 
 User Stories for Sprint 3:
 
-* As a user, I want to create if-statements so that I can branch and execute different code
-
-
-
 Completed:
+
+* As a user, I want to create if-statements so that I can branch and execute different code
 
 * As a user, I want to loop code so that I don't have to copy multiple lines of code over again
 
