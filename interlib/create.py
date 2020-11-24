@@ -140,13 +140,13 @@ def handler(interpret_state):
   line_numb = interpret_state["line_numb"]
   line_list = interpret_state["line_list"]
   all_variables = interpret_state["all_variables"]
-  indent = interpret_state["indent"]
+  indent = interpret_state["pseudo_indent"] + interpret_state["indent"]
   py_lines = interpret_state["py_lines"]
 
   # The position of the line_list
   word_pos = 1
 
-  # Ignoreing the articles if encountered and move along with the word position
+  # Ignoring the articles if encountered and move along with the word position
   if line_list[word_pos] == "a" or line_list[word_pos] == "an":
     word_pos += 1
 
@@ -163,10 +163,7 @@ def handler(interpret_state):
   elif line_list[word_pos].lower() == "table":
     data_type = "table"
     word_pos += 1
-  ### IMPLEMENT LATER
-  #elif line_list[word_pos].lower() == "function"
-  #  data_type = "function"
-  #  word_pos += 1
+
 
   # Checks if the next word is "named", if not then display error
   if line_list[word_pos].lower() == "named":
@@ -214,6 +211,7 @@ def handler(interpret_state):
   # Initialize bools to determine the data type. Could be different from what the user specified. Like, if the user specified a variable but the interpreter determined that the value was a table so there is a confict between data types.
   is_number = False
   is_string = False
+  is_boolean = False
   is_variable = False
   is_list = False
   is_dict = False
@@ -229,6 +227,7 @@ def handler(interpret_state):
       quotation_mark = value_list[0][0]
       is_list = False
       is_number = False
+      is_boolean = False
       is_variable = False
       is_string = True
 
@@ -246,6 +245,7 @@ def handler(interpret_state):
       is_number = False
       is_variable = False
       is_string = False
+      is_boolean = False
       value = lst_parse(all_variables, value_list)
 
       if value == None:
@@ -253,6 +253,13 @@ def handler(interpret_state):
         print_line(line_numb, line_list)
         return False
 
+    # Checking for a boolean
+    elif value_list[0].lower() == "true" or value_list[0].lower() == "false":
+      is_number = False
+      is_variable = False
+      is_string = False
+      is_boolean = True
+      value = value_list[0].capitalize()
 
     # If it doesn't have it, then check if the value is a variable name
     else:
@@ -264,11 +271,13 @@ def handler(interpret_state):
           is_list = False
           is_number = False
           is_variable = True
+          is_boolean = False
           value = value_list[0]
 
       # If the variable name isn't in the dictionary, then it must be a number
       except:
         is_variable = False
+        is_boolean = False
         is_list = False
         is_number = True
 
@@ -287,6 +296,7 @@ def handler(interpret_state):
   else:
     is_number = False
     is_variable = False
+    is_boolean = False
 
     # Checking if the value contains a quotation, if so then it's a string
     if value_list[0][0] == '"' or value_list[0][0] == "'":
@@ -348,6 +358,10 @@ def handler(interpret_state):
       py_line = indent_space + variable_name + ' = "' + str(value + '"\n')
       py_lines.append(py_line)
       data_type = "string"
+    elif is_boolean:
+      py_line = indent_space + variable_name + ' = ' + str(value + '\n')
+      py_lines.append(py_line)
+      data_type = "boolean"
     elif is_variable:
       py_line = indent_space + variable_name + ' = ' + str(value) + "\n"
       py_lines.append(py_line)

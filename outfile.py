@@ -11,6 +11,15 @@ if __name__ == "__main__":
   p = [x, 12, t, 'hello']
   print("List: " + str(p))
 
+  if t == 2:
+    def func(thing: dict):
+      print("restricted")
+      print(thing)
+  else:
+    def func(thing):
+      print(thing)
+  func(q)
+
   t1 = {"23": 1, "E": 2}
   t2 = {"List": p, "Table": t1}
   print("Table: " + str(t2))
@@ -22,6 +31,8 @@ if __name__ == "__main__":
   print("var2 = " + str(var2))
   result = 0
   print("result = " + str(result) + "\n")
+
+  func(q)
 
   print("Testing of Addtions")
   result = 1 + 1

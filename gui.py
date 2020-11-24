@@ -73,43 +73,63 @@ class CustomText(tk.Text):
 
     def highlighter(self):
 
-        keywords = {"Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword",
-                    "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
-                    "str": "keyword", "Variable ": "datatype", "List ": "datatype", "Table ": "datatype",
-                    '"': "string", "'": "string"}
+      keywords = {"Variable": "datatype", "Number": "datatype", "Int ": "datatype", "Int)": "datatype",
+                  "Int,": "datatype", "String": "datatype", "str": "datatype", "List": "datatype",
+                  "Table": "datatype", "dict": "datatype", "Function": "datatype", "Object": "datatype",
 
-        for kw in keywords:
+                  "Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword",
+                  "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
+                  "Define ": "keyword", "def ": "keyword", "Run ": "keyword", "If": "keyword", "Loop": "keyword",
+                  "for": "keyword", "Compare": "keyword", "While": "keyword", "Pycode": "keyword", "%": "keyword",
+                  "Import": "keyword",
 
-            start = self.index("1.0")
-            end = self.index(tk.END)
-            self.mark_set("kw_start", start)
-            self.mark_set("kw_finish", start)
-            self.mark_set("comment_blk", start)
-            self.mark_set("limit", end)
+                  "#": "string", '"': "string", "'": "string"}
 
-            count = tk.IntVar()
-            while True:
-                index = self.search(kw, "kw_finish", "limit", count=count, regexp=True, nocase=True)
-                if index == "":
-                    break
-                if count.get() == 0:
-                    break
-                self.mark_set("kw_start", index)
+      for kw in keywords:
 
-                if kw == '"' or kw == "'":
+        start = self.index("1.0")
+        end = self.index(tk.END)
+        self.mark_set("kw_start", start)
+        self.mark_set("kw_finish", start)
+        self.mark_set("comment_blk", start)
+        self.mark_set("limit", end)
 
-                    self.mark_set("comment_blk", "%s+%sc" % (index, count.get()))
-                    index = self.search(kw, "comment_blk", "limit", count=count, regexp=True, nocase=True)
-                    if index == "":
-                        break
-                    if count.get() == 0:
-                        break
-                    self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
+        count = tk.IntVar()
+        while True:
+          index = self.search(kw, "kw_finish", "limit", count=count, regexp=False, nocase=True)
+          if index == "":
+            break
+          if count.get() == 0:
+            break
+          self.mark_set("kw_start", index)
 
-                else:
-                    self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
+          if kw == '"' or kw == "'":
 
-                self.tag_add(keywords[kw], "kw_start", "kw_finish")
+            self.mark_set("comment_blk", "%s+%sc" % (index, count.get()))
+            index = self.search(kw, "comment_blk", "limit", count=count, regexp=True, nocase=True)
+            if index == "":
+                break
+            if count.get() == 0:
+                break
+            self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
+
+          elif kw == "#" or kw == "%" or kw == "Pycode":
+
+            self.mark_set("comment_blk", "%s+%sc" % (index, count.get()))
+            index = self.search("\n", "comment_blk", "limit", count=count, regexp=True, nocase=True)
+            if index == "":
+                break
+            if count.get() == 0:
+                break
+            self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
+
+          elif kw[-1] == ")" or kw[-1] == ",":
+            self.mark_set("kw_finish", "%s+%sc-%sc" % (index, count.get(), "1"))
+
+          else:
+            self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
+
+          self.tag_add(keywords[kw], "kw_start", "kw_finish")
 
 
 class NumberedText(tk.Frame):
@@ -155,12 +175,15 @@ class Application(tk.Frame):
   
       # Imports each keyword python file
       self.keyword_dict = {}
-      for keyword in keyword_py:
-         if keyword[-3:] != ".py":
-            print(keyword + " is not a python file. Ignoring keyword.")
+      for keyword_file in keyword_py:
+         if keyword_file[-3:] != ".py":
+            print(keyword_file + " is not a python file. Ignoring keyword.")
             continue
-         keyword_file = keyword[0:-3]
-         self.keyword_dict[keyword_file] = import_module(base_lib + "." + keyword_file, base_lib)
+         keyword = keyword_file[0:-3]
+         try:
+            self.keyword_dict[keyword] = import_module(base_lib + "." + keyword, base_lib)
+         except:
+            print("Could not load the keyword file: " + keyword_file)
       
       # Create all aspects of the window
       self.create_frames()
@@ -330,13 +353,15 @@ class Application(tk.Frame):
   
       # Imports each keyword python file
       self.keyword_dict = {}
-      for keyword in keyword_py:
-         if keyword[-3:] != ".py":
-            print(keyword + " is not a python file. Ignoring keyword.")
+      for keyword_file in keyword_py:
+         if keyword_file[-3:] != ".py":
+            print(keyword_file + " is not a python file. Ignoring keyword.")
             continue
-         keyword_file = keyword[0:-3]
-         self.keyword_dict[keyword_file] = import_module(base_lib + "." + keyword_file, base_lib)
-      
+         keyword = keyword_file[0:-3]
+         try:
+            self.keyword_dict[keyword] = import_module(base_lib + "." + keyword, base_lib)
+         except:
+            print("Could not load the keyword file: " + keyword_file)
        
       self.save_file()
       interpret(self.filePointerName, self.python_file_name, self.keyword_dict)
