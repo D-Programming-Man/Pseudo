@@ -32,7 +32,7 @@ def handler(interpret_state):
   #get variable 1 and check that it is valid
   var1_name = line_list[1]
   var1_datatype = inter_data_type(var1_name)
-  print (var1_datatype)
+  #print (var1_datatype)
   if all_variables.get(var1_name) == None and var1_datatype != "number" and var1_datatype != "string":
     print("Error on line " + str(line_numb) + " Variable named " + var1_name + " is not defined.")
     print_line(line_numb, line_list)
