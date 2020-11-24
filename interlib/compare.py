@@ -9,27 +9,33 @@ def handler(interpret_state):
   indent = interpret_state["indent"] + interpret_state["pseudo_indent"]
   py_lines = interpret_state["py_lines"]
 
-  while_statement = line_list
-  while_statement.pop(0) # Remove while word
+  compare_statement = line_list
+  compare_statement.pop(0) # Remove compare keyword
   operand1 = None
   operand2 = None
+  store_variable = None
   operation = ""
   found_is = False
+  found_store = False
 
-  for i in range(len(while_statement)):
-    word = while_statement[i]
+  for i in range(len(compare_statement)):
+    word = compare_statement[i]
 
-    #Last word is assumed to be the second operand with a colon
-    if i == len(while_statement) - 1:
-      last_char = word[-1]
-      if last_char == ":":
-        operand2 = word[:-1]
-      else:
-        print("Error, incorrect syntax for while") # Missing colon at end
-        print_line(line_numb, line_list) 
+    #Last word is store variable
+    if i == len(compare_statement) - 1:
+      store_variable = word
+    
+    #operand2 should be the word before store
+    elif compare_statement[i+1] == "store":
+      lastChar = word[-1]
+      if lastChar != ",":
+        print("Error, missing comma")
+        print_line(line_numb, line_list)
         return False
+      else:
+        operand2 = word[:-1]
 
-    #operand1 should be the first thing initialized (word after while)
+    #operand1 should be the first thing initialized (word after compare)
     elif operand1 == None:
       operand1 = word
 
@@ -38,24 +44,37 @@ def handler(interpret_state):
       if word == "is":
         found_is = True
 
-    # Every word not part of the operands or "is" is part of the operation
-    else:
-      operation = operation + " " + word
+    # getting full operation sentence
+    elif found_store == False:
+      if word == "store":
+        found_store = True
+      else:
+        operation = operation + " " + word
 
-  if operand1 == None or operand2 == None or operation == "" or found_is == False:
-    print("Error, incorrect syntax for while") # Missing colon at end
+  if operand1 == None or operand2 == None or store_variable == None:
+    print("Error, incorrect syntax for compare 1")
     print_line(line_numb, line_list)
     return False
 
-  #Write while statement as python code
+  if operation == "" or found_is == False or found_store == False:
+    print("Error, incorrect syntax for compare 2")
+    print(operation)
+    print_line(line_numb, line_list)
+    return False
+
+  #Write compare statement as python code
   indent_space = indent * " "
   operation_py = operation_interpreter(operation)
   if operation_py == None:
-    print("Error, incorrect syntax for while") # Missworded condition
+    print("Error, incorrect syntax for compare 3") # Missworded condition
     print_line(line_numb, line_list)
     return False
-  py_line = indent_space + "while " + operand1 + " " + operation_py + " " +  operand2 + ":\n"
+  py_line = indent_space + store_variable + " = " + operand1 + " " + operation_py + " " +  operand2 + "\n"
   py_lines.append(py_line)
+
+  op1 = operand_get(operand1, all_variables)
+  op2 = operand_get(operand2, all_variables)
+  all_variables[store_variable] = {"data_type": "boolean", "value": operation_checker(op1, op2, operation)}
   return True
 
 #Gets value from from an operand.

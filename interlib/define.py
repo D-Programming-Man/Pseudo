@@ -26,6 +26,8 @@ def handler(interpret_state):
   indent_space = indent * " "
 
   func_name = line_list[word_pos]
+  if func_name[-1] == ":":
+    func_name = func_name[0:-1]
 
   if func_name in all_variables:
     print("Error on line " + str(line_numb) + ". The function name cannot be shared or overwritten.")
@@ -66,7 +68,7 @@ def handler(interpret_state):
         return False
 
       var_name = line_list[word_pos]
-      if var_name[-1] == ",":
+      if var_name[-1] == "," or var_name[-1] == ":":
         param_names.append(var_name[:-1])
         all_variables[var_name[:-1]] = {"data_type": datatype, "value": 0}
       else:
@@ -96,15 +98,3 @@ def handler(interpret_state):
   all_variables[func_name] = {"data_type": "function", "value": param_dict}
 
   return True
-
-
-
-
-
-
-
-
-
-
-
-

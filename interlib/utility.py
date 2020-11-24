@@ -155,7 +155,6 @@ def import_interpret(pseudo_file, python_file, keyword_dict, import_queue):
   interpret_state["in_file_lines"] = in_file_lines
   interpret_state["keyword_dict"] = keyword_dict
   interpret_state["import_queue"] = import_queue
-  interpret_state["success"] = parse_success 
 
   while interpret_state["line_numb"] < len(in_file_lines):
     curr_pc = interpret_state["line_numb"]
@@ -184,16 +183,26 @@ def import_interpret(pseudo_file, python_file, keyword_dict, import_queue):
     if line_list[-1][-1] == "\n":
       line_list[-1] = line_list[-1][:-1]
 
-    interpret_state["line_list"] = line_list
-    
-    keyword = line_list[0].lower()
-    parse_success = keyword_dict[keyword].handler(interpret_state)
-    interpret_state["success"] = parse_success
+    # Check if the very first character of the line is a #, Pycode, or % and if so then put the whole line into the py_lines list and parse the next line
+    interpret_state["parse_success"] = True
+    if line_list[0][0] == "#":
+      py_lines.append((pseudo_indent + interpret_state["indent"]) * " " + line)
+    elif line_list[0].lower() == "pycode" or line_list[0][0] == "%":
+      py_line = ""
+      if line_list[0][0] == "%" and len(line_list[0]) > 1:
+        py_line += line_list[0][1:] + " "
+      for i in range(1, len(line_list)):
+        py_line += line_list[i] + " "
+      py_lines.append((pseudo_indent+interpret_state["indent"])*" " + py_line + "\n")
+    else:
+      interpret_state["line_list"] = line_list
+      keyword = line_list[0].lower()
+      interpret_state["parse_success"] = keyword_dict[keyword].handler(interpret_state)
 
     if interpret_state["line_numb"] == curr_pc:
       interpret_state["line_numb"] += 1
 
-    if not parse_success:
+    if not interpret_state["parse_success"]:
       break
     
   for line in py_lines:
@@ -203,3 +212,4 @@ def import_interpret(pseudo_file, python_file, keyword_dict, import_queue):
   py_file.close()
   
   return interpret_state
+
