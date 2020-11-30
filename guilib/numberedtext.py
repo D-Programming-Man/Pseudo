@@ -18,7 +18,7 @@ class TextLineNumbers(tk.Canvas):
     def redraw(self, *args):
         '''redraw line numbers'''
         self.delete("all")
-
+        
         i = self.textwidget.index("@0,0")
         while True :
             dline= self.textwidget.dlineinfo(i)
@@ -142,9 +142,12 @@ class NumberedText(tk.Frame):
         self.text.tag_configure("datatype", foreground="blue")
         self.text.tag_configure("string", foreground="green")
 
-
         self.text.bind("<<Change>>", self._on_change)
         self.text.bind("<Configure>", self._on_change)
+        
+        self.has_changed = False
 
     def _on_change(self, event):
         self.linenumbers.redraw()
+        self.has_changed = True
+
