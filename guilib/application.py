@@ -7,6 +7,7 @@ from datetime import datetime
 from tkinter import filedialog as fd
 import sys
 from importlib import import_module
+import threading
 
 class Application(tk.Frame):
    def __init__(self, master=None):
@@ -52,6 +53,9 @@ class Application(tk.Frame):
       self.normal_theme.set(True)
       self.dark_theme.set(False)
       
+      self.is_live_interpreting = tk.BooleanVar()
+      self.is_live_interpreting.set(False)
+      
       # Menu that contains all of the functions of the buttons and more
       self.create_menu()
       
@@ -66,6 +70,8 @@ class Application(tk.Frame):
       self.fontSize = 10
       
       self.rgb_value = [0,0,0]
+
+      self.is_save_load_prompt = False
 
    # Creates frames: top, left, right, bottom. Each holds widgets
    def create_frames(self):
@@ -220,6 +226,7 @@ class Application(tk.Frame):
 
    # prints py file to right window
    def print_to_output(self):
+      
       output = open(self.python_file_name, "r")
       self.output.text.config(state="normal")
       self.output.text.delete("1.0", tk.END)
@@ -229,6 +236,7 @@ class Application(tk.Frame):
 
    
    def take_input_file(self):
+      self.is_save_load_prompt = True
       file = fd.askopenfile(mode ='r', filetypes =[('Pseudo Files', '*.pseudo')])
       time = datetime.now()
       time = time.strftime('%H:%M %m/%d/%Y')
@@ -249,6 +257,9 @@ class Application(tk.Frame):
         self.console.insert(tk.INSERT, "Opened " + os.path.basename(file.name) + " " + time + "\n")
         self.console.config(state = "disabled")
         file.close()
+      self.is_save_load_prompt = False
+      if self.is_live_interpreting.get():
+        self.live_interpret()
 
    #Saves file that is open
    #if no file is open then it will prompt for a save location and name for new file
@@ -256,6 +267,7 @@ class Application(tk.Frame):
       file = None
       time = datetime.now()
       time = time.strftime('%H:%M %m/%d/%Y')
+      self.is_save_load_prompt = True
 
       if self.filePointer == True:
         file = open(self.filePointerName, "w")
@@ -276,6 +288,7 @@ class Application(tk.Frame):
         self.console.insert(tk.INSERT, "Saved " + os.path.basename(file.name) + " " + time + "\n")
         self.console.config(state = "disabled")
         file.close()
+      self.is_save_load_prompt = False
 
    def saveAs_file(self):
     file = fd.asksaveasfile(filetypes = [('Pseudo Files', '*.pseudo')],
@@ -294,7 +307,7 @@ class Application(tk.Frame):
       self.console.insert(tk.INSERT, "Saved " + os.path.basename(file.name) + "  " + time + "\n")
       self.console.config(state = "disabled")
       file.close()
-
+    self.is_save_load_prompt = False
    
    def new_file(self):
       self.master.title("Pseudo")
@@ -310,6 +323,23 @@ class Application(tk.Frame):
       self.console.config(state = "normal")
       self.console.insert(tk.INSERT, console_output.read())
       self.console.config(state = "disable")
+
+   # Runs the interpret_func() every 1 second
+   # Is toggled by the "Live Update" menu option under Run
+   def live_interpret(self):
+      # Set of conditions when we should update
+      if self.is_save_load_prompt or not self.filePointer or not self.is_live_interpreting.get():
+          return
+      threading.Timer(1, self.live_interpret).start()
+      
+      # Only run the interpret function when the input text changes
+      if not self.input.has_changed:
+          return
+      self.console.config(state = "normal")
+      self.console.delete("1.0", tk.END)
+      self.console.config(state = "disable")
+      self.interpreter_func()
+      self.input.has_changed = False
 
    def create_menu(self):
       menubar = tk.Menu(self.master)
@@ -333,6 +363,7 @@ class Application(tk.Frame):
       # Run menu
       runmenu = tk.Menu(menubar, tearoff=0)
       runmenu.add_command(label="Execute", command=lambda :self.interpreter_func(), accelerator="F5")
+      runmenu.add_checkbutton(label="Live Update", onvalue=1, offvalue=0, variable=self.is_live_interpreting, command=self.live_interpret)
       menubar.add_cascade(label="Run", menu=runmenu)
       
       # window menu
