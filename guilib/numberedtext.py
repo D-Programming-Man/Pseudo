@@ -75,7 +75,9 @@ class CustomText(tk.Text):
                   "for": "keyword", "Compare": "keyword", "While": "keyword", "Pycode": "keyword", "%": "keyword",
                   "Import": "keyword",
 
-                  "#": "string", '"': "string", "'": "string"}
+                  '"': "string", "'": "string", "#": "string"}
+
+      self.tag_remove("string", "1.0", tk.END)
 
       for kw in keywords:
 
@@ -95,15 +97,20 @@ class CustomText(tk.Text):
             break
           self.mark_set("kw_start", index)
 
-          if kw == '"' or kw == "'":
+          if kw == "'" or kw == '"':
 
             self.mark_set("comment_blk", "%s+%sc" % (index, count.get()))
-            index = self.search(kw, "comment_blk", "limit", count=count, regexp=True, nocase=True)
-            if index == "":
-                break
+            next_index = self.search(kw, "comment_blk", "limit", count=count, regexp=True, nocase=True)
+
+            if next_index == "":
+              break
             if count.get() == 0:
-                break
-            self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
+              break
+
+            if float(index) + 1 < float(next_index):
+              self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
+            else:
+              self.mark_set("kw_finish", "%s+%sc" % (next_index, count.get()))
 
           elif kw == "#" or kw == "%" or kw == "Pycode":
 
