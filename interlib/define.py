@@ -21,6 +21,7 @@ def handler(interpret_state):
   all_variables = interpret_state["all_variables"]
   indent = interpret_state["pseudo_indent"] + interpret_state["indent"]
   py_lines = interpret_state["py_lines"]
+  pseudo_file = interpret_state["pseudo_file"]
 
   word_pos = 2
   indent_space = indent * " "
@@ -95,6 +96,6 @@ def handler(interpret_state):
 
   py_lines.append(py_line)
 
-  all_variables[func_name] = {"data_type": "function", "value": param_dict}
+  all_variables[func_name] = {"data_type": "function", "value": param_dict, "source": pseudo_file}
 
   return True

@@ -155,6 +155,7 @@ def import_interpret(pseudo_file, python_file, keyword_dict, import_queue):
   interpret_state["in_file_lines"] = in_file_lines
   interpret_state["keyword_dict"] = keyword_dict
   interpret_state["import_queue"] = import_queue
+  interpret_state["pseudo_file"] = pseudo_file
 
   while interpret_state["line_numb"] < len(in_file_lines):
     curr_pc = interpret_state["line_numb"]

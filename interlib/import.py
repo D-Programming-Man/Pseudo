@@ -42,9 +42,9 @@ def handler(interpret_state):
       break;
     file_list_pos += 1
 
-  pseduo_file_name = ""
-  pseduo_file = ""
-  pseduo_file_py = ""
+  pseudo_file_name = ""
+  pseudo_file = ""
+  pseudo_file_py = ""
   try:
     pseudo_file_name = pseudo_files[file_list_pos][2:-7]
     pseudo_file = pseudo_files[file_list_pos][2:]
@@ -78,9 +78,10 @@ def handler(interpret_state):
     for var in sub_interpret_state["all_variables"]:
       if sub_interpret_state["all_variables"][var]["data_type"] == "function":
         if var not in all_variables:
-          contains_functions = True
-          interpret_state["all_variables"][var] = sub_interpret_state["all_variables"][var]
-          py_lines.appendleft("from " + pseudo_file_name + " import " + var + "\n")
+          if sub_interpret_state["all_variables"][var]["source"] == pseudo_file:
+            contains_functions = True
+            interpret_state["all_variables"][var] = sub_interpret_state["all_variables"][var]
+            py_lines.appendleft("from " + pseudo_file_name + " import " + var + "\n")
         else:
           print("Error: Function " + var + " is already defined in this file as well as in \"" + pseudo_file + "\".")
           return False
