@@ -49,6 +49,7 @@ def interpret(pseudo_file, python_file, keyword_dict):
   interpret_state["keyword_dict"] = keyword_dict
   interpret_state["pseudo_indent"] = 0
   interpret_state["import_queue"] = ImportQueue()
+  interpret_state["pseudo_file"] = pseudo_file
   
 
   # main loop to parse all words in the file
