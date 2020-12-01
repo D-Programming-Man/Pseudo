@@ -77,7 +77,7 @@ class CustomText(tk.Text):
 
                   '"': "string", "'": "string", "#": "string"}
 
-      self.tag_remove("string", "1.0", tk.END)
+
 
       for kw in keywords:
 
@@ -107,7 +107,7 @@ class CustomText(tk.Text):
             if count.get() == 0:
               break
 
-            if float(index) + 1 < float(next_index):
+            if int(float(next_index)) > int(float(index)):
               self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
             else:
               self.mark_set("kw_finish", "%s+%sc" % (next_index, count.get()))
