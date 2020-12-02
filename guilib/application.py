@@ -397,7 +397,8 @@ class Application(tk.Frame):
       clearmenu.add_command(label="Input", command=lambda: self.clear_input_window(), accelerator="F9")
       clearmenu.add_command(
           label="Output", command=lambda: self.clear_output_window(), accelerator="F10")
-        
+       menubar.add_cascade(label="Clear", menu=clearmenu)
+         
       # Specific style configurations, currently a child of the theme menu.
       configMenu = tk.Menu(thememenu, tearoff=0)
       thememenu.add_cascade(label="Config", menu=configMenu)
