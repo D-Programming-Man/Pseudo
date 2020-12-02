@@ -199,6 +199,18 @@ class Application(tk.Frame):
    def create_console_window(self):
       self.console = tk.scrolledtext.ScrolledText(self.bottomframe, state = "disabled", cursor = "arrow", height = 6)
       self.console.pack(padx = 5, pady = 10, expand = True, fill = "x")
+      
+   # Functions that clear text
+   def clear_input_window(self):
+      self.input.text.delete('1.0', tk.END)
+   def clear_output_window(self):
+      self.output.text.config(state="normal")
+      self.output.text.delete('1.0', tk.END)
+      self.output.text.config(state="disable")
+   def clear_console_window(self):    
+      self.console.config(state="normal")
+      self.console.delete('1.0', tk.END)
+      self.console.config(state="disabled")
 
    # saves into pseudo file. Calls a print to console and python output
    def interpreter_func(self):
@@ -378,6 +390,13 @@ class Application(tk.Frame):
       thememenu.add_checkbutton(label="Normal", onvalue=1, offvalue=0, variable=self.normal_theme, command=lambda: self.set_theme("normal"))
       thememenu.add_checkbutton(label="Dark", onvalue=1, offvalue=0, variable=self.dark_theme, command=lambda: self.set_theme("dark"))
       menubar.add_cascade(label="Theme", menu=thememenu)
+      
+      # clear menu
+      clearmenu = tk.Menu(menubar, tearoff=0)
+      clearmenu.add_command(label="Console", command=lambda: self.clear_console_window(), accelerator="F8")
+      clearmenu.add_command(label="Input", command=lambda: self.clear_input_window(), accelerator="F9")
+      clearmenu.add_command(
+          label="Output", command=lambda: self.clear_output_window(), accelerator="F10")
         
       # Specific style configurations, currently a child of the theme menu.
       configMenu = tk.Menu(thememenu, tearoff=0)
