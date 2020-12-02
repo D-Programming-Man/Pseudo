@@ -106,10 +106,14 @@ def interpret(pseudo_file, python_file, keyword_dict):
       keyword = line_list[0].lower()
       try:
         interpret_state["parse_success"] = keyword_dict[keyword].handler(interpret_state)
-      except:
+      except KeyError:
         print("Error: \"" + line_list[0] + "\" keyword not known.")
         print_line(interpret_state["line_numb"], line_list)
-        parse_success = False;
+        interpret_state["parse_success"] = False;
+      except IndexError:
+        print("Pseudo code line incomplete")
+        print_line(interpret_state["line_numb"], line_list)
+        interpret_state["parse_success"] = False;
       
     # At the end of parsing the line, increment the line counter
     # if we did not change the program counter
