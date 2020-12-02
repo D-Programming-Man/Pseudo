@@ -40,7 +40,11 @@ class CustomText(tk.Text):
     def _proxy(self, *args):
         # let the actual widget perform the requested action
         cmd = (self._orig,) + args
-        result = self.tk.call(cmd)
+        result = ""
+        try:
+          result = self.tk.call(cmd)
+        except:
+          pass
 
         # generate an event if something was added or deleted,
         # or the cursor position changed
@@ -65,24 +69,22 @@ class CustomText(tk.Text):
 
     def highlighter(self):
 
-      keywords = {
-          '"': "string", "'": "string", "#": "string",
+      keywords = {"#": "string", '"': "string", "'": "string",
+                    
+                  "Variable": "datatype", "Number": "datatype", "Int ": "datatype", "Int)": "datatype",
+                  "Int,": "datatype", "String": "datatype", "str": "datatype", "List": "datatype",
+                  "Table": "datatype", "dict": "datatype", "Function": "datatype", "Object": "datatype",
 
-          "Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword",
-          "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
-          "Define ": "keyword", "def ": "keyword", "Run ": "keyword", "If": "keyword", "Loop": "keyword",
-          "for": "keyword", "Compare": "keyword", "While": "keyword", "Pycode": "keyword", "%": "keyword",
-          "Import": "keyword", "Return": "keyword",
-
-          "Variable": "datatype", "Number": "datatype", "Int)": "datatype",
-          "Int,": "datatype", "String": "datatype", "str": "datatype", "List": "datatype",
-          "Table": "datatype", "dict": "datatype", "Function": "datatype", "Object": "datatype"
+                  "Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword",
+                  "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
+                  "Define ": "keyword", "def ": "keyword", "Run ": "keyword", "If": "keyword", "Loop": "keyword",
+                  "for": "keyword", "Compare": "keyword", "While": "keyword", 
+                  "Import": "keyword",
+                  
+                  "%": "keyword", "Pycode": "keyword"
                   }
 
-      self.tag_remove("keyword", "1.0", tk.END)
-      self.tag_remove("datatype", "1.0", tk.END)
       self.tag_remove("string", "1.0", tk.END)
-
 
       for kw in keywords:
 
@@ -158,8 +160,12 @@ class NumberedText(tk.Frame):
         self.text.bind("<Configure>", self._on_change)
         
         self.has_changed = False
+        self.size = 0
 
     def _on_change(self, event):
         self.linenumbers.redraw()
-        self.has_changed = True
+        size = len(self.text.get("1.0", "end-1c"))
+        if self.size != size:
+          self.has_changed = True
+          self.size = size
 
