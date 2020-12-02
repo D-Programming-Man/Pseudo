@@ -83,7 +83,9 @@ class CustomText(tk.Text):
                   
                   "%": "keyword", "Pycode": "keyword"
                   }
-
+    
+      self.tag_remove("keyword", "1.0", tk.END)
+      self.tag_remove("datatype", "1.0", tk.END)
       self.tag_remove("string", "1.0", tk.END)
 
       for kw in keywords:
