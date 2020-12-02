@@ -65,18 +65,23 @@ class CustomText(tk.Text):
 
     def highlighter(self):
 
-      keywords = {"Variable": "datatype", "Number": "datatype", "Int ": "datatype", "Int)": "datatype",
-                  "Int,": "datatype", "String": "datatype", "str": "datatype", "List": "datatype",
-                  "Table": "datatype", "dict": "datatype", "Function": "datatype", "Object": "datatype",
+      keywords = {
+          '"': "string", "'": "string", "#": "string",
 
-                  "Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword",
-                  "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
-                  "Define ": "keyword", "def ": "keyword", "Run ": "keyword", "If": "keyword", "Loop": "keyword",
-                  "for": "keyword", "Compare": "keyword", "While": "keyword", "Pycode": "keyword", "%": "keyword",
-                  "Import": "keyword",
+          "Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword",
+          "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
+          "Define ": "keyword", "def ": "keyword", "Run ": "keyword", "If": "keyword", "Loop": "keyword",
+          "for": "keyword", "Compare": "keyword", "While": "keyword", "Pycode": "keyword", "%": "keyword",
+          "Import": "keyword", "Return": "keyword",
 
-                  '"': "string", "'": "string", "#": "string"}
+          "Variable": "datatype", "Number": "datatype", "Int)": "datatype",
+          "Int,": "datatype", "String": "datatype", "str": "datatype", "List": "datatype",
+          "Table": "datatype", "dict": "datatype", "Function": "datatype", "Object": "datatype"
+                  }
 
+      self.tag_remove("keyword", "1.0", tk.END)
+      self.tag_remove("datatype", "1.0", tk.END)
+      self.tag_remove("string", "1.0", tk.END)
 
 
       for kw in keywords:
