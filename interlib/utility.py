@@ -123,7 +123,7 @@ def print_line(line_numb, line_list):
   line = ""
   for word in line_list:
     line += word + " "
-  print("Line " + str(line_numb) + ': ' + line)
+  print("Line " + str(line_numb + 1) + ': ' + line)
 
 # Used within the "Import" handler to translate the other pseudo files into python files.
 # Similar to the interpret function, but slightly modifed
@@ -198,13 +198,24 @@ def import_interpret(pseudo_file, python_file, keyword_dict, import_queue):
     else:
       interpret_state["line_list"] = line_list
       keyword = line_list[0].lower()
-      interpret_state["parse_success"] = keyword_dict[keyword].handler(interpret_state)
+      try:
+        interpret_state["parse_success"] = keyword_dict[keyword].handler(interpret_state)
+      except KeyError:
+        print("Error: \"" + line_list[0] + "\" keyword not known in file " + pseudo_file +".")
+        print_line(interpret_state["line_numb"], line_list)
+        interpret_state["parse_success"] = False;
+      except IndexError:
+        print("Pseudo code line incomplete in file " + pseudo_file + ".")
+        print_line(interpret_state["line_numb"], line_list)
+        interpret_state["parse_success"] = False;
 
     if interpret_state["line_numb"] == curr_pc:
       interpret_state["line_numb"] += 1
 
     if not interpret_state["parse_success"]:
-      break
+      in_file.close()
+      py_file.close()
+      return interpret_state
     
   for line in py_lines:
     py_file.write(line)
