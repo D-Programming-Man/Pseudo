@@ -201,8 +201,6 @@ class Application(tk.Frame):
       self.console.pack(padx = 5, pady = 10, expand = True, fill = "x")
       
    # Functions that clear text
-   def clear_input_window(self):
-      self.input.text.delete('1.0', tk.END)
    def clear_output_window(self):
       self.output.text.config(state="normal")
       self.output.text.delete('1.0', tk.END)
@@ -394,11 +392,10 @@ class Application(tk.Frame):
       # clear menu
       clearmenu = tk.Menu(menubar, tearoff=0)
       clearmenu.add_command(label="Console", command=lambda: self.clear_console_window(), accelerator="F8")
-      clearmenu.add_command(label="Input", command=lambda: self.clear_input_window(), accelerator="F9")
       clearmenu.add_command(
-          label="Output", command=lambda: self.clear_output_window(), accelerator="F10")
-       menubar.add_cascade(label="Clear", menu=clearmenu)
-         
+          label="Output", command=lambda: self.clear_output_window(), accelerator="F9")
+      menubar.add_cascade(label="Clear", menu=clearmenu)
+        
       # Specific style configurations, currently a child of the theme menu.
       configMenu = tk.Menu(thememenu, tearoff=0)
       thememenu.add_cascade(label="Config", menu=configMenu)
@@ -501,6 +498,8 @@ class Application(tk.Frame):
       self.bind_all("<Control-o>", self.open_key)
       self.bind_all("<Control-s>", self.save_key)
       self.bind_all("<Escape>", self.exit_key)
+      self.bind_all("<F8>", self.clear_console_key)
+      self.bind_all("<F9>", self.clear_output_key)
       
       # Pack all menu options and display it
       self.master.config(menu=menubar)
@@ -517,6 +516,12 @@ class Application(tk.Frame):
       
    def save_key(self, event):
       self.save_file()
+      
+   def clear_console_key(self, event):
+      self.clear_console_window()
+      
+   def clear_output_key(self, event):
+      self.clear_output_window()
       
    def exit_pseudo(self):
        self.exit_key("Escape")
