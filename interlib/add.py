@@ -45,7 +45,7 @@ def handler(interpret_state):
   var1_number = is_valid_number(var1_name)
   var2_number = is_valid_number(var2_name)
   
-  if is_valid_number(var1_name) == None:
+  if var1_number == None:
     data_type = ""
     try: 
       data_type = all_variables[var1_name]["data_type"]
@@ -60,12 +60,12 @@ def handler(interpret_state):
       print_line(line_numb, line_list)
       return False
       
-  if is_valid_number(var2_name) == None:
+  if var2_number == None:
     data_type = ""
     try: 
-      data_type = all_variables[var1_name]["data_type"]
+      data_type = all_variables[var2_name]["data_type"]
     except:
-      print("Variable \"" + var1_name + "\" does not exist.")
+      print("Variable \"" + var2_name + "\" does not exist.")
       print_line(line_numb, line_list)
       return False
     if data_type == "number":
