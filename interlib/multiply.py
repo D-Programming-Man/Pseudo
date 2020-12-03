@@ -143,7 +143,9 @@ def data_type_check(name, all_variables):
 #Checks if var is a number or a variable in all_varaibles
 #This is called for places where var is allowed to be a variable or a number
 def variableCheck(var, all_variables): 
-  if var.replace('.', '', 1).isdigit():
+  new_var = var.replace('.', '', 1)
+  new_var = new_var.replace('-', '', 1)
+  if new_var.isdigit():
     if var.isdigit():
       return int(var)
     else:
