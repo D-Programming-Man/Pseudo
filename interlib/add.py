@@ -29,7 +29,6 @@ def handler(interpret_state):
   
   var1_name = line_list[word_pos]
   word_pos += 1
-  print(var1_name.isnumeric())
   
   if line_list[word_pos] == "and":
     word_pos += 1
