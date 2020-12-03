@@ -31,7 +31,7 @@ def handler(interpret_state):
     func_name = func_name[0:-1]
 
   if func_name in all_variables:
-    print("Error on line " + str(line_numb) + ". The function name cannot be shared or overwritten.")
+    print("Error: The function name cannot be shared or overwritten.")
     print_line(line_numb, line_list)
     return False
 
@@ -44,14 +44,14 @@ def handler(interpret_state):
     if line_list[word_pos] == "with":
       word_pos += 1
     else:
-      print("Error on line " + str(line_numb) + ". Improper function declaration format.")
+      print("Error: Improper function declaration format.")
       print_line(line_numb, line_list)
       return False
 
     if line_list[word_pos] == "parameter" or line_list[word_pos] == "parameters":
       word_pos += 1
     else:
-      print("Error on line " + str(line_numb) + ". Improper function declaration format.")
+      print("Error: Improper function declaration format.")
       print_line(line_numb, line_list)
       return False
 
@@ -64,7 +64,7 @@ def handler(interpret_state):
         param_types.append(data_types[datatype])
         word_pos += 1
       else:
-        print("Error on line " + str(line_numb) + ". Improper data type.")
+        print("Error: Improper data type.")
         print_line(line_numb, line_list)
         return False
 
