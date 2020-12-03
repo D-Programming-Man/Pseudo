@@ -95,13 +95,15 @@ def inter_data_type(data):
     
   # Knowing that it is not any of these, then it could be a number
   encounter_period = False
-  for char in data:
-    if not char.isdigit():
-      if char == '.' and not encounter_period:
+  for char in range(0, len(data)):
+    if not data[char].isdigit():
+      if data[char] == '.' and not encounter_period:
         encounter_period = True
+      elif data[char] == '-' and char == 0:
+        continue
       else:
         return null_data_type(data)
-  
+        
   # If it passes the number check, then it must be a number  
   return "number"
 
