@@ -63,6 +63,11 @@ def handler(interpret_state):
   else:
     var1_value = all_variables[var1]["value"]
 
+  # Problems will arise when the value loaded is 0
+  # Problems will also arise when the Divdie is used in a funciton that uses an
+  # uninitialized variable, which assuems that variable to be 0. So for this case,
+  # we won't write the true value into the all_variables dictionary since we only
+  # care about the data type.
   var2_value = all_variables.get(var2)
   if(var2_value == None):
     if(var2.isdigit()):
@@ -70,7 +75,7 @@ def handler(interpret_state):
     else:
       var2_value = float(var2)
   else:
-    var2_value = all_variables[var2]["value"]
+    var2_value = 1 #
 
   #format check: maintains Pseudo format
   if(line_list[4]!="store"):
@@ -99,6 +104,11 @@ def handler(interpret_state):
     return False
 
   var3 = line_list[6+offset]
+  if var2_value == 0:
+    print("Error: Trying to divide by zero.")
+    print_line(line_numb, line_list)
+    return False
+  
   if(inter_data_type(var3)!="number"):
     all_variables[var3] = {"data_type":"number","value":var1_value/var2_value}
   else:
@@ -109,45 +119,3 @@ def handler(interpret_state):
   py_line = indent*" " + var3 + " = " + var1 + "/" + var2 +"\n"
   py_lines.append(py_line)
   return True
-
-
-
-
-# Helper functions I(Dvir) use, final version might not need these
-def is_valid_number(element):
-  # Will either return the string as an integer or float, both valid, or return None
-  if element.isnumeric():
-    return int(element)
-  try:
-    float(element)
-    return float(element)
-  except:
-   pass
-
-
-def data_type_check(name, all_variables):
-  # if it exists, returns data type
-  # else None
-  if name in all_variables:
-    return all_variables[name]["data_type"]
-  else:
-    pass
-
-#Helper function for Multiply
-#Checks if var is a number or a variable in all_varaibles
-#This is called for places where var is allowed to be a variable or a number
-def variableCheck(var, all_variables): 
-  if var.replace('.', '', 1).isdigit():
-    if var.isdigit():
-      return int(var)
-    else:
-      return float(var)
-  else:
-    temp = all_variables.get(var)
-    if temp != None:
-      if temp["data_type"] == "number":
-        return temp["value"]
-      else:
-        return None
-    else:
-      return None
