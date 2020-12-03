@@ -201,11 +201,15 @@ class Application(tk.Frame):
       self.console.pack(padx = 5, pady = 10, expand = True, fill = "x")
       
    # Functions that clear text
+   def clear_input_window(self):
+      self.input.text.delete('1.0', tk.END)
+
    def clear_output_window(self):
       self.output.text.config(state="normal")
       self.output.text.delete('1.0', tk.END)
       self.output.text.config(state="disable")
-   def clear_console_window(self):    
+
+   def clear_console_window(self):
       self.console.config(state="normal")
       self.console.delete('1.0', tk.END)
       self.console.config(state="disabled")
@@ -355,7 +359,8 @@ class Application(tk.Frame):
 
    def create_menu(self):
       menubar = tk.Menu(self.master)
-      
+      self.rightClick = tk.Menu(self.master, tearoff=0)
+
       # File menu
       filemenu = tk.Menu(menubar, tearoff=0)
       filemenu.add_command(label="New", command=lambda :self.new_file())
@@ -390,11 +395,15 @@ class Application(tk.Frame):
       menubar.add_cascade(label="Theme", menu=thememenu)
       
       # clear menu
+     
       clearmenu = tk.Menu(menubar, tearoff=0)
       clearmenu.add_command(label="Console", command=lambda: self.clear_console_window(), accelerator="F8")
+      clearmenu.add_command(label="Input", command=lambda: self.clear_input_window(), accelerator="F9")
       clearmenu.add_command(
-          label="Output", command=lambda: self.clear_output_window(), accelerator="F9")
+          label="Output", command=lambda: self.clear_output_window(), accelerator="F10")
+
       menubar.add_cascade(label="Clear", menu=clearmenu)
+      self.rightClick.add_cascade(label="Clear", menu=clearmenu)
         
       # Specific style configurations, currently a child of the theme menu.
       configMenu = tk.Menu(thememenu, tearoff=0)
@@ -499,11 +508,18 @@ class Application(tk.Frame):
       self.bind_all("<Control-s>", self.save_key)
       self.bind_all("<Escape>", self.exit_key)
       self.bind_all("<F8>", self.clear_console_key)
-      self.bind_all("<F9>", self.clear_output_key)
-      
+      self.bind_all("<F9>", self.clear_input_key)
+      self.bind_all("<F10>", self.clear_output_key)
+      self.bind_all("<Button-3>", self.pop_up_menu)
+
       # Pack all menu options and display it
       self.master.config(menu=menubar)
-   
+
+   def pop_up_menu(self, event):
+    try:
+        self.rightClick.tk_popup(event.x_root, event.y_root)
+    finally:
+        self.rightClick.grab_release()
    # New small functions for the menu options
    def newfile_key(self, event):
        self.new_file()
@@ -519,7 +535,8 @@ class Application(tk.Frame):
       
    def clear_console_key(self, event):
       self.clear_console_window()
-      
+   def clear_input_key(self, event):
+      self.clear_input_window()
    def clear_output_key(self, event):
       self.clear_output_window()
       
