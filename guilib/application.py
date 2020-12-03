@@ -237,6 +237,7 @@ class Application(tk.Frame):
       self.save_file()
       interpret(self.filePointerName, self.python_file_name, self.keyword_dict)
       self.input.text.highlighter()
+      self.clear_console_window()
       self.print_to_output()
       self.read_to_console()
 
