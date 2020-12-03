@@ -26,8 +26,10 @@ def handler(interpret_state):
   # Last element in the list is the variable name we want to add to. 
   # Update the last variable in line_list to all_variables with the sum of the first two
   word_pos = 1
+  
   var1_name = line_list[word_pos]
   word_pos += 1
+  print(var1_name.isnumeric())
   
   if line_list[word_pos] == "and":
     word_pos += 1
@@ -41,34 +43,39 @@ def handler(interpret_state):
     var2_name = var2_name[0:-1] 
   word_pos += 1
   
-  var1_number = 0
-  var2_number = 0
+  var1_number = is_valid_number(var1_name)
+  var2_number = is_valid_number(var2_name)
   
   if is_valid_number(var1_name) == None:
-    if all_variables[var1_name]["data_type"] == "number":
-      try:
-        var1_number = all_variables[var1_name]["value"]
-      except:
-        print("Operand \"" + var1_name + "\" has not been created yet.")
-        print_line(line_numb, line_list)
-        return False
+    data_type = ""
+    try: 
+      data_type = all_variables[var1_name]["data_type"]
+    except:
+      print("Variable \"" + var1_name + "\" does not exist.")
+      print_line(line_numb, line_list)
+      return False
+    if data_type == "number":
+      var1_number = all_variables[var1_name]["value"]
     else:
-      print("Operand \"" + var1_name + "\" is not a number type.")
+      print("Operand \"" + var1_name + "\" has not been created yet.")
       print_line(line_numb, line_list)
       return False
       
   if is_valid_number(var2_name) == None:
-    if all_variables[var2_name]["data_type"] == "number":
+    data_type = ""
+    try: 
+      data_type = all_variables[var1_name]["data_type"]
+    except:
+      print("Variable \"" + var1_name + "\" does not exist.")
+      print_line(line_numb, line_list)
+      return False
+    if data_type == "number":
       try:
         var2_number = all_variables[var2_name]["value"]
       except:
         print("Operand \"" + var2_name + "\" has not been created yet.")
         print_line(line_numb, line_list)
         return False
-    else:
-      print("Operand \"" + var2_name + "\" is not a number type.")
-      print_line(line_numb, line_list)
-      return False
   
   if line_list[word_pos] == "store":
     word_pos += 1
