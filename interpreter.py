@@ -122,7 +122,7 @@ def interpret(pseudo_file, python_file, keyword_dict):
 
     # Terminate loop when error occurs
     if not interpret_state["parse_success"]:
-      return
+      break
       
   # write every line into py_file
   for line in py_lines:
