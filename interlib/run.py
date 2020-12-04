@@ -1,5 +1,21 @@
 from interlib.utility import print_line
 
+help_manual = "  Note: \n" \
+              "  You must define a function first with the \"Define\" keyword to use this keyword \n" \
+              "  The syntax is very similar to the \"Define\" keyword \n" \
+              "  Make sure this statement doesn't end with a colon (:) \n" \
+              "  \n" \
+              "  Syntax: \n" \
+              "  Run function <function name> [with parameter[s] (number/string/list/table) (<variable>/<number>/<string>)[, (number/string/list/table) (<variable>/<number>/<string>][, ...]]: \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Run function hello_world \n" \
+              "  Run function display_number with parameter number x \n" \
+              "  Run function add_display with parameters number op1, number op2 \n" \
+              "  Run function color_name with parameter string name \n" \
+              "  Run function print_this_text with parameter string \"Text\" \n" \
+              "  - Note that you can only pass strings that contains no spaces inbetween words \n" \
+
 '''
     Handler that allows running of functions
 

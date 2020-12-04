@@ -2,7 +2,7 @@ from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
 help_manual = "  Syntax: \n" \
-              "  Compare (<variable>/<number>/<string>) is [[not] equal to/less than [or equal to]/greater than [or equal to]] (<variable>/<number>/<string>), store [it/the result] into <variable> \n" \
+              "  Compare (<variable>/<number>/<string>) is ([not] equal to/(less/greater) than [or equal to]) (<variable>/<number>/<string>), store [it/the result] into <variable> \n" \
               "  \n" \
               "  Examples: \n" \
               "  Append 1 to some_list \n" \

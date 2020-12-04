@@ -1,6 +1,17 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
+help_manual = "  Syntax: \n" \
+              "  Subtract (<variable name>/<number>) from (<variable name>/<number>), store [it/the result] into <variable name> \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Subtract 1 from 2, store into x \n" \
+              "  Subtract x from 4, store into y \n" \
+              "  Subtract 1.4843 from 3.431, store into w \n" \
+              "  Subtract 1.32 from y, store into z \n" \
+              "  Subtract var_1 from var_2, store into result \n"
+
+
 '''
     Main arithmetic functions
     

@@ -4,6 +4,15 @@ import os
 import sys
 import glob
 
+help_manual = "  Syntax: \n" \
+              "  Import <pseudo file name> \n" \
+              "  - The <pseudo file name> is a file name without the extension\n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Import helper \n" \
+              "  Import Some_Other_Pseudo_File \n" \
+              "  Import Another_File \n"
+
 '''
     Main arithmetic functions
     

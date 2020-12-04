@@ -1,5 +1,23 @@
 from interlib.utility import print_line
 
+help_manual = "  Syntax: \n" \
+              "  Define function <function name> [with parameter[s] (number/string/list/table) (<variable>/<number>/<string>)[, (number/string/list/table) (<variable>/<number>/<string>][, ...]]: \n" \
+              "    ... function code goes under here ...\n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Define function hello_world: \n" \
+              "    Display \"Hello World\" \n" \
+              "  Define function display_number with parameter number x: \n" \
+              "    Display x \n" \
+              "  Define function add_display with parameters number op1, number op2: \n" \
+              "    Add op1 and op2, store it into result \n" \
+              "    Display result \n" \
+              "  Define function count_down with parameter number counter: \n" \
+              "    While counter is greater than 0: \n" \
+              "      Subtract 1 from counter, store the result into counter \n" \
+              "      Display counter \n" \
+              "    Display \"Countdown is 0!\" \n"
+
 '''
     Handler that allows creation of functions
 

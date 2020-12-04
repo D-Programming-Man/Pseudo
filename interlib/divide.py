@@ -1,6 +1,16 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
+help_manual = "  Syntax: \n" \
+              "  Divide (<variable name>/<number>) by (<variable name>/<number>), store [it/the result] into <variable name> \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Divide 10 by 5, store into x \n" \
+              "  Divide 15 by x, store into x \n" \
+              "  Divide y by z, store into result \n" \
+              "  Divide 1.342 by 1.11, store the reuslt into result \n" \
+              "  Divide z by 14.2, store it into some_variable_name \n"
+
 '''
     Main arithmetic functions
     

@@ -1,5 +1,22 @@
 from interlib.utility import print_line
 import random
+
+help_manual = "  Syntax: \n" \
+              "  Loop (<variable>/<number>) times[ with step size of (<variable>/<number>)]: \n" \
+              "    ... code here ... \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Loop 10 times: \n" \
+              "    Add 1 and x, store into x \n" \
+              "    Display \"Counter is: \" , x \n" \
+              "  Loop some_number_of times: \n" \
+              "    Add 1 and x, store into x \n" \
+              "    Append x into some_list \n" \
+              "  Loop 100 times with step size of 20: \n" \
+              "    Display \"This should only show up 5 times\" \n" \
+              "  Loop x times with step size of y: \n" \
+              "    Display \"You can specify step sizes with variables\" \n" \
+
 '''
     Handler that allows creation of functions
 

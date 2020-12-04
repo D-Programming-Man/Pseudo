@@ -2,6 +2,9 @@ import sys
 import os
 from collections import deque
 
+help_manual = "  There is no keyword for \"Utility\". It's only here to contain miscellaneous \n" \
+              "    functions for the other keyword files \n"
+
 # A small class used for the Import keyword to keep track of
 # cyclic imports of other .pseudo files
 class ImportQueue():
