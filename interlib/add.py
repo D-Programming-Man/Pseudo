@@ -1,6 +1,17 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
+help_manual = "  Syntax: \n" \
+              "  Add (<variable name>/<number>) and (<variable name>/<number>), store [it/the result] into <variable name> \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Add 1 and 2, store into x \n" \
+              "  Add x and 4, store into y \n" \
+              "  Add 1.4843 and 3.431, store into w \n" \
+              "  Add 1.32 and y, store into z \n" \
+              "  Add var_1 and var_2, store into result \n"
+              
+
 '''
     Main arithmetic functions
     
