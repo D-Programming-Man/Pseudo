@@ -3,6 +3,9 @@ import os
 from collections import deque
 from interlib.utility import ImportQueue
 from interlib.utility import print_line
+from importlib import import_module
+
+import importlib.util
 
 def interpret(pseudo_file, python_file, keyword_dict):
   in_file = open(pseudo_file, "r")
@@ -49,8 +52,7 @@ def interpret(pseudo_file, python_file, keyword_dict):
   interpret_state["keyword_dict"] = keyword_dict
   interpret_state["pseudo_indent"] = 0
   interpret_state["import_queue"] = ImportQueue()
-  interpret_state["pseudo_file"] = pseudo_file
-  
+  interpret_state["pseudo_file"] = pseudo_file.split("/")[-1]
 
   # main loop to parse all words in the file
   while interpret_state["line_numb"] < len(in_file_lines):
@@ -141,6 +143,7 @@ def interpret(pseudo_file, python_file, keyword_dict):
   py_file.close()
   
   # Runs the output file, stores output into output.txt file
+  #py_cmds = "import sys\nprint(sys.path)\n"
   py_cmds = ""
   
   # Kind of stupid, but apparently the output.txt file will not
@@ -157,6 +160,28 @@ def interpret(pseudo_file, python_file, keyword_dict):
   
   # Print the outputs to the output.txt file
   recursive_fix = {}
+  path_list = pseudo_file.split("/")[0:-1]
+  for var in all_variables:
+    try:
+      file_name = all_variables[var]["source"]
+    except:
+      file_name = interpret_state["pseudo_file"]
+    if not file_name == interpret_state["pseudo_file"]:
+      file_regular_name = file_name[0:-7]
+      py_name = file_regular_name + ".py"
+      path_list.append(py_name)
+      full_path_list = "\\".join(path_list)
+      
+      # Import the funcitons 
+      spec = importlib.util.spec_from_file_location(py_name, full_path_list)
+      module = importlib.util.module_from_spec(spec)
+      sys.modules[py_name] = module
+      sys.modules[file_regular_name] = module
+      spec.loader.exec_module(module)
+      sys.path.append(full_path_list)
+      
+      path_list.pop()
+      
   try:
     exec(py_cmds, recursive_fix)
   except:
