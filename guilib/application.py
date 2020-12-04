@@ -233,14 +233,16 @@ class Application(tk.Frame):
         #Right frame
         self.help_rightFrame = tk.Frame(self.help_tab)
         self.help_rightFrame.config(bg = frame_color)
-        self.help_rightFrame.pack(side = tk.RIGHT, padx = padding)
+        self.help_rightFrame.pack(side = tk.RIGHT, padx = padding - 7)
         
         #Scroll Text Box
-        self.help_text = tk.Text(master=self.help_tab)
+        self.help_text = tk.scrolledtext.ScrolledText(master=self.help_tab)
         self.help_text.config(state = "normal", background = text_bg_color, foreground = text_color, insertbackground = text_color)
         self.help_text.pack(fill = "both", expand = True)
         
+        
         # Get help manuals for each file
+        keyword_titles = {}
         if (self.reload_library()):
           base_lib = "interlib"
           keyword_py = [f for f in os.listdir(base_lib) if os.path.isfile(os.path.join(base_lib, f))]
@@ -248,14 +250,37 @@ class Application(tk.Frame):
             manual = getattr(sys.modules[keyword], "help_manual", None)
             keyword_name = keyword[0:-3]
             first_letter = keyword_name[0].capitalize()
-            keyword_name = first_letter + keyword_name[1:]
-            self.help_text.insert(tk.END, keyword_name + ":\n")
+            keyword_name = first_letter + keyword_name[1:] + ":"
+            self.help_text.insert(tk.END, keyword_name + "\n")
+            keyword_titles[keyword_name] = {"tag": "keyword"}
             if not manual == None:
               self.help_text.insert(tk.END, manual + "\n")
               
             else:
+              keyword_name = keyword_name[0:-1]
               self.help_text.insert(tk.END, "  Keyword \"" + keyword_name + "\" does not have a help manual in it's file.\n")
             self.help_text.insert(tk.END, "\n")
+         
+        # Figure where each keyword title is located at in the text
+        all_help_text = self.help_text.get("1.0", tk.END)
+        all_help_text_list = all_help_text.split("\n")
+        counter = 1
+        for text in all_help_text_list:
+          if not text.isspace():
+            word_tag = None
+            try:
+              word_tag = keyword_titles[text]
+              keyword_titles[text]["line"] = counter
+            except:
+              pass
+          counter += 1
+        
+        # Bold all keyword titles
+        self.help_text.tag_configure("keyword", font=("Courier", 15, "bold"))
+        for keyword_ in keyword_titles:
+          first = str(keyword_titles[keyword_]["line"]) + ".0"
+          end = str(keyword_titles[keyword_]["line"]) + ".end"
+          self.help_text.tag_add(keyword_titles[keyword_]["tag"], first, end)
         self.help_text.config(state = "disabled")
 
 
