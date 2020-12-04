@@ -1,6 +1,15 @@
 from interlib.utility import key_var_check
 from interlib.utility import print_line
 
+help_manual = "  Syntax: \n" + \
+              "  Create [a/an] <data type> named <variable name> with [a] (value/values) <value> \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Create a variable named x with a value 1 \n" \
+              "  Create a variable named text with a value \"This is a text\" \n" \
+              "  Create a list named new_list with values [1, 2, 3, 4, 5] \n" \
+              "  Create a table named new_table with a value {1: \"Text\"} \n" \
+
 # Global so that we don't create this list everytime we run the "Create" keyword
 special_characters = ['[', ']', '`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
                         '_', '-', '=', '+', '{', '}', ';', ':', '"', "'", ',', '<', '.', '>',
