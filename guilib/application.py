@@ -42,19 +42,26 @@ class Application(tk.Frame):
       # Menu that contains all of the functions of the buttons and more
       self.create_menu()
       
-
+      # Used for Saving/Loading files
       self.filePointer = False
       self.filePointerName = ""
       self.python_file_name = ""
+      
+      # Used for the Edit->Settings windows 
       self.settingsOpen = False
       self.fontList = ("Courier", "Times", "Helvetica", "Comic Sans MS")
       self.font = "Helvetica"
       self.fontValue = 0
       self.fontSize = 10
       
+      # Used for the themes
       self.rgb_value = [0,0,0]
 
+      # Used for the live_interpreting() function
       self.is_save_load_prompt = False
+
+      # Used for the Help option
+      self.is_help_open = False
 
    # Creates frames: top, left, right, bottom. Each holds widgets
    def create_frames(self):
@@ -70,6 +77,10 @@ class Application(tk.Frame):
    def close_settings(self):
     self.settingsOpen = False
     self.settingsTab.destroy()
+    
+   def close_help_window(self):
+     self.is_help_open = False
+     self.help_tab.destroy()
 
    def update_settings(self):
     if self.settingsTab.fontValue != None:
@@ -163,6 +174,90 @@ class Application(tk.Frame):
         savebutton.pack(side = tk.LEFT, padx = 10)
         cancelbutton = tk.Button(bottomFrame, text = "Cancel", fg = "black", command = self.close_settings)
         cancelbutton.pack(side = tk.LEFT, padx = 10)
+        
+   def show_help_window(self):
+      if not self.is_help_open:
+        self.is_help_open = True
+        tabWidth = 700
+        tabHeight = 500
+        padding = 10
+        parentStats = self.master.geometry().split('+')
+        parentWidth = int(parentStats[0].split('x')[0])
+        parentHeight = int(parentStats[0].split('x')[1])
+
+        #If maximized window, will assume parent is at x = 0, y = 0
+        if self.master.state() == "zoomed":
+          parentStats[1] = "0"
+          parentStats[2] = "0"
+
+        #Calculates x and y values for settings window to be centered
+        propperX = int(parentStats[1]) + int(parentWidth/2) - int(tabWidth/2);
+        propperY = int(parentStats[2]) + int(parentHeight/2) - int(tabHeight/2);
+
+        #Determine color theme
+        frame_color = "#FEF9DA"
+        text_bg_color = "white"
+        text_color = "black"
+        if self.gui_theme.get() == "dark":
+          frame_color = "#6E7074"
+          text_bg_color = "#45474B"
+          text_color = "white"
+
+        #Basic setttings window structure
+        self.help_tab = tk.Tk()
+        self.help_tab.geometry(str(tabWidth) + "x" + str(tabHeight)  + "+" + str(propperX) + "+" + str(propperY))
+        self.help_tab.title("Help Document")
+        self.help_tab.wm_attributes("-topmost", 1)
+        self.help_tab.focus_force()
+        self.help_tab.protocol("WM_DELETE_WINDOW", self.close_help_window)
+        self.help_tab["bg"] = frame_color
+        self.help_tab.fontValue = None
+        self.help_tab.fontSize = None
+        
+        #Top frame
+        self.help_topFrame = tk.Frame(self.help_tab)
+        self.help_topFrame.config(bg = frame_color)
+        self.help_topFrame.pack(pady = padding)
+
+
+        #Bottom frame
+        self.help_bottomFrame = tk.Frame(self.help_tab)
+        self.help_bottomFrame.config(bg = frame_color)
+        self.help_bottomFrame.pack(side = tk.BOTTOM, pady = padding)
+        
+        #Left frame
+        self.help_leftFrame = tk.Frame(self.help_tab)
+        self.help_leftFrame.config(bg = frame_color)
+        self.help_leftFrame.pack(side = tk.LEFT, padx = padding)
+        
+        #Right frame
+        self.help_rightFrame = tk.Frame(self.help_tab)
+        self.help_rightFrame.config(bg = frame_color)
+        self.help_rightFrame.pack(side = tk.RIGHT, padx = padding)
+        
+        #Scroll Text Box
+        self.help_text = tk.Text(master=self.help_tab)
+        self.help_text.config(state = "normal", background = text_bg_color, foreground = text_color, insertbackground = text_color)
+        self.help_text.pack(fill = "both", expand = True)
+        
+        # Get help manuals for each file
+        if (self.reload_library()):
+          base_lib = "interlib"
+          keyword_py = [f for f in os.listdir(base_lib) if os.path.isfile(os.path.join(base_lib, f))]
+          for keyword in keyword_py:
+            manual = getattr(sys.modules[keyword], "help_manual", None)
+            keyword_name = keyword[0:-3]
+            first_letter = keyword_name[0].capitalize()
+            keyword_name = first_letter + keyword_name[1:]
+            self.help_text.insert(tk.END, keyword_name + ":\n")
+            if not manual == None:
+              self.help_text.insert(tk.END, manual + "\n")
+              
+            else:
+              self.help_text.insert(tk.END, "  Keyword \"" + keyword_name + "\" does not have a help manual in it's file.\n")
+            self.help_text.insert(tk.END, "\n")
+        self.help_text.config(state = "disabled")
+
 
    # Creates textbox to receive user input
    def create_input_window(self):
@@ -195,11 +290,7 @@ class Application(tk.Frame):
       self.console.delete('1.0', tk.END)
       self.console.config(state="disabled")
 
-   # saves into pseudo file. Calls a print to console and python output
-   def interpreter_func(self):
-      # Maybe have a toggle to enable library updates in here so that when
-      # a user wants to develop their own keyword, then they can live test it
-      # and not have to exit out of the application to load it in.
+   def reload_library(self):
       base_lib = "interlib"
       try:
         keyword_py = [f for f in os.listdir(base_lib) if os.path.isfile(os.path.join(base_lib, f))]
@@ -208,7 +299,7 @@ class Application(tk.Frame):
         self.console.config(state="normal")
         self.console.insert(tk.END, "The \"interlib\" folder is not in the same directory as this program.")
         self.console.config(state="disabled")
-        return
+        return False
       
       # Imports each keyword python file from the "interlib" folder
       curr_dir = os.getcwd() + "\\interlib"
@@ -230,14 +321,17 @@ class Application(tk.Frame):
                sys.path.append(py_file_path)
          except:
             print("Could not load the keyword file: " + keyword_file)
-       
+      return True
       
-      self.clear_console_window()
-      self.save_file()
-      interpret(self.filePointerName, self.python_file_name, self.keyword_dict)
-      self.input.text.highlighter()
-      self.print_to_output()
-      self.read_to_console()
+   # saves into pseudo file. Calls a print to console and python output
+   def interpreter_func(self):
+      if (self.reload_library()):
+        self.clear_console_window()
+        self.save_file()
+        interpret(self.filePointerName, self.python_file_name, self.keyword_dict)
+        self.input.text.highlighter()
+        self.print_to_output()
+        self.read_to_console()
 
    # prints py file to right window
    def print_to_output(self):
@@ -275,6 +369,7 @@ class Application(tk.Frame):
       self.is_save_load_prompt = False
       if self.is_live_interpreting.get():
         self.live_interpret()
+        
 
    #Saves file that is open
    #if no file is open then it will prompt for a save location and name for new file
@@ -331,6 +426,7 @@ class Application(tk.Frame):
       self.python_file_name = ""
       self.input.text.delete('1.0', fd.END)
       self.output.text.delete('1.0', fd.END)
+      self.is_live_interpreting.set(False)
    
    # Reads the output.txt file and puts it into the console of the GUI
    def read_to_console(self):
@@ -394,16 +490,20 @@ class Application(tk.Frame):
       menubar.add_cascade(label="Theme", menu=thememenu)
       
       # clear menu
-     
       clearmenu = tk.Menu(menubar, tearoff=0)
       clearmenu.add_command(label="Console", command=lambda: self.clear_console_window(), accelerator="F8")
       clearmenu.add_command(label="Input", command=lambda: self.clear_input_window(), accelerator="F9")
       clearmenu.add_command(
           label="Output", command=lambda: self.clear_output_window(), accelerator="F10")
-
       menubar.add_cascade(label="Clear", menu=clearmenu)
+      
       self.rightClick.add_cascade(label="Clear", menu=clearmenu)
-        
+      
+      # help menu (Button)
+      helpmenu = tk.Menu(menubar, tearoff=0)
+      helpmenu.add_command(label="Help", command=lambda: self.show_help_window())
+      menubar.add_cascade(label="Help", menu=helpmenu)
+      
       # Specific style configurations, currently a child of the theme menu.
       configMenu = tk.Menu(thememenu, tearoff=0)
       thememenu.add_cascade(label="Config", menu=configMenu)
@@ -705,17 +805,33 @@ class Application(tk.Frame):
          self.bottomframe["bg"] = "#FEF9DA"
          self.leftframe["bg"] = "#FEF9DA"
          self.rightframe["bg"] = "#FEF9DA"
+         self.input.linenumbers.configure(background = "#E4E4E4", highlightbackground = "#E4E4E4")
+         self.input.linenumbers.fill = "black"
+         self.input.linenumbers.redraw()
          self.input.text.configure(background="white", foreground="black", insertbackground="black")
          self.input.text.tag_configure("keyword", foreground="red")
          self.input.text.tag_configure("datatype", foreground="blue")
          self.input.text.tag_configure("string", foreground="green")
 
+         self.output.linenumbers.configure(background = "#E4E4E4", highlightbackground = "#E4E4E4")
+         self.output.linenumbers.fill = "black"
+         self.output.linenumbers.redraw()
          self.output.text.configure(background="white", foreground="black", insertbackground="black")
          self.output.text.tag_configure("keyword", foreground="red")
          self.output.text.tag_configure("datatype", foreground="blue")
          self.output.text.tag_configure("string", foreground="green")
+         self.output.text.highlighter()
 
          self.console.configure(background="white", foreground="black")
+         
+         if self.is_help_open:
+           self.help_tab["bg"] = "#FEF9DA"
+           self.help_topFrame["bg"] = "#FEF9DA"
+           self.help_bottomFrame["bg"] = "#FEF9DA"
+           self.help_leftFrame["bg"] = "#FEF9DA"
+           self.help_rightFrame["bg"] = "#FEF9DA"
+           self.help_text.configure(background="white", foreground="black", insertbackground="black")
+         
          return
       
       if (theme == "normal"):
@@ -745,6 +861,14 @@ class Application(tk.Frame):
          self.output.text.highlighter()
 
          self.console.configure(background="white", foreground="black")
+         
+         if self.is_help_open:
+           self.help_tab["bg"] = "#FEF9DA"
+           self.help_topFrame["bg"] = "#FEF9DA"
+           self.help_bottomFrame["bg"] = "#FEF9DA"
+           self.help_leftFrame["bg"] = "#FEF9DA"
+           self.help_rightFrame["bg"] = "#FEF9DA"
+           self.help_text.configure(background="white", foreground="black", insertbackground="black")
       
       if (theme == "dark"):
          self.gui_theme.set("dark")
@@ -773,3 +897,11 @@ class Application(tk.Frame):
          self.output.text.highlighter()
 
          self.console.configure(background="#45474B", foreground="white")
+         
+         if self.is_help_open:
+           self.help_tab["bg"] = "#6E7074"
+           self.help_topFrame["bg"] = "#6E7074"
+           self.help_bottomFrame["bg"] = "#6E7074"
+           self.help_leftFrame["bg"] = "#6E7074"
+           self.help_rightFrame["bg"] = "#6E7074"
+           self.help_text.configure(background="#45474B", foreground="white", insertbackground="white")
