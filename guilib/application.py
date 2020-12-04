@@ -10,8 +10,6 @@ from guilib.numberedtext import NumberedText
 from interpreter import interpret
 from datetime import datetime
 
-
-
 class Application(tk.Frame):
    def __init__(self, master=None):
       super().__init__(master)
@@ -203,28 +201,35 @@ class Application(tk.Frame):
       # a user wants to develop their own keyword, then they can live test it
       # and not have to exit out of the application to load it in.
       base_lib = "interlib"
-      keyword_py = [f for f in os.listdir(base_lib) if os.path.isfile(os.path.join(base_lib, f))]
-  
-      # Imports each keyword python file
+      try:
+        keyword_py = [f for f in os.listdir(base_lib) if os.path.isfile(os.path.join(base_lib, f))]
+      except:
+        self.clear_console_window()
+        self.console.config(state="normal")
+        self.console.insert(tk.END, "The \"interlib\" folder is not in the same directory as this program.")
+        self.console.config(state="disabled")
+        return
+      
+      # Imports each keyword python file from the "interlib" folder
       curr_dir = os.getcwd() + "\\interlib"
       self.keyword_dict = {}
       for keyword_file in keyword_py:
          if keyword_file[-3:] != ".py":
             print(keyword_file + " is not a python file. Ignoring keyword.")
             continue
-         py_file_path = curr_dir + "\\" + keyword_file
-         keyword = keyword_file[0:-3]
-         #try:
-         spec = importlib.util.spec_from_file_location(keyword_file, py_file_path)
-         module = importlib.util.module_from_spec(spec)
-         sys.modules[keyword_file] = module
-         sys.modules[keyword] = module
-         spec.loader.exec_module(module)
-         self.keyword_dict[keyword] = module
-         if py_file_path not in sys.path:
-            sys.path.append(py_file_path)
-         #except:
-         #   print("Could not load the keyword file: " + keyword_file)
+         try:
+            py_file_path = curr_dir + "\\" + keyword_file
+            keyword = keyword_file[0:-3]
+            spec = importlib.util.spec_from_file_location(keyword_file, py_file_path)
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[keyword_file] = module
+            sys.modules[keyword] = module
+            spec.loader.exec_module(module)
+            self.keyword_dict[keyword] = module
+            if py_file_path not in sys.path:
+               sys.path.append(py_file_path)
+         except:
+            print("Could not load the keyword file: " + keyword_file)
        
       
       self.clear_console_window()
