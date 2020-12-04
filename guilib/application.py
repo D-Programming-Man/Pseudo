@@ -2,13 +2,14 @@ import sys
 import os
 import threading
 import tkinter as tk
+import importlib.util
 from tkinter import ttk
 from tkinter import scrolledtext
 from tkinter import filedialog as fd
 from guilib.numberedtext import NumberedText
 from interpreter import interpret
 from datetime import datetime
-from importlib import import_module
+
 
 
 class Application(tk.Frame):
@@ -18,24 +19,6 @@ class Application(tk.Frame):
       master.title("Pseudo")
       #master.geometry("720x480")
       self.pack()
-      
-      # What this does is to dynamically import python files/modules from the "interlib" directory.
-      # This means that we won't have to hardcode function names in the interpreter.py file,
-      # adding more flexability to the interpreter
-      base_lib = "interlib"
-      keyword_py = [f for f in os.listdir(base_lib) if os.path.isfile(os.path.join(base_lib, f))]
-  
-      # Imports each keyword python file
-      self.keyword_dict = {}
-      for keyword_file in keyword_py:
-         if keyword_file[-3:] != ".py":
-            print(keyword_file + " is not a python file. Ignoring keyword.")
-            continue
-         keyword = keyword_file[0:-3]
-         try:
-            self.keyword_dict[keyword] = import_module(base_lib + "." + keyword, base_lib)
-         except:
-            print("Could not load the keyword file: " + keyword_file)
       
       # Create all aspects of the window
       self.create_frames()
@@ -223,21 +206,31 @@ class Application(tk.Frame):
       keyword_py = [f for f in os.listdir(base_lib) if os.path.isfile(os.path.join(base_lib, f))]
   
       # Imports each keyword python file
+      curr_dir = os.getcwd() + "\\interlib"
       self.keyword_dict = {}
       for keyword_file in keyword_py:
          if keyword_file[-3:] != ".py":
             print(keyword_file + " is not a python file. Ignoring keyword.")
             continue
+         py_file_path = curr_dir + "\\" + keyword_file
          keyword = keyword_file[0:-3]
-         try:
-            self.keyword_dict[keyword] = import_module(base_lib + "." + keyword, base_lib)
-         except:
-            print("Could not load the keyword file: " + keyword_file)
+         #try:
+         spec = importlib.util.spec_from_file_location(keyword_file, py_file_path)
+         module = importlib.util.module_from_spec(spec)
+         sys.modules[keyword_file] = module
+         sys.modules[keyword] = module
+         spec.loader.exec_module(module)
+         self.keyword_dict[keyword] = module
+         if py_file_path not in sys.path:
+            sys.path.append(py_file_path)
+         #except:
+         #   print("Could not load the keyword file: " + keyword_file)
        
+      
+      self.clear_console_window()
       self.save_file()
       interpret(self.filePointerName, self.python_file_name, self.keyword_dict)
       self.input.text.highlighter()
-      self.clear_console_window()
       self.print_to_output()
       self.read_to_console()
 
