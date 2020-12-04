@@ -1,13 +1,18 @@
 from interlib.utility import key_var_check
 from interlib.utility import print_line
 
+# Global so that we don't create this list everytime we run the "Create" keyword
+special_characters = ['[', ']', '`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
+                        '_', '-', '=', '+', '{', '}', ';', ':', '"', "'", ',', '<', '.', '>',
+                        '/', '?', '\\', '|']
+
 # function to parse number values
 def num_parse(value_list):
 
   period_counter = 0
   for digit in value_list[0]:
     # If we encounter a character that isn't a digit or we have two periods, then it must be a variable name that isn't in the all_variables dictionary. Error out
-    if digit.isalpha():
+    if digit.isalpha() or digit in special_characters:
       return None
 
     # Checking for periods
@@ -21,12 +26,11 @@ def num_parse(value_list):
     if period_counter > 1:
       return None
 
-  # It must be a valid number
-
-  if period_counter == 0:
-    return int(value_list[0])
-  else:
-    return float(value_list[0])
+    # It must be a valid number
+    if period_counter == 0:
+      return int(value_list[0])
+    else:
+      return float(value_list[0])
 
 
 # function to parse string or multiple spaced string values
