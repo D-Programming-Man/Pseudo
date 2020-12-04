@@ -15,11 +15,11 @@ User Stories for Sprint 4:
 
 * As a user, I want to retrieve data from a function
 
-* As a user, I want to clear the console so that I don't have to see old data and timestamps when translating my Pseudo code
-
 * As a user, I want to see advance debugging info when the code doesn't run correctly
 
 Completed:
+
+* As a user, I want to clear the console so that I don't have to see old data and timestamps when translating my Pseudo code
 
 TODO:
 
