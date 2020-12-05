@@ -12,11 +12,14 @@ help_manual = "  Syntax: \n" + \
 
 # Global so that we don't create this list everytime we run the "Create" keyword
 special_characters = ['[', ']', '`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
-                        '_', '-', '=', '+', '{', '}', ';', ':', '"', "'", ',', '<', '.', '>',
+                        '_', '-', '=', '+', '{', '}', ';', ':', '"', "'", ',', '<', '>',
                         '/', '?', '\\', '|']
 
 # function to parse number values
 def num_parse(value_list):
+
+  if value_list[0] == ".":
+    return None
 
   period_counter = 0
   for digit in value_list[0]:
@@ -35,11 +38,11 @@ def num_parse(value_list):
     if period_counter > 1:
       return None
 
-    # It must be a valid number
-    if period_counter == 0:
-      return int(value_list[0])
-    else:
-      return float(value_list[0])
+  # It must be a valid number
+  if period_counter == 0:
+    return int(value_list[0])
+  else:
+    return float(value_list[0])
 
 
 # function to parse string or multiple spaced string values
