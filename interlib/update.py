@@ -1,6 +1,17 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
+help_manual = "  Note: \n" \
+              "  - Only updates a table with one value at a time. \n" \
+              "  - The spaces after the colon (:) is required. \n" \
+              "  \n" \
+              "  Syntax: \n" \
+              "  Update <table> with {<datatype>: <datatype>} \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Update a_table with {\"Some\": \"Value\"} \n" \
+              "  Update another_table with {1: \"1\"} \n" \
+              "  Update name_table with {name_variable: value_variable} \n"
 
 def handler(interpret_state):
   line_numb = interpret_state["line_numb"]

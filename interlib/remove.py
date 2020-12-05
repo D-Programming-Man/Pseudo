@@ -1,6 +1,20 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
+help_manual = "  Note: \n" \
+              "  - The list or table must have an element of the type \n" \
+              "      being removed or else the code will not compile.\n" \
+              "  \n" \
+              "  Syntax: \n" \
+              "  Remove (<variable>/<number>/<string>) from (<list>/<table>)\n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Remove 1 from some_list \n" \
+              "  Remove x from another_list \n" \
+              "  Remove \"Text\" from this_table\n" \
+              "  Remove [1,2,3] from some_list \n" \
+              "  Remove {1:\"SomeText\"} from that_table \n"
+
 '''
     List/Dictionary Modification Function
     Remove <datatype> from (<list>/<table>)    
@@ -36,11 +50,12 @@ def handler(interpret_state):
   # check list/dictionary exists
   container_name = line_list[3]
   container_datatype = all_variables.get(container_name)
-  if(container_datatype==None and (container_datatype.get("data_type") == "list" or container_datatype == "table")):
+  if not container_datatype == None and (container_datatype["data_type"] == "list" or container_datatype["data_type"] == "table"):
+    container_datatype = container_datatype["data_type"]
+  else:
     print("Error on line " + str(line_numb) + ". " + container_name + " is not of type list or table.")
     print_line(line_numb, line_list)
     return False
-  container_datatype = container_datatype.get("data_type")
   
   #check to see if the element is a variable, if it is then check to see if it exists  
   element_name = line_list[1]

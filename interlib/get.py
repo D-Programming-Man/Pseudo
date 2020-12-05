@@ -1,6 +1,21 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
+help_manual = "  Note: \n" \
+              "  - You can only use a <number> for getting elements out of a list. That <number> \n" \
+              "      is actually a position within the list to get from. \n" \
+              "  - For tables, you can use any <variable>, <number>, or <string> value to get data \n" \
+              "      out of it. \n" \
+              "  - Your program will not run if the specified elements are not in the list. \n" \
+              "  \n" \
+              "  Syntax: \n" \
+              "  Get (<variable>/<number>/<string>) from <list/table> and store [it] into <variable> \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Get 1 from number_list and store it into x \n" \
+              "  Get \"Text\" from a_table and store into data \n" \
+              "  Get 1 from another_table and store it into data \n" \
+              "  Get x from new_table and store into result \n"
 
 def handler(interpret_state):
   line_numb = interpret_state["line_numb"]
