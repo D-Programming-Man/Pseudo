@@ -17,8 +17,7 @@ class TextLineNumbers(tk.Canvas):
 
     def redraw(self, *args):
         '''redraw line numbers'''
-        self.delete("all")
-        
+        self.delete("all")        
         i = self.textwidget.index("@0,0")
         while True :
             dline= self.textwidget.dlineinfo(i)
@@ -27,6 +26,7 @@ class TextLineNumbers(tk.Canvas):
             linenum = str(i).split(".")[0]
             self.create_text(2,y,anchor="nw", text=linenum, font=(self.font, self.fontsize), fill = self.fill)
             i = self.textwidget.index("%s+1line" % i)
+        
 
 class CustomText(tk.Text):
     def __init__(self, *args, **kwargs):
@@ -166,6 +166,7 @@ class NumberedText(tk.Frame):
 
     def _on_change(self, event):
         self.linenumbers.redraw()
+        self.text.highlighter()
         size = len(self.text.get("1.0", "end-1c"))
         if self.size != size:
           self.has_changed = True
