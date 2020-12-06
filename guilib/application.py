@@ -58,6 +58,7 @@ class Application(tk.Frame):
       self.fontSize = 10
       
       # Used for the themes
+      self.scaleOpen = False
       self.rgb_value = [0,0,0]
 
       # Used for the live_interpreting() function
@@ -77,7 +78,11 @@ class Application(tk.Frame):
       self.leftframe.pack(side = "left", fill = "both", expand = True)
       self.rightframe = tk.Frame(self.master, bg = "#FEF9DA")
       self.rightframe.pack(side = "right", fill = "both", expand = True)
-
+      
+   def close_rgb(self):
+     self.scaleOpen = False
+     self.scaleWindow.destroy()
+      
    def close_settings(self):
     self.settingsOpen = False
     self.settingsTab.destroy()
@@ -721,30 +726,31 @@ class Application(tk.Frame):
 # Window for RGB scales to choose color scheme
 # Radiobuttons allow users to select what they want to change, currently options are{Background,Input,Output,Console,Text}
    def show_scale_window(self):
+    if self.scaleOpen:
+      return
     self.scaleWindow = tk.Tk()
-    self.scaleWindow.title('My Window')
+    self.scaleOpen = True
+    self.scaleWindow.title('RGB scale')
     self.scaleWindow.geometry('500x300')
+    self.scaleWindow.protocol("WM_DELETE_WINDOW", self.close_rgb)
 
-    self.selection = tk.IntVar(self.scaleWindow, value = 6, name = "optionVar")
-    self.selection.set(0)
-    self.l = tk.Label(self.scaleWindow, bg='white',
-                      fg='black', width=20, text=self.selection.get())
-    self.l.pack(anchor=tk.N)
+    self.selection = tk.IntVar(self.scaleWindow, value = 0, name = "optionVar")
+
     r1 = tk.Radiobutton(self.scaleWindow, text="Background",
                         variable=self.selection, value=1)
     r1.pack(anchor = tk.W)
-    print(self.selection.get())
+
 
     r2 = tk.Radiobutton(self.scaleWindow, text="Input",
                         variable=self.selection, value=2)
 
     r2.pack(anchor = tk.W)
-    print(self.selection.get())
+
 
     r3 = tk.Radiobutton(self.scaleWindow, text="Output",
                         variable=self.selection, value=3)
     r3.pack(anchor = tk.W)
-    print(self.selection.get())
+
 
     r4 = tk.Radiobutton(
         self.scaleWindow, text="Console", variable=self.selection, value=4)
@@ -771,13 +777,13 @@ class Application(tk.Frame):
     self.b_var = tk.IntVar()
     self.g_var = tk.IntVar()
     self.Rscale = tk.Scale(self.scaleWindow, label='R', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
-                           showvalue=0, tickinterval=1, resolution=1, variable=self.r_var, command=self.red_color_scale)
+                           showvalue=0, variable=self.r_var, command=self.red_color_scale)
     self.Rscale.place(x=100, y=25)
     self.Bscale = tk.Scale(self.scaleWindow, label='B', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
-                           showvalue=0, tickinterval=1, resolution=1, variable=self.b_var, command=self.blue_color_scale)
+                           showvalue=0, variable=self.b_var, command=self.blue_color_scale)
     self.Bscale.place(x=100, y=65)
     self.Gscale = tk.Scale(self.scaleWindow, label='G', from_=0, to=255, orient=tk.HORIZONTAL, length=255,
-                           showvalue=0, tickinterval=1, resolution=1, variable=self.g_var, command=self.green_color_scale)
+                           showvalue=0, variable=self.g_var, command=self.green_color_scale)
     self.Gscale.place(x=100, y=105)
     self.pack()
     
