@@ -64,10 +64,8 @@ def handler(interpret_state):
       print("Variable \"" + var1_name + "\" does not exist.")
       print_line(line_numb, line_list)
       return False
-    if data_type == "number":
-      var1_number = all_variables[var1_name]["value"]
-    else:
-      print("Operand \"" + var1_name + "\" has not been created yet.")
+    if data_type != "number":
+      print("Operand \"" + var1_name + "\" is not a number.")
       print_line(line_numb, line_list)
       return False
       
@@ -79,13 +77,10 @@ def handler(interpret_state):
       print("Variable \"" + var2_name + "\" does not exist.")
       print_line(line_numb, line_list)
       return False
-    if data_type == "number":
-      try:
-        var2_number = all_variables[var2_name]["value"]
-      except:
-        print("Operand \"" + var2_name + "\" has not been created yet.")
-        print_line(line_numb, line_list)
-        return False
+    if data_type != "number":
+      print("Operand \"" + var2_name + "\" is not a number.")
+      print_line(line_numb, line_list)
+      return False
   
   if line_list[word_pos] == "store":
     word_pos += 1
@@ -113,7 +108,7 @@ def handler(interpret_state):
     return False
   
   var3_name = line_list[word_pos]
-  temp_sum_val = var1_number + var2_number
+  temp_sum_val = 0
 
   # update or create new entry in dictionary. {"x":{"data_type":"number", "value":#}}
   all_variables[var3_name] = {"data_type": "number", "value": temp_sum_val}

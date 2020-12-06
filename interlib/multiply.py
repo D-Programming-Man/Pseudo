@@ -85,7 +85,7 @@ def handler(interpret_state):
           symbolList.append(part)
           varNum = variableCheck(part, all_variables)
           if varNum == None:
-            print("Error, Variable not found")
+            print("Error: Operand " + str(part) + " does not contain a number")
             print_line(line_numb, line_list) 
             return False
           numList.append(varNum)

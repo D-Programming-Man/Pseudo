@@ -74,7 +74,7 @@ def handler(interpret_state):
     elif var2_number is None:
       # second variable is not in all_variables dict
       # and is not a number
-      print("Error: Operand " + var2_name + " not found")
+      print("Error: Operand " + var2_name + " is not a valid number")
       print_line(line_numb, line_list)
       return False
     else:
@@ -83,7 +83,7 @@ def handler(interpret_state):
   elif var1_number is None:
     # variable 1 is not in all_variables dict
     # and is not a number
-    print("Error: Operand " + var1_name + " not found")
+    print("Error: Operand " + var1_name + " is not a valid number")
     print_line(line_numb, line_list)
     return False
   else:

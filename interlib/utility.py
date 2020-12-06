@@ -1,6 +1,10 @@
 import sys
 import os
+import traceback
+
 from collections import deque
+from datetime import datetime
+
 
 help_manual = "  There is no keyword for \"Utility\". It's only here to contain miscellaneous \n" \
               "    functions for the other keyword files \n"
@@ -129,6 +133,18 @@ def print_line(line_numb, line_list):
   for word in line_list:
     line += word + " "
   print("Line " + str(line_numb + 1) + ': ' + line)
+  
+# Copied function from the Applicaiton class
+# Used for debugging run-time errors
+def show_error():
+  message = "\n"+traceback.format_exc()
+  print(message)
+  file = open("../error_log.txt", 'a+')
+  if file is not None:
+    time = datetime.now()
+    time = time.strftime('%H:%M %m/%d/%Y')
+    formated_error = "\n--------------\n"+time+message
+    file.write(formated_error)
 
 # Used within the "Import" handler to translate the other pseudo files into python files.
 # Similar to the interpret function, but slightly modifed
@@ -164,6 +180,7 @@ def import_interpret(pseudo_file, python_file, keyword_dict, import_queue):
   interpret_state["import_queue"] = import_queue
   interpret_state["pseudo_filepath"] = "\\".join(pseudo_filepath_list[0:-1])
   interpret_state["pseudo_file"] = pseudo_filepath_list[-1]
+  interpret_state["plain_import_files"] = []
 
   while interpret_state["line_numb"] < len(in_file_lines):
     curr_pc = interpret_state["line_numb"]
