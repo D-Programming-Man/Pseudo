@@ -39,6 +39,9 @@ def interpret(pseudo_file, python_file, keyword_dict):
   indent = 2
   parse_success = False
   
+  # Get the directory where the main pseudo file is located at
+  pseudo_filepath_list = pseudo_file.split("/")
+  
   # In the future, we might want to add our own values to pass to a function for specific cases. In order to generalize, we will put any important values into this dictionary and pass this dictionary around to all of the keyword functions
   # NOTE: dict and list are passed by reference
   # NOTE: numbers and strings are passed by value
@@ -52,7 +55,8 @@ def interpret(pseudo_file, python_file, keyword_dict):
   interpret_state["keyword_dict"] = keyword_dict
   interpret_state["pseudo_indent"] = 0
   interpret_state["import_queue"] = ImportQueue()
-  interpret_state["pseudo_file"] = pseudo_file.split("/")[-1]
+  interpret_state["pseudo_filepath"] = "\\".join(pseudo_filepath_list[0:-1])
+  interpret_state["pseudo_file"] = pseudo_filepath_list[-1]
 
   # main loop to parse all words in the file
   while interpret_state["line_numb"] < len(in_file_lines):
@@ -133,10 +137,6 @@ def interpret(pseudo_file, python_file, keyword_dict):
   # write every line into py_file
   for line in py_lines:
     py_file.write(line)
-      
-  # Debugging stuff
-  #for var in all_variables:
-  #  print(var + ": " + str(all_variables[var]))
   
   # Close the files 
   in_file.close()
@@ -157,10 +157,10 @@ def interpret(pseudo_file, python_file, keyword_dict):
       py_cmds += py_lines[i]
     else:
       py_cmds += py_lines[i][2:]
-  
+      
   # Print the outputs to the output.txt file
   recursive_fix = {}
-  path_list = pseudo_file.split("/")[0:-1]
+  path_list = interpret_state["pseudo_filepath"].split("/")
   for var in all_variables:
     try:
       file_name = all_variables[var]["source"]
@@ -170,15 +170,16 @@ def interpret(pseudo_file, python_file, keyword_dict):
       file_regular_name = file_name[0:-7]
       py_name = file_regular_name + ".py"
       path_list.append(py_name)
-      full_path_list = "\\".join(path_list)
-      
+      full_path = "\\".join(path_list)
+
       # Import the funcitons 
-      spec = importlib.util.spec_from_file_location(py_name, full_path_list)
+      spec = importlib.util.spec_from_file_location(py_name, full_path)
       module = importlib.util.module_from_spec(spec)
       sys.modules[py_name] = module
-      sys.modules[file_regular_name] = module
+      sys.modules[file_name] = module
       spec.loader.exec_module(module)
-      sys.path.append(full_path_list)
+      if full_path not in sys.path:
+        sys.path.append(full_path)
       
       path_list.pop()
       
