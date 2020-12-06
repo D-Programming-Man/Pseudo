@@ -163,11 +163,11 @@ def interpret(pseudo_file, python_file, keyword_dict):
   path_list = interpret_state["pseudo_filepath"].split("/")
   for var in all_variables:
     try:
-      file_name = all_variables[var]["source"]
+      filename = all_variables[var]["source"]
     except:
-      file_name = interpret_state["pseudo_file"]
-    if not file_name == interpret_state["pseudo_file"]:
-      file_regular_name = file_name[0:-7]
+      filename = interpret_state["pseudo_file"]
+    if not filename == interpret_state["pseudo_file"]:
+      file_regular_name = filename[0:-7]
       py_name = file_regular_name + ".py"
       path_list.append(py_name)
       full_path = "\\".join(path_list)
@@ -176,7 +176,7 @@ def interpret(pseudo_file, python_file, keyword_dict):
       spec = importlib.util.spec_from_file_location(py_name, full_path)
       module = importlib.util.module_from_spec(spec)
       sys.modules[py_name] = module
-      sys.modules[file_name] = module
+      sys.modules[file_regular_name] = module
       spec.loader.exec_module(module)
       if full_path not in sys.path:
         sys.path.append(full_path)
