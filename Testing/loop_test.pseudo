@@ -1,0 +1,14 @@
+# This file test all of the loops (While and loop)
+Define function loop_test with parameters number x, number y:
+  Display "Loop Testing"
+  Create a variable named result with value 0
+  
+  Display "Looping ", x, " times"
+  Loop x times:
+    Add result and x, store into x
+    Display "result = ", result
+
+  Display "Looping ", y, " times with step size of 2"
+  Loop y times with step size of 2:
+    Multiply result and y, store into result
+    Display "result = ", result

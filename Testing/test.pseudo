@@ -1,0 +1,30 @@
+# The # code turns this line into a comment
+# This file contains all of test for the pseudo code
+# Files to import must be in the same directory
+import add_test
+import subtract_test
+import multiply_test
+import divide_test
+import while_test
+import loop_test
+import if_test
+
+Create a variable named x with value 4
+Create a variable named y with value 3
+
+Run function add_test with parameters number x, number y
+Display ""
+Run function subtract_test with parameters number x, number y
+Display ""
+Run function multiply_test with parameters number x, number y
+Display ""
+Run function divide_test with parameters number x, number y
+Display ""
+Run function while_test with parameters number x, number y
+Display ""
+Run function loop_test with parameters number x, number y
+Display ""
+Run function if_test with parameters number x, number y
+Display ""
+Pycode print("You can use python code with the \"Pycode\" keyword")
+% print("The % sign also does this too")

@@ -1,0 +1,26 @@
+# This file tests all of the While loop keywords
+Define function while_test with parameters number x, number y:
+  Display "While Testing"
+  Create a variable named result with value 0
+  
+  Display "While result == 0"
+  while result is equal to 0:
+    Add result and 1, store into result
+    Display "result = ", result
+
+  Display "While result <= 10"
+  while result is less than or equal to 10:
+    Add result and 1, store into result
+    Display "result = ", result
+
+  Display "While result != -10"
+  while result is not equal to -10:
+    Subtract 1 from result, store into result
+    Display "result = ", result
+
+  Display "Setting result to ", result, " * ", "100"
+  Multiply result and 100, store into result
+  Display "While result >= 100"
+  while result is greater than or equal to 100:
+    Divide result by 10, store into result
+    Display "result = ", result
