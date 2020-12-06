@@ -9,6 +9,7 @@ from tkinter import filedialog as fd
 from guilib.numberedtext import NumberedText
 from interpreter import interpret
 from datetime import datetime
+import traceback
 
 class Application(tk.Frame):
    def __init__(self, master=None):
@@ -35,6 +36,8 @@ class Application(tk.Frame):
       self.dark_theme = tk.BooleanVar()
       self.normal_theme.set(True)
       self.dark_theme.set(False)
+      # Show debug option
+      self.show_debug = False
       
       self.is_live_interpreting = tk.BooleanVar()
       self.is_live_interpreting.set(False)
@@ -62,6 +65,7 @@ class Application(tk.Frame):
 
       # Used for the Help option
       self.is_help_open = False
+      tk.Tk.report_callback_exception = self.callback_error
 
    # Creates frames: top, left, right, bottom. Each holds widgets
    def create_frames(self):
@@ -100,7 +104,33 @@ class Application(tk.Frame):
     self.input.linenumbers.redraw()
     
     self.close_settings()
-
+  
+   def show_error(self, _exception):
+      message = "\n"+traceback.format_exc()
+      if self.show_debug is True:
+         self.console.config(state="normal")
+         self.console.insert(tk.INSERT, message)
+         self.console.config(state="disable")
+      file = open("error_log.txt", 'a+')
+      if file is not None:
+         time = datetime.now()
+         time = time.strftime('%H:%M %m/%d/%Y')
+         formated_error = "\n--------------\n"+time+message
+         file.write(formated_error)
+         
+   def callback_error(self, *args):
+     message = "\n"+traceback.format_exc()
+     if self.show_debug is True:
+         self.console.config(state="normal")
+         self.console.insert(tk.INSERT, message)
+         self.console.config(state="disable")
+     file = open("error_log.txt", 'a+')
+     if file is not None:
+         time = datetime.now()
+         time = time.strftime('%H:%M %m/%d/%Y')
+         formated_error = "\n--------------\n"+time+message
+         file.write(formated_error)
+         
    def show_settings(self):
       if not self.settingsOpen:
         self.settingsOpen = True
@@ -271,7 +301,8 @@ class Application(tk.Frame):
             try:
               word_tag = keyword_titles[text]
               keyword_titles[text]["line"] = counter
-            except:
+            except Exception as e:
+              self.show_error(e)
               pass
           counter += 1
         
@@ -319,7 +350,8 @@ class Application(tk.Frame):
       base_lib = "interlib"
       try:
         keyword_py = [f for f in os.listdir(base_lib) if os.path.isfile(os.path.join(base_lib, f))]
-      except:
+      except Exception as e:
+        self.show_error(e)
         self.clear_console_window()
         self.console.config(state="normal")
         self.console.insert(tk.END, "The \"interlib\" folder is not in the same directory as this program.")
@@ -344,8 +376,9 @@ class Application(tk.Frame):
             self.keyword_dict[keyword] = module
             if py_file_path not in sys.path:
                sys.path.append(py_file_path)
-         except:
+         except Exception as e:
             print("Could not load the keyword file: " + keyword_file)
+            self.show_error(e)
       return True
       
    # saves into pseudo file. Calls a print to console and python output
@@ -527,6 +560,8 @@ class Application(tk.Frame):
       # help menu (Button)
       helpmenu = tk.Menu(menubar, tearoff=0)
       helpmenu.add_command(label="Help", command=lambda: self.show_help_window())
+      helpmenu.add_command(
+          label="Toggle debug", command=lambda: self.set_debug())
       menubar.add_cascade(label="Help", menu=helpmenu)
       
       # Specific style configurations, currently a child of the theme menu.
@@ -638,7 +673,21 @@ class Application(tk.Frame):
 
       # Pack all menu options and display it
       self.master.config(menu=menubar)
-
+      
+   def set_debug(self):
+      if self.show_debug:
+         self.show_debug = False
+         self.console.config(state="normal")
+         self.console.insert(
+             tk.INSERT, "Debugging Off: You will not see python errors in the console")
+         self.console.config(state="disable")
+      else:
+         self.show_debug = True
+         self.console.config(state="normal")
+         self.console.insert(
+             tk.INSERT, "Debugging On: You can now see python errors in the console")
+         self.console.config(state="disable")
+         
    def pop_up_menu(self, event):
     try:
         self.rightClick.tk_popup(event.x_root, event.y_root)
