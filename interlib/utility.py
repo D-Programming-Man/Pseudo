@@ -150,6 +150,7 @@ def import_interpret(pseudo_file, python_file, keyword_dict, import_queue):
   py_lines = deque()
   indent = 0
   parse_success = False
+  pseudo_filepath_list = pseudo_file.split("\\")
 
   interpret_state = {}
   interpret_state["all_variables"] = all_variables
@@ -159,8 +160,10 @@ def import_interpret(pseudo_file, python_file, keyword_dict, import_queue):
   interpret_state["parse_success"] = parse_success
   interpret_state["in_file_lines"] = in_file_lines
   interpret_state["keyword_dict"] = keyword_dict
+  interpret_state["pseudo_indent"] = 0
   interpret_state["import_queue"] = import_queue
-  interpret_state["pseudo_file"] = pseudo_file
+  interpret_state["pseudo_filepath"] = "\\".join(pseudo_filepath_list[0:-1])
+  interpret_state["pseudo_file"] = pseudo_filepath_list[-1]
 
   while interpret_state["line_numb"] < len(in_file_lines):
     curr_pc = interpret_state["line_numb"]
