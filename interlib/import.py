@@ -56,11 +56,11 @@ def handler(interpret_state):
       break;
     file_list_pos += 1
 
-  pseudo_file_name = ""
+  pseudo_filename = ""
   pseudo_filepath = ""
   pseudo_file_py = ""
   try:
-    pseudo_file_name = pseudo_files[file_list_pos].split("\\")[-1]
+    pseudo_filename = pseudo_files[file_list_pos].split("\\")[-1][0:-7]
     pseudo_filepath = pseudo_files[file_list_pos]
     pseudo_file_py = pseudo_files[file_list_pos][0:-7] + ".py"
   except:
@@ -69,11 +69,11 @@ def handler(interpret_state):
     return False
 
   # Check if the importing pseudo file is a queue of already imported files 
-  if pseudo_file_name not in import_queue.queue:
-    import_queue.push(pseudo_file_name)
+  if pseudo_filename not in import_queue.queue:
+    import_queue.push(pseudo_filename)
   else:
-    import_queue.remove(pseudo_file_name)
-    import_queue.insert(import_queue.size(), pseudo_file_name)
+    import_queue.remove(pseudo_filename)
+    import_queue.insert(import_queue.size(), pseudo_filename)
 
   # Checks for infinite import loops
   if import_queue.is_infinite_loop():
@@ -95,11 +95,11 @@ def handler(interpret_state):
           if sub_interpret_state["all_variables"][var]["source"] != pseudo_file:
             contains_functions = True
             interpret_state["all_variables"][var] = sub_interpret_state["all_variables"][var]
-            py_lines.appendleft("from " + pseudo_file_name + " import " + var + "\n")
+            py_lines.appendleft("from " + pseudo_filename + " import " + var + "\n")
         else:
           print("Error: Function " + var + " is already defined in this file as well as in \"" + pseudo_file + "\".")
           return False
     if not contains_functions:
-      py_lines.appendleft("import " + pseudo_file_name + "\n")
+      py_lines.appendleft("import " + pseudo_filename + "\n")
       
   return sub_interpret_state["parse_success"]
