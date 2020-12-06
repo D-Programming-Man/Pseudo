@@ -301,8 +301,7 @@ class Application(tk.Frame):
             try:
               word_tag = keyword_titles[text]
               keyword_titles[text]["line"] = counter
-            except Exception as e:
-              self.show_error(e)
+            except:
               pass
           counter += 1
         
@@ -386,10 +385,11 @@ class Application(tk.Frame):
       if (self.reload_library()):
         self.clear_console_window()
         self.save_file()
-        interpret(self.filePointerName, self.python_file_name, self.keyword_dict)
-        self.input.text.highlighter()
-        self.print_to_output()
-        self.read_to_console()
+        if self.filePointer:
+          interpret(self.filePointerName, self.python_file_name, self.keyword_dict)
+          self.input.text.highlighter()
+          self.print_to_output()
+          self.read_to_console()
 
    # prints py file to right window
    def print_to_output(self):
