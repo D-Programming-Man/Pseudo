@@ -1,6 +1,10 @@
 from interlib.utility import key_var_check
 from interlib.utility import print_line
 from interlib.utility import inter_data_type
+from interlib.utility import list_dict_checker
+
+help_manual = ""
+
 '''
  Set keyword: used as a more advanced create option
 
@@ -32,29 +36,51 @@ def handler(interpret_state):
     var_name = line_list[word_pos]
 
     word_pos += 1
-
-    while line_list[word_pos] != "to":
-      word_pos += 1
-
-    word_pos += 1
-
+    
     value = ""
-
-    while word_pos < len(line_list):
-      value += line_list[word_pos]
+    data_type = ""
+    if line_list[word_pos + 1][0] == "[":
+      value_list = line_list[word_pos + 1:]
+      if list_dict_checker("list", all_variables, value_list):
+        value = " ".join(value_list)
+        data_type = "list"
+      else:
+        print("Error: Invalid list")
+        print_line(line_numb, line_list)
+        return False
+      
+    elif line_list[word_pos + 1][0] == "{":
+      value_list = line_list[word_pos + 1:]
+      if list_dict_checker("table", all_variables, value_list):
+        value = " ".join(value_list)
+        data_type = "table"
+      else:
+        print("Error: Invalid table")
+        print_line(line_numb, line_list)
+        return False
+      
+    else:  
+      while line_list[word_pos] != "to":
+        word_pos += 1
       word_pos += 1
-      if word_pos != len(line_list):
-        value += " "
+      
+      while word_pos < len(line_list):
+        value += line_list[word_pos]
+        word_pos += 1
+        if word_pos != len(line_list):
+          value += " "
 
-    if key_var_check(all_variables, [value]) is None:
-      print("Error on line " + str(line_numb) + ". " + var_name + " is being set to an invalid value.")
-      print_line(line_numb, line_list)
-      return False
+      if key_var_check(all_variables, [value]) is None:
+        print("Error on line " + str(line_numb) + ". " + var_name + " is being set to an invalid value.")
+        print_line(line_numb, line_list)
+        return False
+        
+      data_type = inter_data_type(value)
 
     py_line = indent_space + var_name + " = " + value + "\n"
 
     py_lines.append(py_line)
 
-    all_variables[var_name] = {"data_type": inter_data_type(value), "value": value}
+    all_variables[var_name] = {"data_type": data_type, "value": value}
 
     return True
