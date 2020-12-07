@@ -90,7 +90,22 @@ def inter_data_type(data):
   
   # Could be a list if we encounter a bracket
   if data[char_pos] == "[":
-    pass
+
+    if data[-1] != "]":
+      return null_data_type(data)
+
+    data_copy = data[1:-1]
+
+    data_copy = data_copy.replace(",", "")
+
+    parse_list = data_copy.split()
+
+    for item in parse_list:
+      if inter_data_type(item) == "null":
+        return null_data_type(data)
+
+    # If the data value passed all of these test, then it is a valid list
+    return "list"
     
   # Could be a table if we encounter a brace
   if data[char_pos] == "{":
