@@ -160,6 +160,61 @@ def show_error():
     time = time.strftime('%H:%M %m/%d/%Y')
     formated_error = "\n--------------\n"+time+message
     file.write(formated_error)
+    
+# This checks to see verify if we have a list or a dictionary
+# data_type = A string that's either "list" or "table"
+# all_variables = interpret_state[all_variables]
+# value_list = A list that contains all elements in the list or table of the
+#              value that will be created
+def list_dict_checker (data_type, all_variables, value_list):
+  value = "".join(value_list)
+  in_quote = False
+  curr_quote = ""
+  queue = []
+  
+  for i in range(0, len(value)):
+    if not in_quote:
+      if (value[i] == "[" or value[i] == "{"):
+        queue.append(value[i])
+      elif (value[i] == "]" and not len(queue) == 0 and queue[-1] == "[") or \
+         (value[i] == "}" and not len(queue) == 0 and queue[-1] == "{"):
+        x = queue.pop()
+      elif (value[i] == "]" or value[i] == "}"):
+        return False
+        
+    
+    if value[i] == '"' or value[i] == "'":
+      if in_quote and not value[i-1] == "\\":
+        in_quote = False
+      else:
+        in_quote = True
+        
+  # If there are no open braces or brackets, then let python
+  # verify that it's a valid list or table
+  value_map = {"number": 0, "string": "Test", "boolean": True,
+               "list": [], "table": {}}
+  local_sym_tbl = {}
+  for var in all_variables:
+    try:
+      local_sym_tbl[var] = value_map[all_variables[var]["data_type"]]
+    except:
+      pass
+  if len(queue) == 0:
+    if data_type == "table":
+      try:
+        exec("x = dict(" + value + ")", {}, local_sym_tbl)
+      except:
+        return False
+      
+    else:
+      try:
+        exec("x = list(" + value + ")", {}, local_sym_tbl)
+      except:
+        return False
+  else:
+      return False
+      
+  return len(queue) == 0
 
 # Used within the "Import" handler to translate the other pseudo files into python files.
 # Similar to the interpret function, but slightly modifed
@@ -264,4 +319,3 @@ def import_interpret(pseudo_file, python_file, keyword_dict, import_queue):
   py_file.close()
   
   return interpret_state
-
