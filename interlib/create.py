@@ -12,19 +12,24 @@ help_manual = "  Syntax: \n" + \
 
 # Global so that we don't create this list everytime we run the "Create" keyword
 special_characters = ['[', ']', '`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
-                        '_', '-', '=', '+', '{', '}', ';', ':', '"', "'", ',', '<', '>',
+                        '_', '=', '+', '{', '}', ';', ':', '"', "'", ',', '<', '>',
                         '/', '?', '\\', '|']
 
 # function to parse number values
 def num_parse(value_list):
 
-  if value_list[0] == ".":
+  if value_list[0] == "." or value_list[0] == "-":
     return None
-
+    
+  is_negative = False
   period_counter = 0
+  char_pos = 0
   for digit in value_list[0]:
     # If we encounter a character that isn't a digit or we have two periods, then it must be a variable name that isn't in the all_variables dictionary. Error out
     if digit.isalpha() or digit in special_characters:
+      return None
+
+    if digit == "-" and char_pos > 0:
       return None
 
     # Checking for periods
@@ -37,6 +42,9 @@ def num_parse(value_list):
     # Rare instance where the period is at the end of the number, for example: 1.3478392784832.
     if period_counter > 1:
       return None
+    
+    # Need to check position 
+    char_pos += 1
 
   # It must be a valid number
   if period_counter == 0:
@@ -81,7 +89,6 @@ def lst_parse(var_dict, value_list):
   # Check if ']' is at the end
   if value_list[-1][-1] == "]":
     # This is a valid list, check the values
-
     value_list[0] = value_list[0][1:-1]
 
     if len(value_list) > 1:
@@ -111,7 +118,7 @@ def dct_parse(var_dict, value_list):
   # Check if '}' is at the end
   if value_list[-1][-1] == "}":
   # This is a valid dict, check the values
-
+    
 
     # Clean value list of dict syntax
     value_list[0] = value_list[0][1:-1]
@@ -193,7 +200,7 @@ def handler(interpret_state):
       all_variables[variable_name] = None
     word_pos += 1
   else:
-    print("Error on line " + str(line_numb) + ". The word 'named' is not after the data type.")
+    print("Error: The word 'named' is not after the data type.")
     print_line(line_numb, line_list)
     return False
 
@@ -201,7 +208,7 @@ def handler(interpret_state):
   if line_list[word_pos] == "with":
     word_pos += 1
   else:
-    print("Error on line " + str(line_numb) + ". The word 'with' is not after a single word variable name.")
+    print("Error: The word 'with' is not after a single word variable name.")
     print_line(line_numb, line_list)
     return False
 
@@ -213,7 +220,7 @@ def handler(interpret_state):
   if line_list[word_pos] == "value" or line_list[word_pos] == "values":
     word_pos += 1
   else:
-    print("Error on line " + str(line_numb) + ". The required parentheses word 'value' or 'values' is not after the 'with' word.")
+    print("Error: The required parentheses word 'value' or 'values' is not after the 'with' word.")
     print_line(line_numb, line_list)
     return False
 
@@ -252,7 +259,7 @@ def handler(interpret_state):
 
       # value was invalid so throw error
       if value == False:
-        print("Error on line " + str(line_numb) + ". Quotation marks are not the same for the string")
+        print("Error: Quotation marks are not the same for the string")
         print_line(line_numb, line_list)
         return False
 
@@ -265,7 +272,7 @@ def handler(interpret_state):
       value = lst_parse(all_variables, value_list)
 
       if value == None:
-        print("Error on line " + str(line_numb) + ". Invalid list")
+        print("Error: Invalid list")
         print_line(line_numb, line_list)
         return False
 
@@ -302,7 +309,7 @@ def handler(interpret_state):
         
         # throws error on invalid input
         if value == None:
-          print("Error on line " + str(line_numb) + ". The variable name \"" + str(value_list[0]) + "\" has not been created yet.")
+          print("Error: The variable name \"" + str(value_list[0]) + "\" has not been created yet.")
           print_line(line_numb, line_list)
           return False
 
@@ -324,7 +331,7 @@ def handler(interpret_state):
 
       value = str_parse(multi_string, value_list, quotation_mark)
       if value == False:
-        print("Error on line " + str(line_numb) + ". Quotation marks are not the same for the string")
+        print("Error: Quotation marks are not the same for the string")
         print_line(line_numb, line_list)
         return False
 
@@ -337,7 +344,7 @@ def handler(interpret_state):
       value = lst_parse(all_variables, value_list)
 
       if value == None:
-        print("Error on line " + str(line_numb) + ". Invalid list")
+        print("Error: Invalid list")
         print_line(line_numb, line_list)
         return False
 
@@ -349,12 +356,12 @@ def handler(interpret_state):
       value = dct_parse(all_variables, value_list)
 
       if value == None:
-        print("Error on line " + str(line_numb) + ". Invalid table")
+        print("Error: Invalid table")
         print_line(line_numb, line_list)
         return False
 
     else:
-      print("Error on line " + str(line_numb) + ". Improper spaces in line")
+      print("Error: Improper spaces in line")
       print_line(line_numb, line_list)
       return False
 
