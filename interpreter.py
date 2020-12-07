@@ -1,13 +1,14 @@
 import sys
 import os
+import importlib.util
 from collections import deque
 from interlib.utility import ImportQueue
 from interlib.utility import print_line
+from interlib.utility import show_error
 from importlib import import_module
 
-import importlib.util
 
-def interpret(pseudo_file, python_file, keyword_dict):
+def interpret(pseudo_file, python_file, keyword_dict, is_debug_on):
   in_file = open(pseudo_file, "r")
   py_file = open(python_file, "w")
   default_stdout = sys.stdout
@@ -57,6 +58,8 @@ def interpret(pseudo_file, python_file, keyword_dict):
   interpret_state["import_queue"] = ImportQueue()
   interpret_state["pseudo_filepath"] = "\\".join(pseudo_filepath_list[0:-1])
   interpret_state["pseudo_file"] = pseudo_filepath_list[-1]
+  interpret_state["plain_import_files"] = []
+  interpret_state["is_debug_on"] = is_debug_on
 
   # main loop to parse all words in the file
   while interpret_state["line_numb"] < len(in_file_lines):
@@ -113,13 +116,19 @@ def interpret(pseudo_file, python_file, keyword_dict):
       try:
         interpret_state["parse_success"] = keyword_dict[keyword].handler(interpret_state)
       except KeyError:
-        print("Error: \"" + line_list[0] + "\" keyword not known.")
-        print_line(interpret_state["line_numb"], line_list)
-        interpret_state["parse_success"] = False;
+        if interpret_state["is_debug_on"]:
+          show_error()
+        else:
+          print("Error: \"" + line_list[0] + "\" keyword not known.")
+          print_line(interpret_state["line_numb"], line_list)
+          interpret_state["parse_success"] = False;
       except IndexError:
-        print("Pseudo code line incomplete")
-        print_line(interpret_state["line_numb"], line_list)
-        interpret_state["parse_success"] = False;
+        if interpret_state["is_debug_on"]:
+          show_error()
+        else:
+          print("Pseudo code line incomplete")
+          print_line(interpret_state["line_numb"], line_list)
+          interpret_state["parse_success"] = False;
       
     # At the end of parsing the line, increment the line counter
     # if we did not change the program counter
@@ -182,18 +191,26 @@ def interpret(pseudo_file, python_file, keyword_dict):
         sys.path.append(full_path)
       
       path_list.pop()
-      
+  
+  for filename in interpret_state["plain_import_files"]:
+    filename_py = filename + ".py"
+    path_to_file = interpret_state["pseudo_filepath"] + "\\" + filename_py
+    spec = importlib.util.spec_from_file_location(filename_py, path_to_file)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[filename_py] = module
+    sys.modules[filename] = module
+    spec.loader.exec_module(module)
+    if path_to_file not in sys.path:
+      sys.path.append(path_to_file)
+    
   try:
     exec(py_cmds, recursive_fix)
   except:
-    print("Error: Something in your python code did not execute successfully.")
-    print("       Check to make sure that your pseudo code is correctly formatted.")
+    if interpret_state["is_debug_on"]:
+      show_error()
+    else:
+      print("Error: Something in your python code did not execute successfully.")
+      print("       Check to make sure that your pseudo code is correctly formatted.")
+      print("       Enable the \"Toggle Debug\" option in Help to see raised exception.")
   output_file.close()
   sys.stdout = default_stdout
-  
-  # Print the output to the console
-  #out_file = open("output.txt", 'r')
-  #for line in out_file:
-  #  print(line[0:-1])
-  
-  #out_file.close()

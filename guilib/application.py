@@ -36,8 +36,10 @@ class Application(tk.Frame):
       self.dark_theme = tk.BooleanVar()
       self.normal_theme.set(True)
       self.dark_theme.set(False)
+      
       # Show debug option
-      self.show_debug = False
+      self.show_debug = tk.BooleanVar()
+      self.show_debug.set(False)
       
       self.is_live_interpreting = tk.BooleanVar()
       self.is_live_interpreting.set(False)
@@ -112,7 +114,7 @@ class Application(tk.Frame):
   
    def show_error(self, _exception):
       message = "\n"+traceback.format_exc()
-      if self.show_debug is True:
+      if self.show_debug.get():
          self.console.config(state="normal")
          self.console.insert(tk.INSERT, message)
          self.console.config(state="disable")
@@ -125,7 +127,7 @@ class Application(tk.Frame):
          
    def callback_error(self, *args):
      message = "\n"+traceback.format_exc()
-     if self.show_debug is True:
+     if self.show_debug.get():
          self.console.config(state="normal")
          self.console.insert(tk.INSERT, message)
          self.console.config(state="disable")
@@ -391,7 +393,7 @@ class Application(tk.Frame):
         self.clear_console_window()
         self.save_file()
         if self.filePointer:
-          interpret(self.filePointerName, self.python_file_name, self.keyword_dict)
+          interpret(self.filePointerName, self.python_file_name, self.keyword_dict, self.show_debug.get())
           self.input.text.highlighter()
           self.print_to_output()
           self.read_to_console()
@@ -509,11 +511,23 @@ class Application(tk.Frame):
       # Only run the interpret function when the input text changes
       if not self.input.has_changed:
           return
+      self.input.has_changed = False
       self.console.config(state = "normal")
       self.console.delete("1.0", tk.END)
       self.console.config(state = "disable")
       self.interpreter_func()
-      self.input.has_changed = False
+      
+   def set_debug(self):
+      if not self.show_debug.get():
+         self.show_debug.set(False)
+         self.console.config(state="normal")
+         self.console.insert(tk.INSERT, "Debugging Off: You will not see python errors in the console")
+         self.console.config(state="disable")
+      else:
+         self.show_debug.set(True)
+         self.console.config(state="normal")
+         self.console.insert(tk.INSERT, "Debugging On: You can now see python errors in the console")
+         self.console.config(state="disable")
 
    def create_menu(self):
       menubar = tk.Menu(self.master)
@@ -556,17 +570,15 @@ class Application(tk.Frame):
       clearmenu = tk.Menu(menubar, tearoff=0)
       clearmenu.add_command(label="Console", command=lambda: self.clear_console_window(), accelerator="F8")
       clearmenu.add_command(label="Input", command=lambda: self.clear_input_window(), accelerator="F9")
-      clearmenu.add_command(
-          label="Output", command=lambda: self.clear_output_window(), accelerator="F10")
+      clearmenu.add_command(label="Output", command=lambda: self.clear_output_window(), accelerator="F10")
       menubar.add_cascade(label="Clear", menu=clearmenu)
       
       self.rightClick.add_cascade(label="Clear", menu=clearmenu)
       
-      # help menu (Button)
+      # help menu
       helpmenu = tk.Menu(menubar, tearoff=0)
       helpmenu.add_command(label="Help", command=lambda: self.show_help_window())
-      helpmenu.add_command(
-          label="Toggle debug", command=lambda: self.set_debug())
+      helpmenu.add_checkbutton(label="Toggle debug", onvalue=1, offvalue=0, variable=self.show_debug, command=self.set_debug)
       menubar.add_cascade(label="Help", menu=helpmenu)
       
       # Specific style configurations, currently a child of the theme menu.
@@ -678,20 +690,6 @@ class Application(tk.Frame):
 
       # Pack all menu options and display it
       self.master.config(menu=menubar)
-      
-   def set_debug(self):
-      if self.show_debug:
-         self.show_debug = False
-         self.console.config(state="normal")
-         self.console.insert(
-             tk.INSERT, "Debugging Off: You will not see python errors in the console")
-         self.console.config(state="disable")
-      else:
-         self.show_debug = True
-         self.console.config(state="normal")
-         self.console.insert(
-             tk.INSERT, "Debugging On: You can now see python errors in the console")
-         self.console.config(state="disable")
          
    def pop_up_menu(self, event):
     try:
@@ -735,7 +733,7 @@ class Application(tk.Frame):
     self.scaleWindow.protocol("WM_DELETE_WINDOW", self.close_rgb)
 
     self.selection = tk.IntVar(self.scaleWindow, value = 0, name = "optionVar")
-
+    
     r1 = tk.Radiobutton(self.scaleWindow, text="Background",
                         variable=self.selection, value=1)
     r1.pack(anchor = tk.W)
