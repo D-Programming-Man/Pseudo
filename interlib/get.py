@@ -26,7 +26,7 @@ def handler(interpret_state):
 
   get_statement = line_list.copy()
   get_statement.pop(0) # Remove keyword
-  
+  get_statement = syntax_parse(get_statement)
   data_type = None
   input_table = None
   store_variable = None
@@ -39,7 +39,7 @@ def handler(interpret_state):
     word = get_statement[i]
 
     if data_type == None:
-      data_type  = word
+      data_type  = word.strip()
 
     elif found_from == False:
       if word == "from":
@@ -88,3 +88,23 @@ def handler(interpret_state):
   py_lines.append(py_line)
 
   return True
+
+def syntax_parse(get_line):
+  new_statement = ["", "", "", "", "", "", "", ""]
+  found_from = False;
+  counter = 0
+  for x in range(len(get_line)):
+    if get_line[x] == "from":
+      found_from = True;
+      counter += 1
+
+    if not found_from:
+      new_statement[0] += get_line[x] + " "
+    else:
+      new_statement[counter] = get_line[x]
+      counter += 1
+
+  if new_statement[-1] == "":
+    new_statement.pop()
+
+  return new_statement
