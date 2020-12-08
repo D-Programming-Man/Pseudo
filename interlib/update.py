@@ -22,6 +22,8 @@ def handler(interpret_state):
 
   update_statement = line_list.copy()
   update_statement.pop(0) # Remove keyword
+  update_statement = syntax_parse(update_statement)
+
   data_input = None
   data_key = None
   store_variable = None
@@ -41,26 +43,19 @@ def handler(interpret_state):
       first_char = word[0]
       last_char = word[-1]
 
-      if first_char != "{":
+      if first_char != "{" or last_char != "}":
         print("Error on line " + str(line_numb) + ". Bad syntax for Update.")
         print_line(line_numb, line_list)
         return False
-      elif last_char != ":":
-        print("Error on line " + str(line_numb) + ". Bad syntax for Update. Colon has to be right behind key then a space.")
-        print_line(line_numb, line_list)
-        return False
+      
+      word_split = word.split(':')
+      if len(word_split) == 2:
+        data_key = word_split[0][1:].strip()
+        data_input = word_split[1][:-1].strip()
       else:
-        data_key = word[1 : -1]
-    
-    elif data_input == None:
-      last_char = word[-1]
-
-      if last_char != "}":
         print("Error on line " + str(line_numb) + ". Bad syntax for Update.")
         print_line(line_numb, line_list)
         return False
-      else:
-        data_input = word[: -1]
 
   if store_variable == None or data_input == None or data_key == None or found_with == False:
     print("Error on line " + str(line_numb) + ". Bad syntax for Update.")
@@ -85,3 +80,15 @@ def handler(interpret_state):
     return False
 
   return True
+
+def syntax_parse(update_line):
+  new_statement = ["", "", ""]
+  for x in range(len(update_line)):
+    if x < 2:
+      new_statement[x] = update_line[x]
+    else:
+      new_statement[2] += update_line[x]
+      if x != len(update_line)-1:
+        new_statement[2] += " "
+
+  return new_statement
