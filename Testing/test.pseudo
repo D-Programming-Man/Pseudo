@@ -8,7 +8,7 @@ import divide_test
 import while_test
 import loop_test
 import if_test
-
+import get_tests
 Create a variable named x with value 4
 Create a variable named y with value 3
 
@@ -26,5 +26,25 @@ Run function loop_test with parameters number x, number y
 Display ""
 Run function if_test with parameters number x, number y
 Display ""
+
+#get tests
+Create table named testTable with value {"string":"this is a string"}
+Create a list named vowles with values ["A", "E", "I", "O", "U"]
+Create a table named foo with values {"bar": 1, 12: "3"}
+Create a variable named key with value "string"
+Run function get_test with parameters table testTable, string key
+Set key to 0
+Run function get_test with parameters list vowles, string key
+Set key to 2
+Run function get_test with parameters list vowles, string key
+Set key to 12
+Run function get_test with parameters table foo, string key
+Set key to "bar"
+Run function get_test with parameters table foo, string key
+Run function for_Get with parameters list vowles, number 5
+###these should not work
+#Run function get_test with parameters list vowles, string key
+#Set key to 19
+
 Pycode print("You can use python code with the \"Pycode\" keyword")
 % print("The % sign also does this too")
