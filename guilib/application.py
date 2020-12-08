@@ -426,6 +426,9 @@ class Application(tk.Frame):
         self.filePointer = True
         self.filePointerName = file.name
         self.python_file_name = file.name[0:-6]+"py"
+         #clear the console and python-output windows
+        self.clear_console_window()
+        self.clear_output_window()
 
         self.console.config(state = "normal")
         self.console.insert(tk.INSERT, "Opened " + os.path.basename(file.name) + " " + time + "\n")
