@@ -3,7 +3,15 @@ from interlib.utility import print_line
 from interlib.utility import inter_data_type
 from interlib.utility import list_dict_checker
 
-help_manual = ""
+help_manual = "  Syntax: \n" \
+              "  Set <variable_name> [equal] to (<variable>/<number>/<string>/<list>/<table>) \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Set x to \"Hello World\" \n" \
+              "  Set y equal to 1232 \n" \
+              "  Set z to [1, 3 , 4, \"hmm\"] \n" \
+              "  Set recipe to {\"Milk\" : \"2 lbs\", \"Crackers\" : \"Handful\"} \n"
+
 
 '''
  Set keyword: used as a more advanced create option
@@ -36,11 +44,14 @@ def handler(interpret_state):
     var_name = line_list[word_pos]
 
     word_pos += 1
-    
-    value = ""
-    data_type = ""
-    if line_list[word_pos + 1][0] == "[":
-      value_list = line_list[word_pos + 1:]
+
+
+    while line_list[word_pos] != "to":
+      word_pos += 1
+    word_pos += 1
+
+    if line_list[word_pos][0] == "[":
+      value_list = line_list[word_pos:]
       if list_dict_checker("list", all_variables, value_list):
         value = " ".join(value_list)
         data_type = "list"
@@ -49,8 +60,8 @@ def handler(interpret_state):
         print_line(line_numb, line_list)
         return False
       
-    elif line_list[word_pos + 1][0] == "{":
-      value_list = line_list[word_pos + 1:]
+    elif line_list[word_pos][0] == "{":
+      value_list = line_list[word_pos:]
       if list_dict_checker("table", all_variables, value_list):
         value = " ".join(value_list)
         data_type = "table"
@@ -60,18 +71,12 @@ def handler(interpret_state):
         return False
       
     else:  
-      while line_list[word_pos] != "to":
-        word_pos += 1
-      word_pos += 1
-      
-      while word_pos < len(line_list):
-        value += line_list[word_pos]
-        word_pos += 1
-        if word_pos != len(line_list):
-          value += " "
+
+      value_list = line_list[word_pos:]
+      value = " ".join(value_list)
 
       if key_var_check(all_variables, [value]) is None:
-        print("Error on line " + str(line_numb) + ". " + var_name + " is being set to an invalid value.")
+        print("Error on line " + str(line_numb+1) + ". " + var_name + " is being set to an invalid value.")
         print_line(line_numb, line_list)
         return False
         
