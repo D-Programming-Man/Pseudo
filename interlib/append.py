@@ -20,6 +20,8 @@ def handler(interpret_state):
 
   append_statement = line_list.copy()
   append_statement.pop(0) # Remove keyword
+  append_statement = syntax_parse(append_statement)
+
   data_input = None
   store_variable = None
   found_to = False
@@ -28,7 +30,7 @@ def handler(interpret_state):
     word = append_statement[i]
 
     if data_input == None:
-      data_input  = word
+      data_input  = word.strip()
 
     elif found_to == False:
       if word == "to":
@@ -60,3 +62,17 @@ def handler(interpret_state):
     return False
 
   return True
+
+def syntax_parse(append_line):
+  new_statement = ["", "", ""]
+  counter = 2
+  for x in range(len(append_line)-1, -1, -1):
+    if x == len(append_line)-2 or x == len(append_line)-1:
+      new_statement[counter] = append_line[x]
+      counter = counter - 1
+    else:
+      if x != 0:
+        new_statement[0] = append_line[x]  + new_statement[0]
+      else:
+        new_statement[0] = append_line[x] + " " + new_statement[0]
+  return new_statement
