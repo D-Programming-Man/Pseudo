@@ -8,3 +8,9 @@ Psuedo really is a GUI/IDE in a sense and all documentation of Keywords is encap
 Its most prominent feature is its ability to dynamically read Keyword files and intergrate it into the framework. This means that that if you want to add or expand more keywords, you are allowed to do so. Keyword are python files in the "interlib" folder used to translate lines of Pseudo code to Python code. The "interlib" folder is required to actually run the Pseudo program successfully and it needs to be in the same directory as the program. Download it to try out the basic Keywords we implmeneted to get the general idea of using Pseudo.
 
 This project was made with the help of David Gmerek, Dvir Bar, Steven Resendiz, and Marlon Gergorio. Without them, I wouldn't have thought of implementing certain features for Pseudo.
+
+For building the program yourself, it requires [pyinstaller](https://www.pyinstaller.org/) to build the binary in the console. The command to build it is:
+```
+pyinstaller.exe --windowed --noconsole --onefile --name="Pseudo" gui.py
+```
+Just note that pyinstaller does not work with python 3.8 yet. Python 3.7.x and lower should be supported.
