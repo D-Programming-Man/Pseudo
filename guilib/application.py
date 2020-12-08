@@ -524,12 +524,12 @@ class Application(tk.Frame):
       if not self.show_debug.get():
          self.show_debug.set(False)
          self.console.config(state="normal")
-         self.console.insert(tk.INSERT, "Debugging Off: You will not see python errors in the console")
+         self.console.insert(tk.INSERT, "Debugging Off: You will not see python errors in the console\n")
          self.console.config(state="disable")
       else:
          self.show_debug.set(True)
          self.console.config(state="normal")
-         self.console.insert(tk.INSERT, "Debugging On: You can now see python errors in the console")
+         self.console.insert(tk.INSERT, "Debugging On: You can now see python errors in the console\n")
          self.console.config(state="disable")
 
    def create_menu(self):
