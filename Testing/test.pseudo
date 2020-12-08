@@ -41,7 +41,7 @@ Set key to 12
 Run function get_test with parameters table foo, string key
 Set key to "bar"
 Run function get_test with parameters table foo, string key
-Run function for_Get with parameters list vowles, number 5
+Run function get_for with parameters list vowles, number 5
 ###these should not work
 #Run function get_test with parameters list vowles, string key
 #Set key to 19

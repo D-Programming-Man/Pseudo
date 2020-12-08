@@ -71,10 +71,10 @@ class CustomText(tk.Text):
 
       keywords = {"#": "string", '"': "string", "'": "string",
                     
-                  "Variable": "datatype", "Number ": "datatype", "Int ": "datatype", "Int)": "datatype",
-                  "Int,": "datatype", "String ": "datatype", "str": "datatype", "List ": "datatype",
-                  " List,": "datatype", " List)": "datatype", "Table ": "datatype", "dict": "datatype",
-                  "Function ": "datatype", "Object ": "datatype",
+                  " Variable": "datatype", " Number ": "datatype", " Int ": "datatype", "Int)": "datatype",
+                  " Int,": "datatype", " String ": "datatype", "str": "datatype", " List ": "datatype",
+                  " List,": "datatype", " List)": "datatype", " Table ": "datatype", " dict": "datatype",
+                  " Function ": "datatype", " Object ": "datatype",
 
                   "Add ": "keyword", "Store ": "keyword", "Append ": "keyword", "Compare ": "keyword",
                   "Create ": "keyword", "Define ": "keyword", "def ": "keyword", "Display ": "keyword",
