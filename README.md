@@ -1,26 +1,10 @@
 # Pseudo
-An interpreter that translate English to python code
+An interpreter that translate English to python code. This project was inspired by a Minecraft Plugin called [Skript](https://github.com/SkriptLang/Skript) that allowed players to develop Minecraft Plugins without learning how to write Java code or managing a plugin project. It's intuitive syntax of writing down English phrases to usable code in the game is the same idea that Pseudo will have for users who will be writing down Pseudo code.
 
-User Stories for Sprint 4:
+How Pseudo works in general is by writing down English words with some Python syntax to create Python code. How we achieve this is by the use of Keywords, words that start from the beginning of a line will indicate what code will be generated to a python file.
 
-* As a user, I want to set a variable to some new value so that I don't need to create new ones
+Psuedo really is a GUI/IDE in a sense and all documentation of Keywords is encapuslated into it.
 
-* As a user, I want to see my Pseudo code update in real time
+Its most prominent feature is its ability to dynamically read Keyword files and intergrate it into the framework. This means that that if you want to add or expand more keywords, you are allowed to do so. Keyword are python files in the "interlib" folder used to translate lines of Pseudo code to Python code. The "interlib" folder is required to actually run the Pseudo program successfully and it needs to be in the same directory as the program. Download it to try out the basic Keywords we implmeneted to get the general idea of using Pseudo.
 
-* As a uesr, I want to use things in a dictionary or list
-
-* As a user, I want to add things into a dictionary or list
-
-* As a user, I want to remove things in a dictionary or list
-
-* As a user, I want to retrieve data from a function
-
-* As a user, I want to see advance debugging info when the code doesn't run correctly
-
-Completed:
-
-* As a user, I want to clear the console so that I don't have to see old data and timestamps when translating my Pseudo code
-
-TODO:
-
-* Scrum Board: https://docs.google.com/spreadsheets/d/1I5IZHyz0hwRgLnb-TbaJe2-aHZ0Y5hHAARfLbz-LquQ/edit?usp=sharing
+This project was made with the help of David Gmerek, Dvir Bar, Steven Resendiz, and Marlon Gergorio. Without them, I wouldn't have thought of implementing certain features for Pseudo.
