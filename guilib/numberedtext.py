@@ -71,16 +71,18 @@ class CustomText(tk.Text):
 
       keywords = {"#": "string", '"': "string", "'": "string",
                     
-                  "Variable": "datatype", "Number": "datatype", "Int ": "datatype", "Int)": "datatype",
-                  "Int,": "datatype", "String": "datatype", "str": "datatype", "List": "datatype",
-                  "Table": "datatype", "dict": "datatype", "Function": "datatype", "Object": "datatype",
+                  "Variable": "datatype", "Number ": "datatype", "Int ": "datatype", "Int)": "datatype",
+                  "Int,": "datatype", "String ": "datatype", "str": "datatype", "List ": "datatype",
+                  " List,": "datatype", " List)": "datatype", "Table ": "datatype", "dict": "datatype",
+                  "Function ": "datatype", "Object ": "datatype",
 
-                  "Create ": "keyword", "Display ": "keyword", "Add ": "keyword", "Subtract ": "keyword",
-                  "Multiply ": "keyword", "Divide ": "keyword", "Store ": "keyword", "Print": "keyword",
-                  "Define ": "keyword", "def ": "keyword", "Run ": "keyword", "If": "keyword", "Loop": "keyword",
-                  "for": "keyword", "Compare": "keyword", "While": "keyword", 
-                  "Import": "keyword",
-                  
+                  "Add ": "keyword", "Store ": "keyword", "Append ": "keyword", "Compare ": "keyword",
+                  "Create ": "keyword", "Define ": "keyword", "def ": "keyword", "Display ": "keyword",
+                  "Print": "keyword", "Divide ": "keyword", "Get ": "keyword", "If ": "keyword", "Import ": "keyword",
+                  "Loop ": "keyword", "for ": "keyword",  "Multiply ": "keyword", "Remove ": "keyword",
+                  "Remove(": "keyword", "Del ": "keyword", "Run ": "keyword", "Set ": "keyword", "Subtract ": "keyword",
+                  "Update ": "keyword", "While ": "keyword",
+
                   "%": "keyword", "Pycode": "keyword"
                   }
     
@@ -131,7 +133,7 @@ class CustomText(tk.Text):
                 break
             self.mark_set("kw_finish", "%s+%sc" % (index, count.get()))
 
-          elif kw[-1] == ")" or kw[-1] == ",":
+          elif kw[-1] == ")" or kw[-1] == "," or kw[-1] == "(":
             self.mark_set("kw_finish", "%s+%sc-%sc" % (index, count.get(), "1"))
 
           else:
