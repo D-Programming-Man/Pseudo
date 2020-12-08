@@ -1,0 +1,19 @@
+Define function if_test with parameters number x, number y:
+  Display "If Testing:"
+  Display "Is ", x, " less than ", y, "?"
+  If x is less than y:
+    Display "Yes it is!"
+  If x is greater than or equal to y:
+    Display "No it is not!"
+  
+  Display "\nIs ", x, " equal to ", y, "?"
+  If x is equal to y:
+    Display "Yes it is!"
+  If x is not equal to y:
+    Display "No it is not!"
+
+  Display "\nIs ", x, " greater than ", y, "?"
+  If x is greater than y:
+    Display "Yes it is!"
+  If x is less than or equal to y:
+    Display "No it is not!"

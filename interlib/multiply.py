@@ -1,6 +1,16 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
+help_manual = "  Syntax: \n" \
+              "  Multiply (<variable name>/<number>) and (<variable name>/<number>), store [it/the result] into <variable name> \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Multiply 1 and 2, store into x \n" \
+              "  Multiply x and 4, store into y \n" \
+              "  Multiply 1.4843 and 3.431, store into w \n" \
+              "  Multiply 1.32 and y, store into z \n" \
+              "  Multiply var_1 and var_2, store into result \n"
+
 '''
     Main arithmetic functions
     
@@ -75,7 +85,7 @@ def handler(interpret_state):
           symbolList.append(part)
           varNum = variableCheck(part, all_variables)
           if varNum == None:
-            print("Error, Variable not found")
+            print("Error: Operand " + str(part) + " does not contain a number")
             print_line(line_numb, line_list) 
             return False
           numList.append(varNum)
@@ -143,7 +153,9 @@ def data_type_check(name, all_variables):
 #Checks if var is a number or a variable in all_varaibles
 #This is called for places where var is allowed to be a variable or a number
 def variableCheck(var, all_variables): 
-  if var.replace('.', '', 1).isdigit():
+  new_var = var.replace('.', '', 1)
+  new_var = new_var.replace('-', '', 1)
+  if new_var.isdigit():
     if var.isdigit():
       return int(var)
     else:

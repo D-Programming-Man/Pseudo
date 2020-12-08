@@ -1,6 +1,17 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
+help_manual = "  Syntax: \n" \
+              "  Subtract (<variable name>/<number>) from (<variable name>/<number>), store [it/the result] into <variable name> \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Subtract 1 from 2, store into x \n" \
+              "  Subtract x from 4, store into y \n" \
+              "  Subtract 1.4843 from 3.431, store into w \n" \
+              "  Subtract 1.32 from y, store into z \n" \
+              "  Subtract var_1 from var_2, store into result \n"
+
+
 '''
     Main arithmetic functions
     
@@ -35,7 +46,7 @@ def handler(interpret_state):
   if found_all_keywords != len(expected_keywords):
     # expected keywords did not all show up
     # "Error, expected keywords missing" will find a better system for this
-    print("Error on line " + str(line_numb) + ". Incorrect syntax")
+    print("Error: Incorrect syntax")
     print_line(line_numb, line_list)
     return False
 
@@ -48,6 +59,10 @@ def handler(interpret_state):
   
   temp_difference_val = 0
   var3_name = line_list[-1]
+  if var3_name in expected_keywords:
+    print("Error: Incorrect syntax")
+    print_line(line_numb, interpret_state["line_list"])
+    return False
 
   # check that variables are valid in all_variables dict
   # if not check if they are valid numbers
@@ -59,7 +74,7 @@ def handler(interpret_state):
     elif var2_number is None:
       # second variable is not in all_variables dict
       # and is not a number
-      print("Error on line " + str(line_numb) + ". Variable not found")
+      print("Error: Operand " + var2_name + " is not a valid number")
       print_line(line_numb, line_list)
       return False
     else:
@@ -68,7 +83,7 @@ def handler(interpret_state):
   elif var1_number is None:
     # variable 1 is not in all_variables dict
     # and is not a number
-    print("Error on line " + str(line_numb) + ". Variable not found")
+    print("Error: Operand " + var1_name + " is not a valid number")
     print_line(line_numb, line_list)
     return False
   else:
@@ -80,7 +95,7 @@ def handler(interpret_state):
     elif var2_number is None:
       # variable 2 is not in all_variables dict
       # and not a number
-      print("Error on line " + str(line_numb) + ". Variable not found")
+      print("Error: Variable not found")
       print_line(line_numb, line_list)
       return False
     else:
@@ -114,8 +129,7 @@ def is_valid_number(element):
     return float(element)
   except:
    pass
-
-
+   
 def data_type_check(name, all_variables):
   # if it exists, returns data type
   # else None
@@ -123,22 +137,3 @@ def data_type_check(name, all_variables):
     return all_variables[name]["data_type"]
   else:
     pass
-
-#Helper function for Multiply
-#Checks if var is a number or a variable in all_varaibles
-#This is called for places where var is allowed to be a variable or a number
-def variableCheck(var, all_variables): 
-  if var.replace('.', '', 1).isdigit():
-    if var.isdigit():
-      return int(var)
-    else:
-      return float(var)
-  else:
-    temp = all_variables.get(var)
-    if temp != None:
-      if temp["data_type"] == "number":
-        return temp["value"]
-      else:
-        return None
-    else:
-      return None

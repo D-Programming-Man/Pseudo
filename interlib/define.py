@@ -1,5 +1,23 @@
 from interlib.utility import print_line
 
+help_manual = "  Syntax: \n" \
+              "  Define function <function name> [with parameter[s] (number/string/list/table) (<variable>/<number>/<string>)[, (number/string/list/table) (<variable>/<number>/<string>][, ...]]: \n" \
+              "    ... function code goes under here ...\n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Define function hello_world: \n" \
+              "    Display \"Hello World\" \n" \
+              "  Define function display_number with parameter number x: \n" \
+              "    Display x \n" \
+              "  Define function add_display with parameters number op1, number op2: \n" \
+              "    Add op1 and op2, store it into result \n" \
+              "    Display result \n" \
+              "  Define function count_down with parameter number counter: \n" \
+              "    While counter is greater than 0: \n" \
+              "      Subtract 1 from counter, store the result into counter \n" \
+              "      Display counter \n" \
+              "    Display \"Countdown is 0!\" \n"
+
 '''
     Handler that allows creation of functions
 
@@ -21,6 +39,7 @@ def handler(interpret_state):
   all_variables = interpret_state["all_variables"]
   indent = interpret_state["pseudo_indent"] + interpret_state["indent"]
   py_lines = interpret_state["py_lines"]
+  pseudo_file = interpret_state["pseudo_file"]
 
   word_pos = 2
   indent_space = indent * " "
@@ -30,7 +49,7 @@ def handler(interpret_state):
     func_name = func_name[0:-1]
 
   if func_name in all_variables:
-    print("Error on line " + str(line_numb) + ". The function name cannot be shared or overwritten.")
+    print("Error: The function name cannot be shared or overwritten.")
     print_line(line_numb, line_list)
     return False
 
@@ -43,14 +62,14 @@ def handler(interpret_state):
     if line_list[word_pos] == "with":
       word_pos += 1
     else:
-      print("Error on line " + str(line_numb) + ". Improper function declaration format.")
+      print("Error: Improper function declaration format.")
       print_line(line_numb, line_list)
       return False
 
     if line_list[word_pos] == "parameter" or line_list[word_pos] == "parameters":
       word_pos += 1
     else:
-      print("Error on line " + str(line_numb) + ". Improper function declaration format.")
+      print("Error: Improper function declaration format.")
       print_line(line_numb, line_list)
       return False
 
@@ -63,7 +82,7 @@ def handler(interpret_state):
         param_types.append(data_types[datatype])
         word_pos += 1
       else:
-        print("Error on line " + str(line_numb) + ". Improper data type.")
+        print("Error: Improper data type.")
         print_line(line_numb, line_list)
         return False
 
@@ -95,6 +114,6 @@ def handler(interpret_state):
 
   py_lines.append(py_line)
 
-  all_variables[func_name] = {"data_type": "function", "value": param_dict}
+  all_variables[func_name] = {"data_type": "function", "value": param_dict, "source": pseudo_file}
 
   return True

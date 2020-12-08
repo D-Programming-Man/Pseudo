@@ -1,6 +1,20 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
+help_manual = "  Syntax: \n" \
+              "  While (<variable>/<number>/<string>) is ([not] equal to/(less/greater) than [or equal to]) (<variable>/<number>/<string>): \n" \
+              "    ... Your code here ... \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  While 1 is less than 2: \n" \
+              "    Display \"You just crashed the program, congratulations!\" \n" \
+              "  While x is greater than 2: \n" \
+              "    Subtract 1 from x, store into x \n" \
+              "  While y is equal to 10: \n" \
+              "    Display y \n" \
+              "    Add y and y, store into y \n" \
+              "  While some_var is less than or equal to another_var: \n" \
+              "    Add some_var and some_other_var, store into some_var \n"
 
 def handler(interpret_state):
   line_numb = interpret_state["line_numb"]

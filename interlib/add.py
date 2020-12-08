@@ -1,6 +1,17 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
+help_manual = "  Syntax: \n" \
+              "  Add (<variable name>/<number>) and (<variable name>/<number>), store [it/the result] into <variable name> \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Add 1 and 2, store into x \n" \
+              "  Add x and 4, store into y \n" \
+              "  Add 1.4843 and 3.431, store into w \n" \
+              "  Add 1.32 and y, store into z \n" \
+              "  Add var_1 and var_2, store into result \n"
+              
+
 '''
     Main arithmetic functions
     
@@ -25,62 +36,79 @@ def handler(interpret_state):
   # Check that they exist and are valid data types, or are numbers. i.e "1","1.1"
   # Last element in the list is the variable name we want to add to. 
   # Update the last variable in line_list to all_variables with the sum of the first two
-  expected_keywords = ["and", "store", "into"]
-  found_all_keywords = 0
-  for index, elem in enumerate(line_list):
-    # removing any "," and "\n"
-    line_list[index] = elem.strip(',\n')
-    if elem in expected_keywords:
-      found_all_keywords+=1
-  if found_all_keywords != len(expected_keywords):
-    # expected keywords did not all show up
-    print("Error on line " + str(line_numb) + ". Incorrect syntax")
+  word_pos = 1
+  
+  var1_name = line_list[word_pos]
+  word_pos += 1
+  
+  if line_list[word_pos] == "and":
+    word_pos += 1
+  else:
+    print("Expected word \"and\" after first operand.")
     print_line(line_numb, line_list)
     return False
-
   
-  var1_name = line_list[1]
-  var2_name = line_list[3]
+  var2_name = line_list[word_pos]
+  if var2_name[-1] == ",":
+    var2_name = var2_name[0:-1] 
+  word_pos += 1
+  
   var1_number = is_valid_number(var1_name)
   var2_number = is_valid_number(var2_name)
-  temp_sum_val = 0
-  var3_name = line_list[-1]
-
-
-  # check that variables are valid in all_variables dict
-  # if not check if they are valid numbers
-  # if both are not true, return error
-  if data_type_check(var1_name, all_variables) == "number":
-    if data_type_check(var2_name, all_variables) == "number":
-      temp_sum_val = all_variables[var1_name]["value"] + all_variables[var2_name]["value"]
-    elif var2_number is None:
-      # second variable is not in all_variables dict
-      # and is not a number
-      print("Error on line " + str(line_numb) + ". Variable not found")
+  
+  if var1_number == None:
+    data_type = ""
+    try: 
+      data_type = all_variables[var1_name]["data_type"]
+    except:
+      print("Variable \"" + var1_name + "\" does not exist.")
       print_line(line_numb, line_list)
       return False
-    else:
-      # second variable is a number
-      temp_sum_val = all_variables[var1_name]["value"] + var2_number
-  elif var1_number is None:
-    # variable 1 is not in all_variables dict
-    # and is not a number
-    print("Error on line " + str(line_numb) + ". Variable not found")
+    if data_type != "number":
+      print("Operand \"" + var1_name + "\" is not a number.")
+      print_line(line_numb, line_list)
+      return False
+      
+  if var2_number == None:
+    data_type = ""
+    try: 
+      data_type = all_variables[var2_name]["data_type"]
+    except:
+      print("Variable \"" + var2_name + "\" does not exist.")
+      print_line(line_numb, line_list)
+      return False
+    if data_type != "number":
+      print("Operand \"" + var2_name + "\" is not a number.")
+      print_line(line_numb, line_list)
+      return False
+  
+  if line_list[word_pos] == "store":
+    word_pos += 1
+  else:
+    print("Expected word \"store\" after second operand.")
     print_line(line_numb, line_list)
     return False
-  else:
-    # variable 1 is a number
-    if data_type_check(var2_name, all_variables) == "number":
-      temp_sum_val = var1_number + all_variables[var2_name]["value"]
-
-    elif var2_number is None:
-      # variable 2 is not in all_variables dict
-      # and not a number
-      print("Error on line " + str(line_numb) + ". Variable not found")
+    
+  if line_list[word_pos] == "it":
+    word_pos += 1
+  elif line_list[word_pos] == "the":
+    word_pos += 1
+    if line_list[word_pos] == "result":
+      word_pos += 1
+    else:
+      print("Expected word \"result\" after the word \"the\".")
       print_line(line_numb, line_list)
       return False
-    else:
-      temp_sum_val = var1_number + var2_number
+
+  if line_list[word_pos] == "into":
+    word_pos += 1
+  else:
+    print("Expected word \"into\" after the word \"" + line_list[word_pos - 1] + "\".")
+    print_line(line_numb, line_list)
+    return False
+  
+  var3_name = line_list[word_pos]
+  temp_sum_val = 0
 
   # update or create new entry in dictionary. {"x":{"data_type":"number", "value":#}}
   all_variables[var3_name] = {"data_type": "number", "value": temp_sum_val}
@@ -99,32 +127,4 @@ def is_valid_number(element):
     float(element)
     return float(element)
   except:
-   pass
-
-
-def data_type_check(name, all_variables):
-  # if it exists, returns data type
-  # else None
-  if name in all_variables:
-    return all_variables[name]["data_type"]
-  else:
-    pass
-
-#Helper function for Multiply
-#Checks if var is a number or a variable in all_varaibles
-#This is called for places where var is allowed to be a variable or a number
-def variableCheck(var, all_variables): 
-  if var.replace('.', '', 1).isdigit():
-    if var.isdigit():
-      return int(var)
-    else:
-      return float(var)
-  else:
-    temp = all_variables.get(var)
-    if temp != None:
-      if temp["data_type"] == "number":
-        return temp["value"]
-      else:
-        return None
-    else:
-      return None
+    return None

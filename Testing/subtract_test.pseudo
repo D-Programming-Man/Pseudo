@@ -1,0 +1,25 @@
+# This file is a test file for the Subtract keyword
+Define function subtract_test with parameters number x, number y:
+  Display "Subtracttion Testing"
+  Create a variable named result with value 0
+  
+  Subtract 1 from 1, store into result
+  Display result, " = 1 - 1"
+  
+  Subtract -1 from x, store into result
+  Display result, " = x - 1"
+
+  Subtract y from 1, store into result
+  Display result, " = 1 - y"
+
+  Subtract 1.1 from 2.4, store into result
+  Display result, " = 2.4 - 1.1"
+
+  Subtract 1.234 from x, store into result
+  Display result, " = x - 1.234"
+
+  Subtract y from 2.432, store into result
+  Display result, " = 2.432 - y"
+
+  Subtract y from x, store into result
+  Display result, " = x - y"

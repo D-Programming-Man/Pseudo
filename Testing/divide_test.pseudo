@@ -1,0 +1,24 @@
+# This file tests the Divide keyword
+Define function divide_test with parameters number x, number y
+  Create a variable named result with value 1
+  
+  Divide 10 by 2, store into result
+  Display result, " = 10 / 2"
+
+  Divide x by -2, store into result
+  Display result, " = x / -2"
+
+  Divide 10 by y, store into result
+  Display result, " = 10 / y"
+
+  Divide -2.453 by 2.34, store into result
+  Display result, " = -2.453 / 2.34"
+
+  Divide 24.3 by x, store into result
+  Display result, " = 24.3 / x"
+
+  Divide y by .353, store into result
+  Display result, " = y / 0.353"
+
+  Divide x by y, store into result
+  Display result, " = x / y"

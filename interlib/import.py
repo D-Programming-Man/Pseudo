@@ -4,6 +4,15 @@ import os
 import sys
 import glob
 
+help_manual = "  Syntax: \n" \
+              "  Import <pseudo file name> \n" \
+              "  - The <pseudo file name> is a file name without the extension\n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Import helper \n" \
+              "  Import Some_Other_Pseudo_File \n" \
+              "  Import Another_File \n"
+
 '''
     Main arithmetic functions
     
@@ -26,6 +35,8 @@ def handler(interpret_state):
   indent = interpret_state["pseudo_indent"] + interpret_state["indent"]
   py_lines = interpret_state["py_lines"]
   import_queue = interpret_state["import_queue"]
+  pseudo_filepath = interpret_state["pseudo_filepath"]
+  pseudo_file = interpret_state["pseudo_file"]
   
   if len(line_list) > 2:
     print("Cannot import files with spaces in the names.")
@@ -35,31 +46,34 @@ def handler(interpret_state):
   # Find the file in the same directory as the main pseudo file
   word_pos = 1
   file_list_pos = 0
-  pseudo_files = glob.glob("./*.pseudo")
+  pseudo_files = glob.glob(pseudo_filepath + "/*.pseudo")
+  #print(pseudo_files)
   for file in pseudo_files:
-    file = file[2:-7]
+    file = file.split("\\")[-1][0:-7]
+    #file = file[2:-7]
+    #print(file)
     if file == line_list[1]:
       break;
     file_list_pos += 1
 
-  pseduo_file_name = ""
-  pseduo_file = ""
-  pseduo_file_py = ""
+  pseudo_filename = ""
+  pseudo_filepath = ""
+  pseudo_file_py = ""
   try:
-    pseudo_file_name = pseudo_files[file_list_pos][2:-7]
-    pseudo_file = pseudo_files[file_list_pos][2:]
-    pseudo_file_py = pseudo_file_name + ".py"
+    pseudo_filename = pseudo_files[file_list_pos].split("\\")[-1][0:-7]
+    pseudo_filepath = pseudo_files[file_list_pos]
+    pseudo_file_py = pseudo_files[file_list_pos][0:-7] + ".py"
   except:
-    print("There is no pseudo file named \"" + line_list[1] + "\"")
+    print("Error: There is no pseudo file named \"" + line_list[1] + ".pseudo\" within the same directory as \"" + pseudo_file + "\"")
     print_line(line_numb, line_list)
     return False
 
   # Check if the importing pseudo file is a queue of already imported files 
-  if pseudo_file_name not in import_queue.queue:
-    import_queue.push(pseudo_file_name)
+  if pseudo_filename not in import_queue.queue:
+    import_queue.push(pseudo_filename)
   else:
-    import_queue.remove(pseudo_file_name)
-    import_queue.insert(import_queue.size(), pseudo_file_name)
+    import_queue.remove(pseudo_filename)
+    import_queue.insert(import_queue.size(), pseudo_filename)
 
   # Checks for infinite import loops
   if import_queue.is_infinite_loop():
@@ -67,7 +81,7 @@ def handler(interpret_state):
     return False
 
   # Parse all code in the importing pseudo file
-  sub_interpret_state = import_interpret(pseudo_file, pseudo_file_py, interpret_state["keyword_dict"], import_queue)
+  sub_interpret_state = import_interpret(pseudo_filepath, pseudo_file_py, interpret_state["keyword_dict"], import_queue)
   if sub_interpret_state["parse_success"]:
     import_queue.pop()
     
@@ -78,13 +92,14 @@ def handler(interpret_state):
     for var in sub_interpret_state["all_variables"]:
       if sub_interpret_state["all_variables"][var]["data_type"] == "function":
         if var not in all_variables:
-          contains_functions = True
-          interpret_state["all_variables"][var] = sub_interpret_state["all_variables"][var]
-          py_lines.appendleft("from " + pseudo_file_name + " import " + var + "\n")
+          if sub_interpret_state["all_variables"][var]["source"] != pseudo_file:
+            contains_functions = True
+            interpret_state["all_variables"][var] = sub_interpret_state["all_variables"][var]
+            py_lines.appendleft("from " + pseudo_filename + " import " + var + "\n")
         else:
           print("Error: Function " + var + " is already defined in this file as well as in \"" + pseudo_file + "\".")
           return False
     if not contains_functions:
-      py_lines.appendleft("import " + pseudo_file_name + "\n")
+      py_lines.appendleft("import " + pseudo_filename + "\n")
       
   return sub_interpret_state["parse_success"]

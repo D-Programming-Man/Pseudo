@@ -1,0 +1,24 @@
+Define function add_test with parameters number x, number y:
+  Create a variable named result with value 0
+  Display "Addition Testing"
+  
+  Add 1 and 1, store into result
+  Display result, " = 1 + 1"
+  
+  Add 1 and x, store into result
+  Display result, " = 1 + x"
+   
+  Add y and 1, store into result
+  Display result, " = y + 1"
+
+  Add 1.1 and 1.1, store into result
+  Display result, " = 1.1 + 1.1"
+
+  Add 1.1 and x, store it into result
+  Display result, " = 1.1 and x"
+
+  Add y and 1.1, store the result into result
+  Display result, " = y and 1.1"
+
+  Add y and x, store into result
+  Display result, " = y + x"

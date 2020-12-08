@@ -1,0 +1,13 @@
+Define function get_test with parameters table desk, string key
+  Create variable named result with value ""
+  Get key from desk and store into result
+  Display "Get key or index '", key, "' from table/list ", desk, ":  "
+  Display "The value returned using Get is: ", result, "\n"
+
+Define function for_Get with parameters list desk, number iterator
+  Create variable named temp with value ""
+  Create variable named index with value 0
+  Loop iterator times:
+    Get index from desk and store into temp
+    Add 1 and index store into index
+    Display temp

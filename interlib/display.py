@@ -1,5 +1,15 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
+
+help_manual = "  Syntax: \n" \
+              "  Display (<variable>/<number>/<string>)[, (<variable>/<number>/<string>)[, ...]] \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  Display \"Hello World\" \n" \
+              "  Display 1, 2, 3, 4, 5 \n" \
+              "  Display \"Result = \", result \n" \
+              "  Display some_list \n" \
+              "  Display \"This is a table: \", some_table \n"
   
 '''
   The handler to display things on the console

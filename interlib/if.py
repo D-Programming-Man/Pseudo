@@ -1,6 +1,24 @@
 from interlib.utility import inter_data_type
 from interlib.utility import print_line
 
+help_manual = "  Syntax: \n" \
+              "  If (<variable>/<number>/<string>) is ([not] equal to/(less/greater) than [or equal to]) (<variable>/<number>/<string>): \n" \
+              "     ... code goes here ... \n" \
+              "  \n" \
+              "  Examples: \n" \
+              "  If 1 is not equal to 2: \n" \
+              "    Display \"1 is not equal to 2, what did you expect?\" \n" \
+              "  If x is less than 10: \n" \
+              "    Add x and 10, store into x \n" \
+              "    Display x \n" \
+              "  If some_variable is greater than or equal to another_variable: \n" \
+              "    Display \"Then do something with that variable in here\" \n" \
+              "  If \"ThisString\" is equal to \"ThisString\": \n" \
+              "    Display \"This only works for string that do not have spaces\" \n" \
+              "  If \"ThisString\" is not equal to \"ThatString\": \n" \
+              "    Add 1 and 1, store into result \n" \
+              "    Display result \n"
+
 '''
     Conditional Branch function
     If (<variable>/<number>/<string>) is [equal to/not equal to/less than [or equal to]/greater than [or equal to]] (<variable>/<number>/<string>):

@@ -1,0 +1,21 @@
+
+Define function remove_test with parameters list test_list, table test_table, string s, number x
+  display "Unit test for remove from list"
+  
+  display "Before removal: ", test_list
+
+  remove x from test_list
+  display test_list, " = ", x, " removed from test_list"
+
+  remove s from test_list
+  display test_list, " = ", s, " removed from test_list"
+
+  display "Unit test for remove from table"
+
+  display "Before removal: ", test_table
+  
+  remove x from test_table
+  display test_table, " = ", x, " removed from test_list"
+
+  remove s from test_table
+  display test_table, " = ", s, " removed from test_list"

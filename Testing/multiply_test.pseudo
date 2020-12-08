@@ -1,0 +1,25 @@
+# This file contains test code for the Multiply keyword
+define function multiply_test with parameter number x, number y:
+  Display "Multiply Testing"
+  Create a variable named result with value 0
+  
+  Multiply 1 and 2, store into result
+  Display result, " = 1 * 2"
+
+  Multiply x and 2, store into result
+  Display result, " = x * 2"
+
+  Multiply 1 and y, store into result
+  Display result, " = 1 * y"
+
+  Multiply -1.23 and 2.44, store into result
+  Display result, " = -1.23 * 2.44"
+
+  Multiply x and 2.32, store into result
+  Display result, " = x * 2.32"
+
+  Multiply 1 and y, store into result
+  Display result, " = 1 * y"
+
+  Multiply x and y, store into result
+  Display result, " = x * y"
