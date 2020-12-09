@@ -33,29 +33,35 @@ The `Create` keyword will create a variable with the values you specify. How you
 >  `Create [a/an] <data type> named <variable name> with [a/an] (value/values) <value>`
 
 Now this might seem confusing at first, so let us try to decode what all this means.
+
 -  **Brackets** []: Brackets mean that the words inside of them are **OPTIONAL**. This means that they can be omitted from the phrase and still be sucessfully executed.
 
- - **Parentheses** (): Parentheses mean that the words inside of them are **MANDATORY**, but you can only chose **ONE** of them. If you omit them from the phrase, the Pseudo interpreter will complain.
+- **Parentheses** (): Parentheses mean that the words inside of them are **MANDATORY**, but you can only chose **ONE** of them. If you omit them from the phrase, the Pseudo interpreter will complain.
 
 - **Slash** /: What the slashes means is that you can choose any one of the options within [] or (), but you must ONLY chose one.
 
-- **<data type>**: Is an internal mechanism that Pseudo does to keep track of data. For now, the only valid <data type>s are `variable`, `list`, and `table`. More <data type>s will be implemented later.
+- **\<data type>** : Is an internal mechanism that Pseudo does to keep track of data. For now, the only valid <data type>s are `variable`, `list`, and `table`. More <data type>s will be implemented later.
+ 
 - **"variable"**: A "variable" can contain a number or a piece of text
  *(Technically, it can hold either an integer, float, or a string)*.
+ 
 - **"list"**: A "list" is what you expect a list to be. A sequence of items in the order you put them in (More info on creating lists later).
+
 - **"table"**: You can think of a "table" like an excel sheet. One entry of a table is used for one value (More info on creating tables later). 
 
->    Side note: "list" and "table" can contain other "list" and "table" values as well.
+>   Side note: "list" and "table" can contain other "list" and "table" values as well.
 
-- **<variable name>**: This the name that will represent the data. This name is one word only, if you want to have two words for a variable name use underscores. 
+- **\<variable name>**: This the name that will represent the data. This name is one word only, if you want to have two words for a variable name use underscores. 
   - E.g: `this variable` is not a valid name, but `this_variable` is.
 
- - **<value>**: If the <data type> is a "variable", then the only data you can store are numbers and text. If the <data type> is a list, then you can store list values. If the <data type> is a table, then table values are valid.
+- **\<value>**: If the <data type> is a "variable", then the only data you can store are numbers and text. If the <data type> is a list, then you can store list values. If the
+ <data type> is a table, then table values are valid.
+ 
 - **number**: This can be an integer or a rational number.
   - E.g: 1, 20, or 1.23212
 - **text**: These values must be inbetween quotation marks (can be single or double quotation marks). 
    - E.g.: Both `'Text'` or `"Text"` will be valid values for a text.
- - **list**: A valid list value is surrounded by brackets [] with comma separeted values.
+- **list**: A valid list value is surrounded by brackets [] with comma separeted values.
    - E.g: [1, 2, "Text"]
 
  >  Side note: The brackets for a list value are different from the brackets for the keywords. The brackets here are to differentiate from strings and tables so that they are directly parsed to python (When you translate your pseudo code, you'll see what we mean).
@@ -151,7 +157,8 @@ With this knowledge of how Pseudo works, you can now begin to code your frist "H
 
 
 
- ### HELLO WORLD
+ #### HELLO WORLD
+
 ---------------
 This is pretty easy. All Pseudo code needs to be written to the test.pseudo file (there are already some preloaded pseudo code in there for testing purposes, but feel free to look and delete everything if you want to). Knowing that you can display text to the console/GUI with the "Display" keyword you can do it like so:
 >` Display "Hello World"`
