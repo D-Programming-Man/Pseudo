@@ -19,7 +19,7 @@ For building the program yourself, it requires pyinstaller to build the binary i
 
 The Python language that we are using to build Pseudo is not that bad of a language for getting your feet wet in the world of programming. It's very easy to learn and the libraries are simple enough to get your head around. That's why we are using Python. Once you are comfortable with Pseudo, you can read the source code and familarize yourself with the features it implements.
 
- This project was inspired by a Minecraft Plugin called Skript that allowed players to develop Minecraft Plugins without learning how to write Java code or managing a plugin project. It's intuitive syntax of writing down English phrases to usable code in the game is the same idea that Pseudo will have for users who will be writing down Pseudo code.
+ This project was inspired by a Minecraft Plugin called [Skript](https://github.com/SkriptLang/Skript) that allowed players to develop Minecraft Plugins without learning how to write Java code or managing a plugin project. Its intuitive syntax of writing down English phrases to usable code in the game is the same idea that Pseudo will have for users who will be writing down Pseudo code.
 
 
 
