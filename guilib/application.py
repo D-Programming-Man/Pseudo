@@ -74,7 +74,7 @@ class Application(tk.Frame):
    def create_frames(self):
       self.topframe = tk.Frame(self.master, bg = "#FEF9DA")
       self.topframe.pack(side = "top", fill = "both")
-      self.bottomframe = tk.Frame(self.master, bg = "#FEF9DA")
+      self.bottomframe = tk.Frame(self.master, bg = "#FEF9DA", height = 100)
       self.bottomframe.pack(side = "bottom", fill = "both")
       self.leftframe = tk.Frame(self.master, bg = "#FEF9DA")
       self.leftframe.pack(side = "left", fill = "both", expand = True)
@@ -846,9 +846,9 @@ class Application(tk.Frame):
 
    def toggle_python_window(self):
        if (self.show_python.get() == False):
-           self.output.pack_forget()
+           self.rightframe.pack_forget()
        else:
-           self.output.pack(padx = 5, pady = 2, fill = "both", expand = True)
+           self.rightframe.pack(side = "right",fill = "both", expand = True)
 
    def set_input_bg(self, bgColor):
       self.input.text.configure(background=bgColor)

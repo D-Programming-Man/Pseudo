@@ -9,6 +9,7 @@ import while_test
 import loop_test
 import if_test
 import get_tests
+import remove_test
 Create a variable named x with value 4
 Create a variable named y with value 3
 
@@ -42,9 +43,16 @@ Run function get_test with parameters table foo, string key
 Set key to "bar"
 Run function get_test with parameters table foo, string key
 Run function get_for with parameters list vowles, number 5
+
 ###these should not work
 #Run function get_test with parameters list vowles, string key
 #Set key to 19
+
+#remove test
+create variable named apple with value 6
+create table named remove_table with value {apple:10, "apple":20, "banana":30}
+create list named remove_list with value [apple, "apple", "banana"]
+run function remove_test with parameters list remove_list, table remove_table, string "apple", number apple
 
 Pycode print("You can use python code with the \"Pycode\" keyword")
 % print("The % sign also does this too")
